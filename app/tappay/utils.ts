@@ -177,8 +177,8 @@ export class tappay {
   public async googlePayTest(merchantName: string) {
     const { isReadyToPay } = await this.googlePayInit(merchantName);
     if (isReadyToPay === true) {
-      const result = await this.handlerGooglePay('1', 'TWD');
-      console.log({ result });
+      // const result = await this.handlerGooglePay('1', 'TWD');
+      // console.log({ result });
     }
   }
 
@@ -188,12 +188,16 @@ export class tappay {
     countryCode: string,
     currencyCode: string
   ) {
-    await this.applePayInit(
+    const { isReadyToPay } = await this.applePayInit(
       merchantName,
       merchantId,
       countryCode,
       currencyCode
     );
+    if (isReadyToPay === true) {
+      const result = await Tappay.handlerApplePay('1');
+      console.log(result);
+    }
   }
 }
 
@@ -235,6 +239,23 @@ export async function handlerGooglePay(
   }
   const result = await Tappay.handlerGooglePay(totalPrice, currencyCode);
   return result;
+}
+
+export async function handlerApplePay(amount: string) {
+  if (Platform.OS !== 'ios') {
+    return;
+  }
+  if (Tappay.applePlayIsReady !== true) {
+    throw new Error('TappayApplePay has not been initialized!');
+  }
+  try {
+    const result = await Tappay.handlerApplePay(amount);
+
+    return result;
+  } catch (error: any) {
+    console.log({ ...error });
+    throw { ...error };
+  }
 }
 
 export default Tappay;

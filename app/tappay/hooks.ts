@@ -55,7 +55,19 @@ export function useSetDirectPayTPDCard(
   };
 }
 
-export function useGooglePay(merchantName: string) {
+export function useTPDGetDeviceId() {
+  const [deviceId, setDeviceId] = useState('');
+  useEffect(() => {
+    (async () => {
+      const _deviceId = await Tappay.getDeviceId();
+      setDeviceId(_deviceId);
+    })();
+  }, []);
+
+  return deviceId;
+}
+
+export function useTPDGooglePay(merchantName: string) {
   const [isReady, setIsReady] = useState(false);
   const [msg, setMsg] = useState('');
 
@@ -71,10 +83,41 @@ export function useGooglePay(merchantName: string) {
         setIsReady(_isReadyToPay);
         setMsg(_msg);
       } catch (error: any) {
-        console.log('useGooglePay error', { ...error });
+        console.log('useTPDGooglePay error', { ...error });
       }
     })();
   }, []);
 
   return [isReady, msg];
+}
+
+export function useTPDApplePay(
+  merchantName: string,
+  merchantId: string,
+  countryCode: string,
+  currencyCode: string
+) {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (Tappay.initPromise.then) {
+          await Tappay.initPromise;
+        }
+        const { isReadyToPay: _isReadyToPay } = await Tappay.applePayInit(
+          merchantName,
+          merchantId,
+          countryCode,
+          currencyCode
+        );
+
+        setIsReady(_isReadyToPay);
+      } catch (error: any) {
+        console.log('useTPDApplePay error', { ...error });
+      }
+    })();
+  }, []);
+
+  return isReady;
 }

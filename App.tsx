@@ -5,24 +5,22 @@
  * @format
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 import { TappayScreen } from '@containers';
 
-import { Tappay } from '@tappay';
+import { tappayInitialization } from '@tappay';
 
 import PopUpMessage from '@components/PopUpMessage';
 
-(async () => {
-  await Tappay.init(
-    128088,
-    'app_eE7hYsgDdXRhgI4LmizvETwCt49EV8WvVcKXBBSLa2I0Yhv5kS84UD057Xjx',
-    false
-  );
-})();
+tappayInitialization(
+  128088,
+  'app_eE7hYsgDdXRhgI4LmizvETwCt49EV8WvVcKXBBSLa2I0Yhv5kS84UD057Xjx',
+  false
+);
 
 function App(): JSX.Element {
   const [messageText, setMessageText] = useState('');
@@ -34,10 +32,6 @@ function App(): JSX.Element {
     flex: 1,
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter
   };
-
-  useEffect(() => {
-    console.log(Tappay.initPromise);
-  }, []);
 
   function messageTextReset() {
     setMessageType('');

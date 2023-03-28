@@ -10,7 +10,12 @@ import {
 
 import style from '@containers/TappayScreen/style';
 
-import { Tappay, useSetDirectPayTPDCard, useGooglePay } from '@tappay';
+import {
+  Tappay,
+  useSetDirectPayTPDCard,
+  useTPDGooglePay,
+  useTPDApplePay
+} from '@tappay';
 
 export function TappayScreen({ setPopUpMessage }: any) {
   const [cardNumber, setCardNumber] = useState('4679270817026199');
@@ -18,12 +23,13 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [dueYear, setDueYear] = useState('25');
   const [ccv, setCcv] = useState('081');
   const [googlePayAmount, setGooglePayAmount] = useState('1');
+  const [appleAmount, setApplePayAmount] = useState('1');
 
   useEffect(() => {
     (async () => {
       try {
-        await Tappay.directPayTest();
-        await Tappay.googlePayTest('TEST MERCHANT NAME');
+        // await Tappay.directPayTest();
+        // await Tappay.googlePayTest('TEST MERCHANT NAME');
         await Tappay.applePayTest(
           'TEST MERCHANT NAME',
           'TEST MERCHANT ID',
@@ -42,7 +48,13 @@ export function TappayScreen({ setPopUpMessage }: any) {
     dueYear,
     ccv
   );
-  const [googlePayIsReady] = useGooglePay('TEST MERCHANT');
+  const [googlePayIsReady] = useTPDGooglePay('TEST MERCHANT NAME');
+  const applePayIsReady = useTPDApplePay(
+    'TEST MERCHANT NAME',
+    'TEST MERCHANT ID',
+    'TW',
+    'TWD'
+  );
 
   async function handlerDirectPay() {
     if (directPayIsValid) {
@@ -86,6 +98,30 @@ export function TappayScreen({ setPopUpMessage }: any) {
     }
   }
 
+  async function handlerApplePay() {
+    try {
+      const result = await Tappay.handlerApplePay(appleAmount);
+      console.log(result);
+      setPopUpMessage({
+        label: 'ApplePay付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: 'ApplePay付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log(error);
+        setPopUpMessage({
+          label: 'ApplePay付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
+
   return (
     <SafeAreaView style={style.root}>
       <ScrollView style={style.context}>
@@ -97,6 +133,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
             onChange={({ nativeEvent }) => setCardNumber(nativeEvent.text)}
           />
         </View>
+
         <View style={style.row}>
           <Text style={style.label}>直接付款信用卡過期月份:</Text>
           <TextInput
@@ -113,6 +150,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
             onChange={({ nativeEvent }) => setDueYear(nativeEvent.text)}
           />
         </View>
+
         <View style={style.row}>
           <Text style={style.label}>直接付款信用卡檢查碼:</Text>
           <TextInput
@@ -140,6 +178,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
             直接付款測試
           </Text>
         </TouchableOpacity>
+
         <View style={style.row}>
           <Text style={style.label}>google pay付款金額:</Text>
           <TextInput
@@ -165,6 +204,34 @@ export function TappayScreen({ setPopUpMessage }: any) {
             }
           >
             google pay付款測試
+          </Text>
+        </TouchableOpacity>
+
+        <View style={style.row}>
+          <Text style={style.label}>apple pay付款金額:</Text>
+          <TextInput
+            style={style.inputBox}
+            value={appleAmount}
+            onChange={({ nativeEvent }) => setApplePayAmount(nativeEvent.text)}
+          />
+        </View>
+        <TouchableOpacity
+          style={
+            applePayIsReady === false
+              ? style.buttonDisabledStyle
+              : style.buttonStyle
+          }
+          disabled={applePayIsReady === false}
+          onPress={handlerApplePay}
+        >
+          <Text
+            style={
+              applePayIsReady === false
+                ? style.buttonDisabledFontStyle
+                : style.buttonFontStyle
+            }
+          >
+            apple pay付款測試
           </Text>
         </TouchableOpacity>
       </ScrollView>

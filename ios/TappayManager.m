@@ -127,8 +127,7 @@
     // self.TPDconsumer.requiredShippingAddressFields  = PKAddressFieldNone;
     // self.TPDconsumer.requiredBillingAddressFields   = PKAddressFieldNone;
 
-    TPDCart *TPDcart = [TPDCart new];
-    TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:TPDcart withDelegate:self];
+    TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:[TPDCart new] withDelegate:self];
 
     resolve(@{
       @"isReadyToPay": @([TPDApplePay canMakePayments]),
@@ -199,6 +198,10 @@
     NSLog(@"=====================================================");
     NSLog(@"Apple Pay Did Failure ==> Message : %@, ErrorCode : %ld", result.message, (long)result.status);
     NSLog(@"===================================================== \n\n");
+    self.applePayResolve(@{
+      @"message": result.message,
+      @"status": result.status
+    });
 }
 
 - (void)tpdApplePayDidCancelPayment:(TPDApplePay *)applePay {
@@ -206,6 +209,10 @@
     NSLog(@"=====================================================");
     NSLog(@"Apple Pay Did Cancel");
     NSLog(@"===================================================== \n\n");
+    self.applePayResolve(@{
+      @"message": @"Canceled by User",
+      @"status": @-1
+    });
 }
 
 - (void)tpdApplePayDidFinishPayment:(TPDApplePay *)applePay {

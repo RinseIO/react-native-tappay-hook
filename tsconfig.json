@@ -1,0 +1,39 @@
+// prettier-ignore
+{
+  "extends": "@tsconfig/react-native/tsconfig.json", /* Recommended React Native TSConfig base */
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./app"
+      ],
+      "@components": [
+        "./app/components/index"
+      ],
+      "@components/*": [
+        "./app/components/*"
+      ],
+      "@containers": [
+        "./app/containers/index"
+      ],
+      "@containers/*": [
+        "./app/containers/*"
+      ],
+      "@utils/*": [
+        "./app/utils/*"
+      ],
+      "@hooks/*": [
+        "./app/hooks/*"
+      ],
+    },
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+    "lib": [
+      "es2021"
+    ],
+    /* Completeness */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+  },
+  "typeRoots": [
+    "./types"
+  ]
+}

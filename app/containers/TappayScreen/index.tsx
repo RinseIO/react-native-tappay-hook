@@ -10,8 +10,7 @@ import {
 
 import style from '@containers/TappayScreen/style';
 
-import Tappay from '@utils/tappay';
-import { useSetDirectPayTPDCard, useGooglePay } from '@hooks/tappay';
+import { Tappay, useSetDirectPayTPDCard, useGooglePay } from '@tappay';
 
 export function TappayScreen({ setPopUpMessage }: any) {
   const [cardNumber, setCardNumber] = useState('4679270817026199');
@@ -23,10 +22,14 @@ export function TappayScreen({ setPopUpMessage }: any) {
   useEffect(() => {
     (async () => {
       try {
-        await Tappay.initPromise;
-
-        // await Tappay.googlePayTest(tappayConfig.merchantName);
-        await Tappay.applePayTest('TEST MERCHANT', '', 'TW', 'TWD');
+        await Tappay.directPayTest();
+        await Tappay.googlePayTest('TEST MERCHANT NAME');
+        await Tappay.applePayTest(
+          'TEST MERCHANT NAME',
+          'TEST MERCHANT ID',
+          'TW',
+          'TWD'
+        );
       } catch (error) {
         console.log({ error });
       }

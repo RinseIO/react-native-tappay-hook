@@ -7,6 +7,9 @@
       "@/*": [
         "./app"
       ],
+      "@tappay": [
+        "./app/tappay/index"
+      ],
       "@components": [
         "./app/components/index"
       ],
@@ -18,9 +21,6 @@
       ],
       "@containers/*": [
         "./app/containers/*"
-      ],
-      "@utils/*": [
-        "./app/utils/*"
       ],
       "@hooks/*": [
         "./app/hooks/*"

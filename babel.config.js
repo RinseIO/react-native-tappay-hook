@@ -11,8 +11,8 @@ module.exports = {
           // This needs to be mirrored in tsconfig.json
           '@': './app',
           '@components': './app/components',
+          '@tappay': './app/tappay',
           '@containers': './app/containers',
-          '@utils': './app/utils',
           '@hooks': './app/hooks'
         },
       },

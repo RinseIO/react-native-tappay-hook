@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import Tappay from '@utils/tappay';
+import Tappay from './utils';
 
 export function useSetDirectPayTPDCard(
   cardNumber: string,

@@ -12,7 +12,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 import { TappayScreen } from '@containers';
 
-import Tappay from '@utils/tappay';
+import { Tappay } from '@tappay';
 
 import PopUpMessage from '@components/PopUpMessage';
 

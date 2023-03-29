@@ -81,7 +81,7 @@ RCT_EXPORT_METHOD(TappayGetDeviceId:(RCTPromiseResolveBlock)resolve  rejecter:(R
   }
 }
 
-//  宣告給ReactNative使用，對應android版TappaySDK的TappayGooglePayInit方法
+//  宣告給ReactNative使用，對應android版的TappayGooglePayInit方法
 RCT_EXPORT_METHOD(TappayGooglePayInit:(NSString *)merchantName resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   // reject(@"ios error TappayGooglePayInit", @"ios not support GooglePay", nil);
@@ -91,7 +91,7 @@ RCT_EXPORT_METHOD(TappayGooglePayInit:(NSString *)merchantName resolver:(RCTProm
   });
 }
 
-//  宣告給ReactNative使用，對應android版TappaySDK的TappayHandlerGooglePay方法
+//  宣告給ReactNative使用，對應android版的TappayHandlerGooglePay方法
 RCT_EXPORT_METHOD(TappayHandlerGooglePay:(NSString *)merchantName resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   reject(@"ios error TappayHandlerGooglePay", @"ios not support GooglePay", nil);
@@ -105,6 +105,20 @@ RCT_EXPORT_METHOD(TappayAapplePayInit:(NSString *)merchantName merchantId:(NSStr
   }
   @catch (NSException *exception) {
     reject(@"ios error TappayAapplePayInit", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK的TPDapplePay的canMakePayments
+RCT_EXPORT_METHOD(TappayIsApplePayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    BOOL result = [self.TappayManager isApplePayAvailable];
+    resolve(@{
+      @"isReadyToPay": @(result)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsApplePayAvailable", exception.description, nil);
   }
 }
 

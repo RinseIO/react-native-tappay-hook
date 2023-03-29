@@ -134,7 +134,7 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
     }
   }
 
-  // 宣告給ReactNative使用，對應ios版TappaySDK的TappayAapplePayInit方法
+  // 宣告給ReactNative使用，對應ios版的TappayAapplePayInit方法
   @ReactMethod
   public void TappayAapplePayInit(String merchantName, String merchantId, String countryCode, String currencyCode,
       Promise promise) {
@@ -148,7 +148,20 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
     }
   }
 
-  // 宣告給ReactNative使用，對應ios版TappaySDK的TappayHandlerApplePay方法
+  // 宣告給ReactNative使用，對應ios版的TappayIsApplePayAvailable方法
+  @ReactMethod
+  public void TappayIsApplePayAvailable(Promise promise) {
+    try {
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putBoolean("isReadyToPay", false);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsApplePayAvailable", e);
+    }
+  }
+
+  // 宣告給ReactNative使用，對應ios版的TappayHandlerApplePay方法
   @ReactMethod
   public void TappayHandlerApplePay(String amount, Promise promise) {
     promise.reject("android error TappayHandlerApplePay", "android not support ApplePay");

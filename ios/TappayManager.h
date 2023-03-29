@@ -24,8 +24,8 @@
 @property (nonatomic, strong) TPDConsumer *TPDconsumer;
 @property (nonatomic, strong) TPDCart *TPDcart;
 @property (nonatomic, strong) TPDApplePay *TPDapplePay;
-@property () RCTPromiseResolveBlock __strong *applePayResolve;
-@property () RCTPromiseRejectBlock __strong *applePayReject;
+@property () RCTPromiseResolveBlock applePayJsResolve;
+@property () RCTPromiseRejectBlock applePayJsReject;
 
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
@@ -39,12 +39,22 @@
 
 - (void)applePayInit:(NSString *)merchantName merchantId:(NSString *)merchantId countryCode:(NSString *)countryCode currencyCode:(NSString *)currencyCode resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
+- (BOOL)isApplePayAvailable;
+
 - (void)handlerApplePay:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
 
 @end
 
+@interface TPDApplePayDelegate:NSObject
 
-@interface TPDApplePayDelegate : NSObject
+@property () NSString *SDKVersion;
+@property (nonatomic, strong) TPDMerchant *TPDmerchant;
+@property (nonatomic, strong) TPDConsumer *TPDconsumer;
+@property (nonatomic, strong) TPDCart *TPDcart;
+@property (nonatomic, strong) TPDApplePay *TPDapplePay;
+@property () RCTPromiseResolveBlock applePayJsResolve;
+@property () RCTPromiseRejectBlock applePayJsReject;
 
 // Apple Pay On Start
 - (void)tpdApplePayDidStartPayment:(TPDApplePay *)applePay;
@@ -74,3 +84,4 @@
 - (void)tpdApplePay:(TPDApplePay *)applePay didReceivePrime:(NSString *)prime withExpiryMillis:(long)expiryMillis withCardInfo:(TPDCardInfo *)cardInfo withMerchantReferenceInfo:(NSDictionary *)merchantReferenceInfo;
 
 @end
+

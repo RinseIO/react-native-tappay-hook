@@ -127,7 +127,17 @@
     // self.TPDconsumer.requiredShippingAddressFields  = PKAddressFieldNone;
     // self.TPDconsumer.requiredBillingAddressFields   = PKAddressFieldNone;
 
-    TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:[TPDCart new] withDelegate:self];
+    // self.applePayJsResolve = resolve;
+    // self.applePayJsReject = reject;
+
+    TPDApplePayDelegate *_TPDApplePayDelegate = [TPDApplePayDelegate alloc];
+    _TPDApplePayDelegate.applePayJsResolve = resolve;
+    _TPDApplePayDelegate.applePayJsReject = reject;
+    _TPDApplePayDelegate.SDKVersion = self.SDKVersion;
+    _TPDApplePayDelegate.TPDconsumer = self.TPDconsumer;
+
+    TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:[TPDCart new] withDelegate:_TPDApplePayDelegate];
+    // TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:nil withDelegate:_TPDApplePayDelegate];
 
     resolve(@{
       @"isReadyToPay": @([TPDApplePay canMakePayments]),
@@ -136,6 +146,10 @@
   @catch (NSException *exception) {
     reject(@"ios error applePayInit", exception.description, nil);
   }
+}
+
+- (BOOL)isApplePayAvailable {
+  return [TPDApplePay canMakePayments];
 }
 
 - (void)handlerApplePay:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
@@ -150,18 +164,29 @@
     TPDPaymentItem * pending = [TPDPaymentItem pendingPaymentItemWithItemName:@"pending"];
     [self.TPDcart addPaymentItem:pending];
 
+    self.applePayJsResolve = resolve;
+    self.applePayJsReject = reject;
+
+    TPDApplePayDelegate *_TPDApplePayDelegate = [TPDApplePayDelegate alloc];
+    _TPDApplePayDelegate.applePayJsResolve = resolve;
+    _TPDApplePayDelegate.applePayJsReject = reject;
+    _TPDApplePayDelegate.SDKVersion = self.SDKVersion;
+    _TPDApplePayDelegate.TPDconsumer = self.TPDconsumer;
+
     // Without Handle Payment
-    self.TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:self.TPDcart withDelegate:self];
+    self.TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:self.TPDcart withDelegate:_TPDApplePayDelegate];
 
     [self.TPDapplePay startPayment];
 
-    self.applePayResolve = &(resolve);
-    self.applePayReject = &(reject);
   }
   @catch (NSException *exception) {
     reject(@"ios error handlerApplePay", exception.description, nil);
   }
 }
+@end
+
+
+@implementation TPDApplePayDelegate
 
 /*
  #pragma mark - Navigation
@@ -186,9 +211,9 @@
     NSLog(@"=====================================================");
     NSLog(@"Apple Pay Did Success ==> Amount : %@", [result.amount stringValue]);
     
-    NSLog(@"shippingContact.name : %@ %@", applePay.consumer.shippingContact.name.givenName, applePay.consumer.shippingContact.name.familyName);
-    NSLog(@"shippingContact.emailAddress : %@", applePay.consumer.shippingContact.emailAddress);
-    NSLog(@"shippingContact.phoneNumber : %@", applePay.consumer.shippingContact.phoneNumber.stringValue);
+    // NSLog(@"shippingContact.name : %@ %@", applePay.consumer.shippingContact.name.givenName, applePay.consumer.shippingContact.name.familyName);
+    // NSLog(@"shippingContact.emailAddress : %@", applePay.consumer.shippingContact.emailAddress);
+    // NSLog(@"shippingContact.phoneNumber : %@", applePay.consumer.shippingContact.phoneNumber.stringValue);
     NSLog(@"===================================================== \n\n");
     
 }
@@ -198,10 +223,14 @@
     NSLog(@"=====================================================");
     NSLog(@"Apple Pay Did Failure ==> Message : %@, ErrorCode : %ld", result.message, (long)result.status);
     NSLog(@"===================================================== \n\n");
-    self.applePayResolve(@{
-      @"message": result.message,
-      @"status": result.status
-    });
+  if(self.applePayJsReject != nil ) {
+    self.applePayJsReject(
+      @"ios error Apple Pay Did Failure",
+      result.message,
+      nil
+    );
+    self.applePayJsReject = nil;
+  }
 }
 
 - (void)tpdApplePayDidCancelPayment:(TPDApplePay *)applePay {
@@ -209,10 +238,14 @@
     NSLog(@"=====================================================");
     NSLog(@"Apple Pay Did Cancel");
     NSLog(@"===================================================== \n\n");
-    self.applePayResolve(@{
-      @"message": @"Canceled by User",
-      @"status": @-1
-    });
+  if(self.applePayJsReject != nil ) {
+    self.applePayJsReject(
+      @"ios error tpdApplePayDidCancelPayment",
+      @"Canceled by User",
+      nil
+    );
+    self.applePayJsReject = nil;
+  }
 }
 
 - (void)tpdApplePayDidFinishPayment:(TPDApplePay *)applePay {
@@ -271,9 +304,9 @@
     NSLog(@"merchantReferenceInfo : %@", merchantReferenceInfo);
     NSLog(@"totalAmount : %@",applePay.cart.totalAmount);
     NSLog(@"Client  IP : %@",applePay.consumer.clientIP);
-    NSLog(@"shippingContact.name : %@ %@", applePay.consumer.shippingContact.name.givenName, applePay.consumer.shippingContact.name.familyName);
-    NSLog(@"shippingContact.emailAddress : %@", applePay.consumer.shippingContact.emailAddress);
-    NSLog(@"shippingContact.phoneNumber : %@", applePay.consumer.shippingContact.phoneNumber.stringValue);
+    // NSLog(@"shippingContact.name : %@ %@", applePay.consumer.shippingContact.name.givenName, applePay.consumer.shippingContact.name.familyName);
+    // NSLog(@"shippingContact.emailAddress : %@", applePay.consumer.shippingContact.emailAddress);
+    // NSLog(@"shippingContact.phoneNumber : %@", applePay.consumer.shippingContact.phoneNumber.stringValue);
 
     PKPaymentMethod * paymentMethod = self.TPDconsumer.paymentMethod;
 
@@ -283,15 +316,29 @@
     NSLog(@"===================================================== \n\n");
 
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *payment = [NSString stringWithFormat:@"Use below cURL to proceed the payment.\ncurl -X POST \\\nhttps://sandbox.tappaysdk.com/tpc/payment/pay-by-prime \\\n-H \'content-type: application/json\' \\\n-H \'x-api-key: partner_6ID1DoDlaPrfHw6HBZsULfTYtDmWs0q0ZZGKMBpp4YICWBxgK97eK3RM\' \\\n-d \'{ \n \"prime\": \"%@\", \"partner_key\": \"partner_6ID1DoDlaPrfHw6HBZsULfTYtDmWs0q0ZZGKMBpp4YICWBxgK97eK3RM\", \"merchant_id\": \"GlobalTesting_CTBC\", \"details\":\"TapPay Test\", \"amount\": %@, \"cardholder\": { \"phone_number\": \"+886923456789\", \"name\": \"Jane Doe\", \"email\": \"Jane@Doe.com\", \"zip_code\": \"12345\", \"address\": \"123 1st Avenue, City, Country\", \"national_id\": \"A123456789\" }, \"remember\": true }\'",prime,applePay.cart.totalAmount];
-        NSLog(@"%@", payment);
-    });
+    // dispatch_async(dispatch_get_main_queue(), ^{
+    //     NSString *payment = [NSString stringWithFormat:@"Use below cURL to proceed the payment.\ncurl -X POST \\\nhttps://sandbox.tappaysdk.com/tpc/payment/pay-by-prime \\\n-H \'content-type: application/json\' \\\n-H \'x-api-key: partner_6ID1DoDlaPrfHw6HBZsULfTYtDmWs0q0ZZGKMBpp4YICWBxgK97eK3RM\' \\\n-d \'{ \n \"prime\": \"%@\", \"partner_key\": \"partner_6ID1DoDlaPrfHw6HBZsULfTYtDmWs0q0ZZGKMBpp4YICWBxgK97eK3RM\", \"merchant_id\": \"GlobalTesting_CTBC\", \"details\":\"TapPay Test\", \"amount\": %@, \"cardholder\": { \"phone_number\": \"+886923456789\", \"name\": \"Jane Doe\", \"email\": \"Jane@Doe.com\", \"zip_code\": \"12345\", \"address\": \"123 1st Avenue, City, Country\", \"national_id\": \"A123456789\" }, \"remember\": true }\'",prime,applePay.cart.totalAmount];
+    //     NSLog(@"%@", payment);
+    // });
 
 
     // 2. If Payment Success, set paymentReault = YES.
     BOOL paymentReault = YES;
     [applePay showPaymentResult:paymentReault];
+
+    if(self.applePayJsResolve !=nil ) {
+      self.applePayJsResolve(@{
+        @"prime": prime,
+        @"systemOS": @"ios",
+        @"SDKVersion": self.SDKVersion,
+        @"expiryMillis": [NSString stringWithFormat: @"%ld", expiryMillis],
+        @"merchantReferenceInfo": merchantReferenceInfo,
+        @"cart": applePay.cart,
+        @"consumer": applePay.consumer,
+        @"paymentMethod": self.TPDconsumer.paymentMethod
+      });
+    self.applePayJsResolve = nil;
+    }
 }
 
 @end

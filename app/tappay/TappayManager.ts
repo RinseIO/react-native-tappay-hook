@@ -138,6 +138,10 @@ export class tappay {
     }
   }
 
+  public async isApplePayAvailable() {
+    return await NativeModules.RNToolsManager.TappayIsApplePayAvailable();
+  }
+
   public async handlerApplePay(amount: string) {
     if (Platform.OS !== 'ios') {
       return;
@@ -177,8 +181,8 @@ export class tappay {
   public async googlePayTest(merchantName: string) {
     const { isReadyToPay } = await this.googlePayInit(merchantName);
     if (isReadyToPay === true) {
-      // const result = await this.handlerGooglePay('1', 'TWD');
-      // console.log({ result });
+      const result = await this.handlerGooglePay('1', 'TWD');
+      console.log({ result });
     }
   }
 
@@ -202,60 +206,5 @@ export class tappay {
 }
 
 export const Tappay = new tappay();
-
-export function tappayInitialization(
-  appId: number,
-  appKey: string,
-  prod: boolean
-) {
-  if (Tappay.initPromise !== null) {
-    return Tappay.initPromise;
-  }
-
-  Tappay.initPromise = (async () => {
-    await Tappay.init(appId, appKey, prod);
-    return await Tappay.getDeviceId();
-  })();
-
-  return Tappay.initPromise;
-}
-
-export async function getDeviceId() {
-  const _deviceId = await Tappay.getDeviceId();
-  return _deviceId;
-}
-
-export async function handlerDirectPay(geoLocation: string = 'UNKNOWN') {
-  const result = await Tappay.handlerDirectPay(geoLocation);
-  return result;
-}
-
-export async function handlerGooglePay(
-  totalPrice: string,
-  currencyCode: string = 'TWD'
-) {
-  if (Platform.OS !== 'android') {
-    return;
-  }
-  const result = await Tappay.handlerGooglePay(totalPrice, currencyCode);
-  return result;
-}
-
-export async function handlerApplePay(amount: string) {
-  if (Platform.OS !== 'ios') {
-    return;
-  }
-  if (Tappay.applePlayIsReady !== true) {
-    throw new Error('TappayApplePay has not been initialized!');
-  }
-  try {
-    const result = await Tappay.handlerApplePay(amount);
-
-    return result;
-  } catch (error: any) {
-    console.log({ ...error });
-    throw { ...error };
-  }
-}
 
 export default Tappay;

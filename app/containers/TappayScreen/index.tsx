@@ -37,7 +37,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
           'TWD'
         );
       } catch (error) {
-        console.log({ error });
+        console.log(error);
       }
     })();
   }, []);

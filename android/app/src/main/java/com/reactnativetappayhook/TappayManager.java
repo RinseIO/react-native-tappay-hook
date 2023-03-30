@@ -461,7 +461,7 @@ public class TappayManager {
           super.onNewIntent(intent);
           if (intent.getDataString() != null && intent.getDataString().contains(linePayCallbackUri)) {
             tpdLinePay.parseToLinePayResult(reactContext.getApplicationContext(), intent.getData(),
-                this);
+                    mTPDLinePayActivityEvent);
           }
         }
 

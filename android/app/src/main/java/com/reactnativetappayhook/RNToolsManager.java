@@ -14,7 +14,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import tech.cherri.tpdirect.api.TPDCardValidationResult;
-import com.reactnativetappayhook.MainActivity;
 
 // https://codeantenna.com/a/CRDAQIUluT
 public class RNToolsManager extends ReactContextBaseJavaModule {
@@ -29,32 +28,6 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
   @Override
   public String getName() {
     return "RNToolsManager";
-  }
-
-  // 取得 APP 資訊
-  private PackageInfo getPackageInfo() {
-    PackageManager manager = getReactApplicationContext().getPackageManager();
-    PackageInfo info = null;
-    try {
-      info = manager.getPackageInfo(getReactApplicationContext().getPackageName(), 0);
-      return info;
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-
-      return info;
-    }
-  }
-
-  // 宣告給ReactNative使用的function名稱，取得app版本號
-  @ReactMethod
-  public void getAppVersion(Promise promise) {
-    try {
-      PackageInfo info = getPackageInfo();
-      promise.resolve(info.versionName);
-    } catch (Exception e) {
-      promise.reject("android error getAppVersion", e);
-    }
   }
 
   // 宣告給ReactNative使用的function名稱，TappaySDK的initInstance
@@ -117,8 +90,7 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
   @ReactMethod
   public void TappayGooglePayInit(String merchantName, Promise promise) {
     try {
-      MainActivity MainActivity = (MainActivity) getCurrentActivity();
-      TappayManager.googlePayInit(merchantName, MainActivity, promise);
+      TappayManager.googlePayInit(merchantName, promise);
     } catch (Exception e) {
       promise.reject("android error TappayGooglePayInit", e);
     }
@@ -165,5 +137,84 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
   @ReactMethod
   public void TappayHandlerApplePay(String amount, Promise promise) {
     promise.reject("android error TappayHandlerApplePay", "android not support ApplePay");
+  }
+
+  // 宣告給ReactNative使用的function名稱，對應ios版的TappayLinePayHandleURL方法
+  @ReactMethod
+  public void TappayLinePayHandleURL(String openUri, Promise promise) {
+    try {
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putString("openUri", openUri);
+      resultData.putBoolean("success", false);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsLinePayAvailable", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDLinePay的isLinePayAvailable
+  @ReactMethod
+  public void TappayIsLinePayAvailable(Promise promise) {
+    try {
+      boolean result = TappayManager.isLinePayAvailable();
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsLinePayAvailable", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDLinePay的linePayInit
+  @ReactMethod
+  public void TappayLinePayInit(String linePayCallbackUri, Promise promise) {
+    try {
+      boolean result = TappayManager.linePayInit(linePayCallbackUri);
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+      resultData.putString("linePayCallbackUri", linePayCallbackUri);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayLinePayInit", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDLinePay的getPrime
+  @ReactMethod
+  public void TappayGetLinePayPrime(Promise promise) {
+    try {
+      TappayManager.getLinePayPrime(promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayGetLinePayPrime", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDLinePay的redirectWithUrl，並自動完成跳轉資料的監聽
+  @ReactMethod
+  public void TappayHandlerLinePay(String paymentUrl, Promise promise) {
+    try {
+      TappayManager.handlerLinePay(paymentUrl, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayHandlerLinePay", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDLinePay的redirectWithUrl
+  @ReactMethod
+  public void TappayLinePayRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+      TappayManager.linePayRedirectWithUrl(paymentUrl, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayLinePayRedirectWithUrl", e);
+    }
   }
 }

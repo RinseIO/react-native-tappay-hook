@@ -30,14 +30,15 @@ export function TappayScreen({ setPopUpMessage }: any) {
       try {
         // await Tappay.directPayTest();
         // await Tappay.googlePayTest('TEST MERCHANT NAME');
-        await Tappay.applePayTest(
-          'TEST MERCHANT NAME',
-          'TEST MERCHANT ID',
-          'TW',
-          'TWD'
-        );
+        // await Tappay.applePayTest(
+        //   'TEST MERCHANT NAME',
+        //   'TEST MERCHANT ID',
+        //   'TW',
+        //   'TWD'
+        // );
+        await Tappay.linePayTest('linepayexample://tech.cherri');
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     })();
   }, []);

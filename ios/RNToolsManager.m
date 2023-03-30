@@ -133,4 +133,87 @@ RCT_EXPORT_METHOD(TappayHandlerApplePay:(NSString *)amount resolver:(RCTPromiseR
   }
 }
 
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的handleURL方法
+RCT_EXPORT_METHOD(TappayLinePayHandleURL:(NSString *)openUri resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool success = [self.TappayManager linePayHandleURL:openUri];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"openUri": openUri,
+      @"success": @(success)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsLinePayAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的isLinePayAvailable方法
+RCT_EXPORT_METHOD(TappayIsLinePayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool isReadyToPay = [self.TappayManager isLinePayAvailable];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @(isReadyToPay)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsLinePayAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的初始化方法
+RCT_EXPORT_METHOD(TappayLinePayInit:(NSString *)linePayCallbackUri resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool isLinePayAvailable = [self.TappayManager linePayInit:linePayCallbackUri];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @(isLinePayAvailable),
+      @"linePayCallbackUri": linePayCallbackUri
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayLinePayInit", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的付款方法
+RCT_EXPORT_METHOD(TappayHandlerLinePay:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager handlerLinePay:paymentUrl resolver:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayGetLinePayPrime", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的getPrime
+RCT_EXPORT_METHOD(TappayGetLinePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager getLinePayPrime:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayGetLinePayPrime", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的redirect
+RCT_EXPORT_METHOD(TappayLinePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager linePayRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayLinePayRedirectWithUrl", exception.description, nil);
+  }
+}
+
 @end

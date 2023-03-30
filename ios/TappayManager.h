@@ -20,12 +20,18 @@
 @property () NSString *dueYear;
 @property () NSString *CCV;
 @property () NSString *SDKVersion;
+@property () BOOL *applePayIsReadyToPay;
 @property (nonatomic, strong) TPDMerchant *TPDmerchant;
 @property (nonatomic, strong) TPDConsumer *TPDconsumer;
 @property (nonatomic, strong) TPDCart *TPDcart;
 @property (nonatomic, strong) TPDApplePay *TPDapplePay;
 @property () RCTPromiseResolveBlock applePayJsResolve;
 @property () RCTPromiseRejectBlock applePayJsReject;
+@property (nonatomic, strong) TPDLinePay *TPDlinePay;
+@property () NSString *linePayCallbackUri;
+@property () BOOL *linePayIsReadyToPay;
+@property () RCTPromiseResolveBlock linePayJsResolve;
+@property () RCTPromiseRejectBlock linePayJsReject;
 
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
@@ -43,6 +49,19 @@
 
 - (void)handlerApplePay:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
+- (void)tappayLinePayExceptionHandler:(NSNotification *)notification;
+
+- (BOOL)linePayHandleURL:(NSString *)openUri;
+
+- (BOOL)isLinePayAvailable;
+
+- (BOOL)linePayInit:(NSString *)linePayCallbackUri;
+
+-(void)handlerLinePay:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+- (void)getLinePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+- (void)linePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 @end
 

@@ -1,7 +1,7 @@
 package com.reactnativetappayhook;
 
 import java.util.List;
-// import android.util.Log;
+import android.util.Log;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -30,25 +30,34 @@ import tech.cherri.tpdirect.api.TPDMerchant;
 import tech.cherri.tpdirect.callback.TPDGooglePayGetPrimeSuccessCallback;
 import tech.cherri.tpdirect.callback.TPDGooglePayListener;
 
+import tech.cherri.tpdirect.api.TPDLinePay;
+import tech.cherri.tpdirect.api.TPDLinePayResult;
+import tech.cherri.tpdirect.callback.TPDLinePayGetPrimeSuccessCallback;
+import tech.cherri.tpdirect.callback.TPDLinePayResultListener;
+import tech.cherri.tpdirect.exception.TPDLinePayException;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.wallet.AutoResolveHelper;
 import com.google.android.gms.wallet.PaymentData;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
-// import java.lang.reflect.Field;
-// import java.lang.reflect.Method;
-// import java.lang.Class;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.Class;
 
 // https://portal.tappaysdk.com/document/androidnoform
 public class TappayManager {
   ReactApplicationContext reactContext;
+  TPDGooglePay tpdGooglePay;
+  TPDLinePay tpdLinePay;
+
   TPDCard.CardType[] allowedNetworks = new TPDCard.CardType[] { TPDCard.CardType.Visa,
       TPDCard.CardType.MasterCard, TPDCard.CardType.JCB, TPDCard.CardType.AmericanExpress };
   TPDCard.AuthMethod[] allowedAuthMethods = new TPDCard.AuthMethod[] { TPDCard.AuthMethod.PanOnly,
       TPDCard.AuthMethod.Cryptogram3DS };
-  TPDGooglePay tpdGooglePay;
   final int LOAD_PAYMENT_DATA_REQUEST_CODE = 102;
+  final int REQUEST_READ_PHONE_STATE = 101;
 
   int APP_ID;
   String APP_KEY;
@@ -64,6 +73,10 @@ public class TappayManager {
   String googlePayMsg;
   String googlePayMerchantName;
   TPDGooglePayActivityEvent mTPDGooglePayActivityEvent;
+  Promise linePayJsPromise = null;
+  String linePayCallbackUri;
+  Boolean linePayIsReadyToPay = false;
+  TPDLinePayActivityEvent mTPDLinePayActivityEvent;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -116,6 +129,17 @@ public class TappayManager {
   interface TPDGooglePayGetPrimeCallback extends TPDGooglePayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
 
+  interface TPDLinePayGetPrimeCallback extends TPDLinePayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
+  }
+
+  class TPDLinePayActivityEvent extends BaseActivityEventListener implements TPDLinePayResultListener {
+    public void onParseSuccess(TPDLinePayResult tpdLinePayResult) {
+    }
+
+    public void onParseFail(int status, String msg) {
+    }
+  }
+
   public TappayManager(ReactApplicationContext _reactContext) {
     reactContext = _reactContext;
     SDKVersion = TPDSetup.getVersion();
@@ -145,28 +169,6 @@ public class TappayManager {
 
     TPDCardValidationResult result = card.validate(new StringBuffer(cardNumber), new StringBuffer(dueMonth),
         new StringBuffer(dueYear), new StringBuffer(CCV));
-
-    // // 使用 Class.forName() 得到該 Class 的物件
-    // Class<?> cls =
-    // Class.forName("tech.cherri.tpdirect.api.TPDCardValidationResult");
-
-    // // 取得該 Class 的所有屬性
-    // Field[] fields = cls.getDeclaredFields();
-    // for (Field field : fields) {
-    // Log.d("MainActivity", "Field name: " + field.getName());
-    // Log.d("MainActivity", "Field type: " + field.getType());
-    // }
-
-    // // 取得該 Class 的所有方法
-    // Method[] methods = cls.getDeclaredMethods();
-    // for (Method method : methods) {
-    // Log.d("MainActivity", "Method name: " + method.getName());
-    // Log.d("MainActivity", "Method return type: " + method.getReturnType());
-    // Class<?>[] paramTypes = method.getParameterTypes();
-    // for (Class<?> paramType : paramTypes) {
-    // Log.d("MainActivity", "Method parameter type: " + paramType);
-    // }
-    // }
 
     return result;
   }
@@ -243,9 +245,10 @@ public class TappayManager {
     return TPDSetup.getInstance(reactContext).getRbaDeviceId();
   }
 
-  public void googlePayInit(String merchantName, MainActivity MainActivity, Promise promise) {
+  public void googlePayInit(String merchantName, Promise promise) {
     try {
-      if (googlePayIsReadyToPay != null && googlePayMsg != null && googlePayMerchantName == merchantName) {
+      if (googlePayIsReadyToPay != null && googlePayMsg != null &&
+          googlePayMerchantName == merchantName) {
 
         WritableNativeMap resultData = new WritableNativeMap();
         resultData.putBoolean("isReadyToPay", googlePayIsReadyToPay);
@@ -254,6 +257,11 @@ public class TappayManager {
         promise.resolve(resultData);
         return;
       }
+
+      if (mTPDGooglePayActivityEvent != null) {
+        reactContext.removeActivityEventListener(mTPDGooglePayActivityEvent);
+      }
+
       TPDMerchant tpdMerchant = new TPDMerchant();
       tpdMerchant.setMerchantName(merchantName);
       tpdMerchant.setSupportedNetworks(allowedNetworks);
@@ -281,7 +289,7 @@ public class TappayManager {
 
       reactContext.addActivityEventListener(mTPDGooglePayActivityEvent);
 
-      tpdGooglePay = new TPDGooglePay(MainActivity, tpdMerchant, tpdConsumer);
+      tpdGooglePay = new TPDGooglePay(reactContext.getCurrentActivity(), tpdMerchant, tpdConsumer);
       tpdGooglePay.isGooglePayAvailable(mTPDGooglePayActivityEvent);
     } catch (Exception e) {
       promise.reject("android error googlePayInit", e);
@@ -377,5 +385,148 @@ public class TappayManager {
       googlePayJsPromise.reject("java error revealGooglePaymentInfo", e);
       // googlePayJsPromise = null;
     }
+  }
+
+  public boolean isLinePayAvailable() {
+    return TPDLinePay.isLinePayAvailable(reactContext);
+  }
+
+  public boolean linePayInit(String _linePayCallbackUri) {
+    if (linePayIsReadyToPay == true) {
+      return linePayIsReadyToPay;
+    }
+
+    boolean isLinePayAvailable = false;
+    try {
+      isLinePayAvailable = isLinePayAvailable();
+
+      if (isLinePayAvailable == true) {
+        tpdLinePay = new TPDLinePay(reactContext, _linePayCallbackUri);
+        linePayIsReadyToPay = isLinePayAvailable;
+        linePayCallbackUri = _linePayCallbackUri;
+      }
+
+    } catch (TPDLinePayException e) {
+      throw new RuntimeException(e);
+    }
+
+    return isLinePayAvailable;
+  }
+
+  public void getLinePayPrime(Promise promise) {
+    try {
+      TPDLinePayGetPrimeCallback TPDLinePayGetPrimeCallback = new TPDLinePayGetPrimeCallback() {
+        @Override
+        public void onSuccess(String prime) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("prime", prime);
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error getLinePayPrime onSuccess", e);
+          }
+        }
+
+        @Override
+        public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("status", msg);
+
+          promise.reject("android error getLinePayPrime onFailure", resultData);
+        }
+      };
+
+      tpdLinePay.getPrime(TPDLinePayGetPrimeCallback, TPDLinePayGetPrimeCallback);
+    } catch (Exception e) {
+      promise.reject("android error getLinePayPrime", e);
+    }
+  }
+
+  public void handlerLinePay(String paymentUrl, Promise promise) {
+    try {
+      tpdLinePay.redirectWithUrl(paymentUrl);
+
+      if (mTPDLinePayActivityEvent != null) {
+        reactContext.removeActivityEventListener(mTPDLinePayActivityEvent);
+      }
+
+      mTPDLinePayActivityEvent = new TPDLinePayActivityEvent() {
+        @Override
+        public void onNewIntent(Intent intent) {
+          super.onNewIntent(intent);
+          if (intent.getDataString() != null && intent.getDataString().contains(linePayCallbackUri)) {
+            tpdLinePay.parseToLinePayResult(reactContext.getApplicationContext(), intent.getData(),
+                this);
+          }
+        }
+
+        @Override
+        public void onParseSuccess(TPDLinePayResult tpdLinePayResult) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putInt("status", tpdLinePayResult.getStatus());
+            resultData.putString("nrecTradeId", tpdLinePayResult.getRecTradeId());
+            resultData.putString("nbankTransactionId", tpdLinePayResult.getBankTransactionId());
+            resultData.putString("norderNumber", tpdLinePayResult.getOrderNumber());
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error handlerLinePay onParseSuccess", e);
+          }
+        }
+
+        @Override
+        public void onParseFail(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("status", msg);
+          promise.reject("android error handlerLinePay onParseFail", resultData);
+        }
+      };
+
+      reactContext.addActivityEventListener(mTPDLinePayActivityEvent);
+    } catch (Exception e) {
+      promise.reject("android error handlerLinePay", e);
+    }
+  }
+
+  public void linePayRedirectWithUrl(String paymentUrl, Promise promise) {
+    tpdLinePay.redirectWithUrl(paymentUrl);
+    tpdLinePay.parseToLinePayResult(reactContext, reactContext.getCurrentActivity().getIntent().getData(),
+        new TPDLinePayActivityEvent() {
+          @Override
+          public void onParseSuccess(TPDLinePayResult tpdLinePayResult) {
+            try {
+              WritableNativeMap resultData = new WritableNativeMap();
+              resultData.putString("systemOS", "android");
+              resultData.putString("tappaySDKVersion", SDKVersion);
+              resultData.putInt("status", tpdLinePayResult.getStatus());
+              resultData.putString("nrecTradeId", tpdLinePayResult.getRecTradeId());
+              resultData.putString("nbankTransactionId", tpdLinePayResult.getBankTransactionId());
+              resultData.putString("norderNumber", tpdLinePayResult.getOrderNumber());
+              promise.resolve(resultData);
+            } catch (Exception e) {
+              promise.reject("android error linePayParseToLinePayResult", e);
+            }
+          }
+
+          @Override
+          public void onParseFail(int status, String msg) {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putInt("status", status);
+            resultData.putString("status", msg);
+            promise.reject("android error linePayParseToLinePayResult onParseFail", resultData);
+          }
+        });
   }
 }

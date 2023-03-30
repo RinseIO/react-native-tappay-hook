@@ -5,6 +5,7 @@ export class tappay {
   public deviceId: string = '';
   public googlePlayIsReady: boolean = false;
   public applePlayIsReady: boolean = false;
+  public linePlayIsReady: boolean = false;
 
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {
@@ -112,6 +113,10 @@ export class tappay {
     }
   }
 
+  public async isApplePayAvailable() {
+    return await NativeModules.RNToolsManager.TappayIsApplePayAvailable();
+  }
+
   public async applePayInit(
     merchantName: string,
     merchantId: string,
@@ -130,16 +135,11 @@ export class tappay {
         currencyCode
       );
       this.applePlayIsReady = result.isReadyToPay;
-      console.log(result);
       return result;
     } catch (error: any) {
       console.log({ ...error });
       throw { ...error };
     }
-  }
-
-  public async isApplePayAvailable() {
-    return await NativeModules.RNToolsManager.TappayIsApplePayAvailable();
   }
 
   public async handlerApplePay(amount: string) {
@@ -153,6 +153,75 @@ export class tappay {
       const result = await NativeModules.RNToolsManager.TappayHandlerApplePay(
         amount
       );
+      return result;
+    } catch (error: any) {
+      console.log({ ...error });
+      throw { ...error };
+    }
+  }
+
+  public async linePayHandleURL(openUri:string) {
+    return await NativeModules.RNToolsManager.TappayLinePayHandleURL(openUri);
+  }
+
+  public async isLinePayAvailable() {
+    return await NativeModules.RNToolsManager.TappayIsLinePayAvailable();
+  }
+
+  public async linePayInit(linePayCallbackUri: string) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+
+    try {
+      const result = await NativeModules.RNToolsManager.TappayLinePayInit(
+        linePayCallbackUri
+      );
+      this.linePlayIsReady = result.isReadyToPay;
+      return result;
+    } catch (error: any) {
+      console.log({ ...error });
+      throw error;
+    }
+  }
+
+  public async handlerLinePay(paymentUrl: string) {
+    if (this.linePlayIsReady !== true) {
+      throw new Error('TappayLinePay has not been initialized!');
+    }
+    try {
+      const result = await NativeModules.RNToolsManager.TappayHandlerLinePay(
+        paymentUrl
+      );
+      return result;
+    } catch (error: any) {
+      console.log({ ...error });
+      throw { ...error };
+    }
+  }
+
+  public async getLinePayPrime() {
+    if (this.linePlayIsReady !== true) {
+      throw new Error('TappayLinePay has not been initialized!');
+    }
+    try {
+      const result = await NativeModules.RNToolsManager.TappayGetLinePayPrime();
+      return result;
+    } catch (error: any) {
+      console.log({ ...error });
+      throw { ...error };
+    }
+  }
+
+  public async linePayRedirectWithUrl(paymentUrl: string) {
+    if (this.linePlayIsReady !== true) {
+      throw new Error('TappayLinePay has not been initialized!');
+    }
+    try {
+      const result =
+        await NativeModules.RNToolsManager.TappayLinePayRedirectWithUrl(
+          paymentUrl
+        );
       return result;
     } catch (error: any) {
       console.log({ ...error });
@@ -201,6 +270,14 @@ export class tappay {
     if (isReadyToPay === true) {
       const result = await Tappay.handlerApplePay('1');
       console.log(result);
+    }
+  }
+
+  public async linePayTest(linePayCallbackUri: string) {
+    const { isReadyToPay } = await this.linePayInit(linePayCallbackUri);
+    if (isReadyToPay === true) {
+      const result = await Tappay.getLinePayPrime();
+      console.log({ result });
     }
   }
 }

@@ -15,11 +15,11 @@
   self.prod = &prod;
   self.SDKVersion = [TPDSetup version];
 
-#if prod
-  [TPDSetup setWithAppId:APP_ID withAppKey:APP_KEY withServerType:TPDServer_Production];
-#else
-  [TPDSetup setWithAppId:[APP_ID intValue] withAppKey:APP_KEY withServerType:TPDServer_SandBox];
-#endif
+  #if prod
+    [TPDSetup setWithAppId:APP_ID withAppKey:APP_KEY withServerType:TPDServer_Production];
+  #else
+    [TPDSetup setWithAppId:[APP_ID intValue] withAppKey:APP_KEY withServerType:TPDServer_SandBox];
+  #endif
 
 }
 
@@ -104,6 +104,10 @@
     return stringCardType;
 }
 
+- (BOOL)isApplePayAvailable {
+  return [TPDApplePay canMakePayments];
+}
+
 - (void)applePayInit:(NSString *)merchantName merchantId:(NSString *)merchantId countryCode:(NSString *)countryCode currencyCode:(NSString *)currencyCode resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
     self.TPDmerchant = [TPDMerchant new];
@@ -140,16 +144,12 @@
     // TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:nil withDelegate:_TPDApplePayDelegate];
 
     resolve(@{
-      @"isReadyToPay": @([TPDApplePay canMakePayments]),
+      @"isReadyToPay": @([self isApplePayAvailable]),
     });
   }
   @catch (NSException *exception) {
     reject(@"ios error applePayInit", exception.description, nil);
   }
-}
-
-- (BOOL)isApplePayAvailable {
-  return [TPDApplePay canMakePayments];
 }
 
 - (void)handlerApplePay:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
@@ -183,6 +183,124 @@
     reject(@"ios error handlerApplePay", exception.description, nil);
   }
 }
+
+//When exception happened receive notification.
+- (void)tappayLinePayExceptionHandler:(NSNotification *)notification {
+  if (self.linePayJsResolve != nil) {
+    TPDLinePayResult * result = [TPDLinePay parseURL:notification];
+    
+    self.linePayJsReject(@"ios error tappayLinePayExceptionHandler", [NSString stringWithFormat: @"%ld", result.status], @{
+      @"status": [NSString stringWithFormat: @"%ld", result.status],
+      @"orderNumber": result.orderNumber,
+      @"recTradeId": result.recTradeId,
+      @"bankTransactionId": result.bankTransactionId,
+    });
+    self.linePayJsReject = nil;
+  }
+}
+
+- (BOOL)linePayHandleURL:(NSString *)openUri {
+  return [TPDLinePay handleURL:openUri];
+}
+
+- (BOOL)isLinePayAvailable {
+  return [TPDLinePay isLinePayAvailable];
+}
+
+- (BOOL)linePayInit:(NSString *)linePayCallbackUri {
+  if (self.linePayIsReadyToPay == YES) {
+    return self.linePayIsReadyToPay;
+  }
+
+  bool linePayIsReadyToPay = false;
+  linePayIsReadyToPay = [self isLinePayAvailable];
+
+  #if linePayIsReadyToPay == YES
+    [TPDLinePay addExceptionObserver:(@selector(tappayLinePayExceptionHandler:))];
+    self.TPDlinePay = [TPDLinePay setupWithReturnUrl:linePayCallbackUri];
+    self.linePayIsReadyToPay = &(linePayIsReadyToPay);
+    self.linePayCallbackUri = linePayCallbackUri;
+  #endif
+
+  return linePayIsReadyToPay;
+}
+
+-(void)handlerLinePay:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  self.linePayJsReject = reject;
+  [
+    [
+      [self.TPDlinePay onSuccessCallback:^(NSString * _Nullable prime) {
+          UIViewController *rootViewcontroller= [UIApplication sharedApplication].keyWindow.rootViewController;
+
+          [self.TPDlinePay redirect:paymentUrl withViewController:rootViewcontroller completion:^(TPDLinePayResult * _Nonnull result) {
+
+            resolve(@{
+              @"status": [NSString stringWithFormat: @"%ld", result.status],
+              @"orderNumber": result.orderNumber,
+              @"recTradeId": result.recTradeId,
+              @"bankTransactionId": result.bankTransactionId
+            });
+
+          }];
+        }
+      ]
+      onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error handlerLinePay onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+      }
+    ]
+    getPrime
+  ];
+
+}
+
+-(void)getLinePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  self.linePayJsReject = reject;
+  [
+    [
+      [self.TPDlinePay onSuccessCallback:^(NSString * _Nullable prime) {
+            resolve(@{
+              @"systemOS": @"ios",
+              @"tappaySDKVersion": self.SDKVersion,
+              @"prime": prime,
+            });
+        }
+      ]
+      onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error getLinePayPrime onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+      }
+    ]
+    getPrime
+  ];
+}
+
+-(void)linePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    UIViewController *rootViewcontroller= [UIApplication sharedApplication].keyWindow.rootViewController;
+
+    [self.TPDlinePay redirect:paymentUrl withViewController:rootViewcontroller completion:^(TPDLinePayResult * _Nonnull result) {
+
+      resolve(@{
+        @"status": [NSString stringWithFormat: @"%ld", result.status],
+        @"orderNumber": result.orderNumber,
+        @"recTradeId": result.recTradeId,
+        @"bankTransactionId": result.bankTransactionId
+      });
+
+    }];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error linePayRedirectWithUrl", exception.description, nil);
+  }
+}
+
 @end
 
 
@@ -278,7 +396,6 @@
     
     return self.TPDcart;
 }
-
 
 - (BOOL)tpdApplePay:(TPDApplePay *)applePay canAuthorizePaymentWithShippingContact:(PKContact *)shippingContact {
     

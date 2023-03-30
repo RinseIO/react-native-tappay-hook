@@ -59,8 +59,15 @@ export function useTPDGetDeviceId() {
   const [deviceId, setDeviceId] = useState('');
   useEffect(() => {
     (async () => {
-      const _deviceId = await Tappay.getDeviceId();
-      setDeviceId(_deviceId);
+      try {
+        if (Tappay.initPromise?.then) {
+          await Tappay.initPromise;
+        }
+        const _deviceId = await Tappay.getDeviceId();
+        setDeviceId(_deviceId);
+      } catch (error: any) {
+        console.log('useTPDGetDeviceId error', { ...error });
+      }
     })();
   }, []);
 
@@ -74,7 +81,7 @@ export function useTPDGooglePay(merchantName: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise.then) {
+        if (Tappay.initPromise?.then) {
           await Tappay.initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg } =
@@ -102,7 +109,7 @@ export function useTPDApplePay(
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise.then) {
+        if (Tappay.initPromise?.then) {
           await Tappay.initPromise;
         }
         const { isReadyToPay: _isReadyToPay } = await Tappay.applePayInit(
@@ -118,6 +125,29 @@ export function useTPDApplePay(
       }
     })();
   }, []);
+
+  return isReady;
+}
+
+export function useTPDLinePay(linePayCallbackUri: string) {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (Tappay.initPromise?.then) {
+          await Tappay.initPromise;
+        }
+        const { isReadyToPay: _isReadyToPay } = await Tappay.linePayInit(
+          linePayCallbackUri
+        );
+
+        setIsReady(_isReadyToPay);
+      } catch (error: any) {
+        console.log('useTPDApplePay error', { ...error });
+      }
+    })();
+  }, [linePayCallbackUri]);
 
   return isReady;
 }

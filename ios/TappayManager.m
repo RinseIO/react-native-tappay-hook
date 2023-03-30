@@ -93,7 +93,7 @@
             stringCardType = @"MasterCard";
             break;
         case CardType_AMEX:
-            stringCardType = @"AMEX";
+            stringCardType = @"AmericanExpress";
             break;
         case CardType_UnionPay:
             stringCardType = @"UnionPay";

@@ -18,14 +18,17 @@ import {
   useTPDLinePay
 } from '@tappay';
 
+import { DirectPayCardIcon } from '@tappay/components';
+
 export function TappayScreen({ setPopUpMessage }: any) {
-  const [cardNumber, setCardNumber] = useState('4679270817026199');
-  const [dueMonth, setDueMonth] = useState('08');
+  const [cardNumber, setCardNumber] = useState('3549134477691421');
+  const [dueMonth, setDueMonth] = useState('07');
   const [dueYear, setDueYear] = useState('25');
-  const [ccv, setCcv] = useState('081');
+  const [ccv, setCcv] = useState('465');
   const [googlePayAmount, setGooglePayAmount] = useState('1');
   const [appleAmount, setApplePayAmount] = useState('1');
   const [lineAmount, setLinePayAmount] = useState('1');
+  // const [directPayIsValid, setDirectPayIsValid] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -155,6 +158,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
       <ScrollView style={style.context}>
         <View style={style.row}>
           <Text style={style.label}>直接付款信用卡卡號:</Text>
+          <DirectPayCardIcon style={style.cardIcon} cardNumber={cardNumber} />
           <TextInput
             style={style.inputBox}
             value={cardNumber}

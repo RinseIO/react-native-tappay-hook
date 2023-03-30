@@ -39,6 +39,7 @@ export const context: StyleProp<ViewStyle> = {
   flex: 1
 };
 export const row: StyleProp<ViewStyle> = {
+  flex: 1,
   flexDirection: 'row',
   alignItems: 'center'
 };
@@ -49,6 +50,10 @@ export const inputBox: StyleProp<ViewStyle> = {
   ..._inputBox,
   flex: 1
 };
+export const cardIcon: StyleProp<ViewStyle> = {
+  height: 50,
+  width: 55
+};
 export const styles = StyleSheet.create({
   root,
   context,
@@ -58,7 +63,8 @@ export const styles = StyleSheet.create({
   buttonStyle,
   buttonFontStyle,
   buttonDisabledStyle,
-  buttonDisabledFontStyle
+  buttonDisabledFontStyle,
+  cardIcon
 });
 
 export default styles;

@@ -14,7 +14,8 @@ import {
   Tappay,
   useSetDirectPayTPDCard,
   useTPDGooglePay,
-  useTPDApplePay
+  useTPDApplePay,
+  useTPDLinePay
 } from '@tappay';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -24,6 +25,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [ccv, setCcv] = useState('081');
   const [googlePayAmount, setGooglePayAmount] = useState('1');
   const [appleAmount, setApplePayAmount] = useState('1');
+  const [lineAmount, setLinePayAmount] = useState('1');
 
   useEffect(() => {
     (async () => {
@@ -36,7 +38,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'TW',
         //   'TWD'
         // );
-        await Tappay.linePayTest('linepayexample://tech.cherri');
+        // await Tappay.linePayTest('linepayexample://tech.cherri');
       } catch (error) {
         // console.log(error);
       }
@@ -56,6 +58,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
     'TW',
     'TWD'
   );
+  const linePayIsReady = useTPDLinePay('linepayexample://tech.cherri');
 
   async function handlerDirectPay() {
     if (directPayIsValid) {
@@ -117,6 +120,30 @@ export function TappayScreen({ setPopUpMessage }: any) {
         console.log(error);
         setPopUpMessage({
           label: 'ApplePay付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
+
+  async function handlerlinePay() {
+    try {
+      const result = await Tappay.handlerApplePay(appleAmount);
+      console.log(result);
+      setPopUpMessage({
+        label: 'LinePay付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: 'LinePay付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log(error);
+        setPopUpMessage({
+          label: 'LinePay付款失敗(測試)',
           type: 'error'
         });
       }
@@ -233,6 +260,34 @@ export function TappayScreen({ setPopUpMessage }: any) {
             }
           >
             apple pay付款測試
+          </Text>
+        </TouchableOpacity>
+
+        <View style={style.row}>
+          <Text style={style.label}>line pay付款金額:</Text>
+          <TextInput
+            style={style.inputBox}
+            value={lineAmount}
+            onChange={({ nativeEvent }) => setLinePayAmount(nativeEvent.text)}
+          />
+        </View>
+        <TouchableOpacity
+          style={
+            linePayIsReady === false
+              ? style.buttonDisabledStyle
+              : style.buttonStyle
+          }
+          disabled={linePayIsReady === false}
+          onPress={handlerlinePay}
+        >
+          <Text
+            style={
+              linePayIsReady === false
+                ? style.buttonDisabledFontStyle
+                : style.buttonFontStyle
+            }
+          >
+            line pay付款測試
           </Text>
         </TouchableOpacity>
       </ScrollView>

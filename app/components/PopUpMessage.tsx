@@ -222,7 +222,8 @@ const PopUpMessage = (props: {
           >
             <TouchableOpacity
               style={style.messageBackground}
-              onPress={() => handleClose(message.timeId)}
+              // onPress={() => handleClose(message.timeId)}
+              onPressIn={() => handleClose(message.timeId)}
             >
               <View
                 style={[

@@ -36,10 +36,6 @@
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
 
-        <data
-          android:host="tech.cherri"
-          android:scheme="linepayexample" />
-
       </intent-filter>
     </activity>
 

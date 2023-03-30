@@ -12,13 +12,18 @@ import style from '@containers/TappayScreen/style';
 
 import {
   Tappay,
-  useSetDirectPayTPDCard,
-  useTPDGooglePay,
-  useTPDApplePay,
-  useTPDLinePay
+  useSetDirectPayTPDCard
+  // useTPDGooglePay,
+  // useTPDApplePay,
+  // useTPDLinePay
 } from '@tappay';
 
-import { DirectPayCardIcon } from '@tappay/components';
+import {
+  DirectPayCardIcon,
+  GPayBtn,
+  ApplePayBtn,
+  LinePayBtn
+} from '@tappay/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
   const [cardNumber, setCardNumber] = useState('3549134477691421');
@@ -54,14 +59,14 @@ export function TappayScreen({ setPopUpMessage }: any) {
     dueYear,
     ccv
   );
-  const [googlePayIsReady] = useTPDGooglePay('TEST MERCHANT NAME');
-  const applePayIsReady = useTPDApplePay(
-    'TEST MERCHANT NAME',
-    'TEST MERCHANT ID',
-    'TW',
-    'TWD'
-  );
-  const linePayIsReady = useTPDLinePay('linepayexample://tech.cherri');
+  // const [googlePayIsReady] = useTPDGooglePay('TEST MERCHANT NAME');
+  // const applePayIsReady = useTPDApplePay(
+  //   'TEST MERCHANT NAME',
+  //   'TEST MERCHANT ID',
+  //   'TW',
+  //   'TWD'
+  // );
+  // const linePayIsReady = useTPDLinePay('linepayexample://tech.cherri');
 
   async function handlerDirectPay() {
     if (directPayIsValid) {
@@ -212,14 +217,14 @@ export function TappayScreen({ setPopUpMessage }: any) {
         </TouchableOpacity>
 
         <View style={style.row}>
-          <Text style={style.label}>google pay付款金額:</Text>
+          <Text style={style.label}>Google Pay付款金額:</Text>
           <TextInput
             style={style.inputBox}
             value={googlePayAmount}
             onChange={({ nativeEvent }) => setGooglePayAmount(nativeEvent.text)}
           />
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={
             googlePayIsReady === false
               ? style.buttonDisabledStyle
@@ -237,17 +242,23 @@ export function TappayScreen({ setPopUpMessage }: any) {
           >
             google pay付款測試
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <GPayBtn
+          merchantName="TEST MERCHANT NAME"
+          style={style.PayBtnStyle}
+          disabledStyle={style.PayBtnDisabledStyle}
+          onPress={handlerGooglePay}
+        />
 
         <View style={style.row}>
-          <Text style={style.label}>apple pay付款金額:</Text>
+          <Text style={style.label}>Apple Pay付款金額:</Text>
           <TextInput
             style={style.inputBox}
             value={appleAmount}
             onChange={({ nativeEvent }) => setApplePayAmount(nativeEvent.text)}
           />
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={
             applePayIsReady === false
               ? style.buttonDisabledStyle
@@ -265,17 +276,26 @@ export function TappayScreen({ setPopUpMessage }: any) {
           >
             apple pay付款測試
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <ApplePayBtn
+          merchantName="TEST MERCHANT NAME"
+          merchantId="TEST MERCHANT ID"
+          countryCode="TW"
+          currencyCode="TWD"
+          style={style.PayBtnStyle}
+          disabledStyle={style.PayBtnDisabledStyle}
+          onPress={handlerApplePay}
+        />
 
         <View style={style.row}>
-          <Text style={style.label}>line pay付款金額:</Text>
+          <Text style={style.label}>Line Pay付款金額:</Text>
           <TextInput
             style={style.inputBox}
             value={lineAmount}
             onChange={({ nativeEvent }) => setLinePayAmount(nativeEvent.text)}
           />
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={
             linePayIsReady === false
               ? style.buttonDisabledStyle
@@ -293,7 +313,13 @@ export function TappayScreen({ setPopUpMessage }: any) {
           >
             line pay付款測試
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <LinePayBtn
+          linePayCallbackUri="linepayexample://tech.cherri"
+          style={style.LinePayBtnStyle}
+          disabledStyle={style.LinePayBtnDisabledStyle}
+          onPress={handlerlinePay}
+        />
       </ScrollView>
     </SafeAreaView>
   );

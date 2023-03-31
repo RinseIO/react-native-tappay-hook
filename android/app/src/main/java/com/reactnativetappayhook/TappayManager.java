@@ -217,7 +217,7 @@ public class TappayManager {
     return result;
   }
 
-  public void handlerDirectPay(String geoLocation, Promise promise) {
+  public void getDirectPayPrime(String geoLocation, Promise promise) {
 
     TPDCardGetPrimeCallback TPDCardGetPrimeCallback = new TPDCardGetPrimeCallback() {
       @Override
@@ -259,14 +259,14 @@ public class TappayManager {
 
           promise.resolve(resultData);
         } catch (Exception e) {
-          promise.reject("android error handlerDirectPay onSuccess", e);
+          promise.reject("android error getDirectPayPrime onSuccess", e);
         }
       }
 
       @Override
       public void onFailure(int status, String reportMsg) {
         // Failure
-        promise.reject("android error handlerDirectPay onFailure",
+        promise.reject("android error getDirectPayPrime onFailure",
             reportMsg + ", Error Status:" + Integer.toString(status));
       }
     };
@@ -343,7 +343,7 @@ public class TappayManager {
     }
   }
 
-  public void handlerGooglePay(String totalPrice, String currencyCode, Promise promise) {
+  public void getGooglePayPrime(String totalPrice, String currencyCode, Promise promise) {
     tpdGooglePay.requestPayment(TransactionInfo.newBuilder()
         .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
         .setTotalPrice(totalPrice)

@@ -63,9 +63,9 @@ export class tappay {
     }
   }
 
-  public async handlerDirectPay(geoLocation: string = 'UNKNOWN') {
+  public async getDirectPayPrime(geoLocation: string = 'UNKNOWN') {
     try {
-      const result = await NativeModules.RNToolsManager.TappayHandlerDirectPay(
+      const result = await NativeModules.RNToolsManager.TappayGetDirectPayPrime(
         geoLocation
       );
       return result;
@@ -89,7 +89,7 @@ export class tappay {
     }
   }
 
-  public async handlerGooglePay(totalPrice: string, currencyCode: string) {
+  public async getGooglePayPrime(totalPrice: string, currencyCode: string) {
     if (Platform.OS !== 'android') {
       return;
     }
@@ -97,7 +97,7 @@ export class tappay {
       throw new Error('TappayGooglePay has not been initialized!');
     }
     try {
-      const result = await NativeModules.RNToolsManager.TappayHandlerGooglePay(
+      const result = await NativeModules.RNToolsManager.TappayGetGooglePayPrime(
         totalPrice,
         currencyCode
       );
@@ -135,7 +135,7 @@ export class tappay {
     }
   }
 
-  public async handlerApplePay(amount: string) {
+  public async getApplePayPrime(amount: string) {
     if (Platform.OS !== 'ios') {
       return;
     }
@@ -143,7 +143,7 @@ export class tappay {
       throw new Error('TappayApplePay has not been initialized!');
     }
     try {
-      const result = await NativeModules.RNToolsManager.TappayHandlerApplePay(
+      const result = await NativeModules.RNToolsManager.TappayGetApplePayPrime(
         amount
       );
       return result;
@@ -263,7 +263,7 @@ export class tappay {
       console.log(validationResult);
 
       console.log(this.deviceId);
-      const result = await this.handlerDirectPay();
+      const result = await this.getDirectPayPrime();
       console.log(result);
     } catch (error: any) {
       console.log({ ...error });
@@ -274,7 +274,7 @@ export class tappay {
     try {
       const { isReadyToPay } = await this.googlePayInit(merchantName);
       if (isReadyToPay === true) {
-        const result = await this.handlerGooglePay('1', 'TWD');
+        const result = await this.getGooglePayPrime('1', 'TWD');
         console.log({ result });
       }
     } catch (error: any) {
@@ -296,7 +296,7 @@ export class tappay {
         currencyCode
       );
       if (isReadyToPay === true) {
-        const result = await Tappay.handlerApplePay('1');
+        const result = await Tappay.getApplePayPrime('1');
         console.log(result);
       }
     } catch (error: any) {

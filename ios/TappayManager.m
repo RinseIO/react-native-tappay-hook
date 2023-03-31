@@ -32,7 +32,7 @@
   return [TPDCard validateWithCardNumber:self.cardNumber withDueMonth:self.dueMonth withDueYear:self.dueYear withCCV:self.CCV];
 }
 
-- (void)handlerDirectPay:(NSString *)geoLocation resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)getDirectPayPrime:(NSString *)geoLocation resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
 
    [[[[TPDCard setWithCardNumber:self.cardNumber withDueMonth:self.dueMonth withDueYear:self.dueYear withCCV:self.CCV]
     onSuccessCallback:^(NSString * _Nullable prime, TPDCardInfo * _Nullable cardInfo, NSString * _Nullable cardIdentifier, NSDictionary *_Nonnull merchantReferenceInfo) {
@@ -65,7 +65,7 @@
     onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
         //Failure
         reject(
-          @"ios error handlerDirectPay onFailure",
+          @"ios error getDirectPayPrime onFailure",
           [NSString stringWithFormat: @"%ld", status],
           [NSError errorWithDomain:message code:status userInfo:nil]
         );
@@ -152,7 +152,7 @@
   }
 }
 
-- (void)handlerApplePay:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)getApplePayPrime:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
     self.TPDcart = [TPDCart new];
     self.TPDcart.isAmountPending = YES;
@@ -180,7 +180,7 @@
 
   }
   @catch (NSException *exception) {
-    reject(@"ios error handlerApplePay", exception.description, nil);
+    reject(@"ios error getApplePayPrime", exception.description, nil);
   }
 }
 

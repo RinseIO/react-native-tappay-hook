@@ -77,7 +77,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerDirectPay() {
     try {
-      const result = await Tappay.handlerDirectPay();
+      const result = await Tappay.getDirectPayPrime();
       console.log(result);
       setPopUpMessage({
         label: '直接付款成功(測試)',
@@ -94,7 +94,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerGooglePay() {
     try {
-      const result = await Tappay.handlerGooglePay(googlePayAmount, 'TWD');
+      const result = await Tappay.getGooglePayPrime(googlePayAmount, 'TWD');
       console.log(result);
       setPopUpMessage({
         label: 'GooglePay付款成功(測試)',
@@ -118,7 +118,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerApplePay() {
     try {
-      const result = await Tappay.handlerApplePay(appleAmount);
+      const result = await Tappay.getApplePayPrime(appleAmount);
       console.log(result);
       setPopUpMessage({
         label: 'ApplePay付款成功(測試)',

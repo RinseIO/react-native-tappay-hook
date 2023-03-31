@@ -66,13 +66,13 @@ RCT_EXPORT_METHOD(TappaySetTPDCard:(NSString *)cardNumber dueMonth:(NSString *)d
   }
 }
 //  宣告給ReactNative使用，TappaySDK的createTokenWithGeoLocation
-RCT_EXPORT_METHOD(TappayHandlerDirectPay:(NSString *)geoLocation resolver:(RCTPromiseResolveBlock)resolve  rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(TappayGetDirectPayPrime:(NSString *)geoLocation resolver:(RCTPromiseResolveBlock)resolve  rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    [self.TappayManager handlerDirectPay:geoLocation resolver:resolve rejecter:reject];
+    [self.TappayManager getDirectPayPrime:geoLocation resolver:resolve rejecter:reject];
   }
   @catch (NSException *exception) {
-    reject(@"ios error TappayHandlerDirectPay", exception.description, nil);
+    reject(@"ios error TappayGetDirectPayPrime", exception.description, nil);
   }
 }
 //  宣告給ReactNative使用，TappaySDK的getDeviceId
@@ -82,7 +82,7 @@ RCT_EXPORT_METHOD(TappayGetDeviceId:(RCTPromiseResolveBlock)resolve  rejecter:(R
    resolve([self.TappayManager getDeviceId]);
   }
   @catch (NSException *exception) {
-    reject(@"ios error TappayHandlerDirectPay", exception.description, nil);
+    reject(@"ios error TappayGetDeviceId", exception.description, nil);
   }
 }
 
@@ -99,9 +99,9 @@ RCT_EXPORT_METHOD(TappayGooglePayInit:(NSString *)merchantName resolver:(RCTProm
 }
 
 //  宣告給ReactNative使用，對應android版的TappayHandlerGooglePay方法
-RCT_EXPORT_METHOD(TappayHandlerGooglePay:(NSString *)merchantName resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(TappayGetGooglePayPrime:(NSString *)merchantName resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-  reject(@"ios error TappayHandlerGooglePay", @"ios not support GooglePay", nil);
+  reject(@"ios error TappayGetGooglePayPrime", @"ios not support GooglePay", nil);
 }
 
 // 宣告給ReactNative使用的function名稱，對TappaySDK的TPDapplePay做初始化
@@ -132,13 +132,13 @@ RCT_EXPORT_METHOD(TappayIsApplePayAvailable:(RCTPromiseResolveBlock)resolve reje
 }
 
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDapplePay的付款方法
-RCT_EXPORT_METHOD(TappayHandlerApplePay:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(TappayGetApplePayPrime:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    [self.TappayManager handlerApplePay:amount resolver:resolve rejecter:reject];
+    [self.TappayManager getApplePayPrime:amount resolver:resolve rejecter:reject];
   }
   @catch (NSException *exception) {
-    reject(@"ios error TappayHandlerApplePay", exception.description, nil);
+    reject(@"ios error TappayGetApplePayPrime", exception.description, nil);
   }
 }
 

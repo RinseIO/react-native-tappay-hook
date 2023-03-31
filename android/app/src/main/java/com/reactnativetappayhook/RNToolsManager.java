@@ -74,11 +74,11 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
 
   // 宣告給ReactNative使用的function名稱，TappaySDK的createToken
   @ReactMethod
-  public void TappayHandlerDirectPay(String geoLocation, Promise promise) {
+  public void TappayGetDirectPayPrime(String geoLocation, Promise promise) {
     try {
-      TappayManager.handlerDirectPay(geoLocation, promise);
+      TappayManager.getDirectPayPrime(geoLocation, promise);
     } catch (Exception e) {
-      promise.reject("android error TappayHandlerDirectPay", e);
+      promise.reject("android error TappayGetDirectPayPrime", e);
     }
   }
 
@@ -88,7 +88,7 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
     try {
       promise.resolve(TappayManager.getDeviceId());
     } catch (Exception e) {
-      promise.reject("android error TappayHandlerDirectPay", e);
+      promise.reject("android error TappayGetDeviceId", e);
     }
   }
 
@@ -104,11 +104,11 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
 
   // 宣告給ReactNative使用的function名稱，TappaySDK的TPDGooglePay的requestPayment
   @ReactMethod
-  public void TappayHandlerGooglePay(String totalPrice, String currencyCode, Promise promise) {
+  public void TappayGetGooglePayPrime(String totalPrice, String currencyCode, Promise promise) {
     try {
-      TappayManager.handlerGooglePay(totalPrice, currencyCode, promise);
+      TappayManager.getGooglePayPrime(totalPrice, currencyCode, promise);
     } catch (Exception e) {
-      promise.reject("android error TappayHandlerGooglePay", e);
+      promise.reject("android error TappayGetGooglePayPrime", e);
     }
   }
 
@@ -141,8 +141,8 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
 
   // 宣告給ReactNative使用，對應ios版的TappayHandlerApplePay方法
   @ReactMethod
-  public void TappayHandlerApplePay(String amount, Promise promise) {
-    promise.reject("android error TappayHandlerApplePay", "android not support ApplePay");
+  public void TappayGetApplePayPrime(String amount, Promise promise) {
+    promise.reject("android error TappayGetApplePayPrime", "android not support ApplePay");
   }
 
   // 宣告給ReactNative使用的function名稱，對應ios版的TappayLinePayHandleURL方法

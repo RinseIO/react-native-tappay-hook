@@ -24,23 +24,23 @@ export async function getTappayDeviceId() {
   return _deviceId;
 }
 
-export async function handlerDirectPay(geoLocation: string = 'UNKNOWN') {
-  const result = await Tappay.handlerDirectPay(geoLocation);
+export async function getDirectPayPrime(geoLocation: string = 'UNKNOWN') {
+  const result = await Tappay.getDirectPayPrime(geoLocation);
   return result;
 }
 
-export async function handlerGooglePay(
+export async function getGooglePayPrime(
   totalPrice: string,
   currencyCode: string = 'TWD'
 ) {
   if (Platform.OS !== 'android') {
     return;
   }
-  const result = await Tappay.handlerGooglePay(totalPrice, currencyCode);
+  const result = await Tappay.getGooglePayPrime(totalPrice, currencyCode);
   return result;
 }
 
-export async function handlerApplePay(amount: string) {
+export async function getApplePayPrime(amount: string) {
   if (Platform.OS !== 'ios') {
     return;
   }
@@ -48,7 +48,7 @@ export async function handlerApplePay(amount: string) {
     throw new Error('TappayApplePay has not been initialized!');
   }
   try {
-    const result = await Tappay.handlerApplePay(amount);
+    const result = await Tappay.getApplePayPrime(amount);
 
     return result;
   } catch (error: any) {

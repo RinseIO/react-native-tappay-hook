@@ -90,6 +90,12 @@ public class TappayManager {
   Boolean linePayIsReadyToPay = false;
   TPDLinePayActivityEvent mTPDLinePayActivityEvent;
   TPDSamsungPay tpdSamsungPay;
+  Boolean samsungPayIsReadyToPay;
+  String samsungPayMsg;
+  String samsungPayMerchantName;
+  String samsungPayMerchantId;
+  String samsungPayCurrencyCode;
+  String samsungPayServiceId;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -263,10 +269,13 @@ public class TappayManager {
 
   public void googlePayInit(String merchantName, Promise promise) {
     try {
-      if (googlePayIsReadyToPay != null && googlePayMsg != null &&
+      if (googlePayIsReadyToPay != null &&
+          googlePayMsg != null &&
           googlePayMerchantName == merchantName) {
 
         WritableNativeMap resultData = new WritableNativeMap();
+        resultData.putString("systemOS", "android");
+        resultData.putString("tappaySDKVersion", SDKVersion);
         resultData.putBoolean("isReadyToPay", googlePayIsReadyToPay);
         resultData.putString("msg", googlePayMsg);
 
@@ -408,7 +417,7 @@ public class TappayManager {
   }
 
   public boolean linePayInit(String _linePayCallbackUri) {
-    if (linePayIsReadyToPay == true) {
+    if (linePayIsReadyToPay == true && linePayCallbackUri == _linePayCallbackUri) {
       return linePayIsReadyToPay;
     }
 
@@ -549,6 +558,23 @@ public class TappayManager {
   public void samsungPayInit(String merchantName, String merchantId, String currencyCode, String serviceId,
       Promise promise) {
     try {
+      if (samsungPayIsReadyToPay != null &&
+          samsungPayMsg != null &&
+          samsungPayMerchantName == merchantName &&
+          samsungPayMerchantId == merchantId &&
+          samsungPayCurrencyCode == currencyCode &&
+          samsungPayServiceId == serviceId) {
+
+        WritableNativeMap resultData = new WritableNativeMap();
+        resultData.putString("systemOS", "android");
+        resultData.putString("tappaySDKVersion", SDKVersion);
+        resultData.putBoolean("isReadyToPay", samsungPayIsReadyToPay);
+        resultData.putString("msg", samsungPayMsg);
+
+        promise.resolve(resultData);
+        return;
+      }
+
       TPDMerchant tpdMerchant = new TPDMerchant();
       tpdMerchant.setMerchantName(merchantName);
       tpdMerchant.setSupportedNetworks(allowedNetworks);
@@ -566,6 +592,12 @@ public class TappayManager {
             resultData.putBoolean("isReadyToPay", isReadyToPay);
             resultData.putString("msg", msg);
 
+            samsungPayIsReadyToPay = isReadyToPay;
+            samsungPayMsg = msg;
+            samsungPayMerchantName = merchantName;
+            samsungPayMerchantId = merchantId;
+            samsungPayCurrencyCode = currencyCode;
+            samsungPayServiceId = serviceId;
             promise.resolve(resultData);
           } catch (Exception e) {
             promise.reject("android error samsungPayInit onReadyToPayChecked", e);

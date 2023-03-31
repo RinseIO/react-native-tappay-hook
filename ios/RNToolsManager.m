@@ -30,7 +30,12 @@ RCT_EXPORT_METHOD(TappayInitInstance:(nonnull NSNumber *)APP_ID APP_KEY:(NSStrin
   @try {
     self.TappayManager = [TappayManager alloc];
     [self.TappayManager initInstance:APP_ID APP_KEY:APP_KEY prod:prod];
-    resolve(@YES);
+    
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"success":@ YES
+    });
   }
   @catch (NSException *exception) {
     reject(@"ios error TappayInitInstance", exception.description, nil);
@@ -86,6 +91,8 @@ RCT_EXPORT_METHOD(TappayGooglePayInit:(NSString *)merchantName resolver:(RCTProm
 {
   // reject(@"ios error TappayGooglePayInit", @"ios not support GooglePay", nil);
   resolve(@{
+    @"systemOS": @"ios",
+    @"tappaySDKVersion": self.TappayManager.SDKVersion,
     @"isReadyToPay": @NO,
     @"msg": @"ios not support GooglePay"
   });
@@ -114,6 +121,8 @@ RCT_EXPORT_METHOD(TappayIsApplePayAvailable:(RCTPromiseResolveBlock)resolve reje
   @try {
     BOOL result = [self.TappayManager isApplePayAvailable];
     resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
       @"isReadyToPay": @(result)
     });
   }
@@ -214,6 +223,28 @@ RCT_EXPORT_METHOD(TappayLinePayRedirectWithUrl:(NSString *)paymentUrl resolver:(
   @catch (NSException *exception) {
     reject(@"ios error TappayLinePayRedirectWithUrl", exception.description, nil);
   }
+}
+
+//  宣告給ReactNative使用，對應android版的TappaySamsungPayInit方法
+RCT_EXPORT_METHOD(TappaySamsungPayInit:(NSString *)merchantName merchantId:(NSString *)merchantId currencyCode:(NSString *)currencyCode serviceId:(NSString *)serviceId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+  resolve(@{
+    @"systemOS": @"ios",
+    @"tappaySDKVersion": self.TappayManager.SDKVersion,
+    @"isReadyToPay": @NO,
+    @"msg": @"ios not support SamsungPay"
+  });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappaySamsungPayInit", exception.description, nil);
+  }
+}
+
+//  宣告給ReactNative使用，對應android版的TappayGetSamsungPayPrime方法
+RCT_EXPORT_METHOD(TappayGetSamsungPayPrime:(NSString *)itemTotalAmount shippingPrice:(NSString *)shippingPrice tax:(NSString *)tax totalAmount:(NSString *)totalAmount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  reject(@"ios error TappayGetSamsungPayPrime", @"ios not support SamsungPay", nil);
 }
 
 @end

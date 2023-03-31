@@ -35,7 +35,13 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
   public void TappayInitInstance(int APP_ID, String APP_KEY, Boolean prod, Promise promise) {
     try {
       TappayManager.initInstance(APP_ID, APP_KEY, prod);
-      promise.resolve(true);
+      WritableNativeMap resultData = new WritableNativeMap();
+
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("success", true);
+
+      promise.resolve(resultData);
     } catch (Exception e) {
       promise.reject("android error TappayInitInstance", e);
     }
@@ -215,6 +221,26 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
       TappayManager.linePayRedirectWithUrl(paymentUrl, promise);
     } catch (Exception e) {
       promise.reject("android error TappayLinePayRedirectWithUrl", e);
+    }
+  }
+
+  @ReactMethod
+  public void TappaySamsungPayInit(String merchantName, String merchantId, String currencyCode,
+      String serviceId, Promise promise) {
+    try {
+      TappayManager.samsungPayInit(merchantName, merchantId, currencyCode, serviceId, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappaySamsungPayInit", e);
+    }
+  }
+
+  @ReactMethod
+  public void TappayGetSamsungPayPrime(String itemTotalAmount, String shippingPrice, String tax, String totalAmount,
+      Promise promise) {
+    try {
+      TappayManager.getSamsungPayPrime(itemTotalAmount, shippingPrice, tax, totalAmount, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayGetSamsungPayPrime", e);
     }
   }
 }

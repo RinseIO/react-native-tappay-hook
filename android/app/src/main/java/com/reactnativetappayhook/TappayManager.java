@@ -36,6 +36,12 @@ import tech.cherri.tpdirect.callback.TPDLinePayGetPrimeSuccessCallback;
 import tech.cherri.tpdirect.callback.TPDLinePayResultListener;
 import tech.cherri.tpdirect.exception.TPDLinePayException;
 
+import tech.cherri.tpdirect.api.TPDSamsungPay;
+import tech.cherri.tpdirect.callback.TPDSamsungPayGetPrimeSuccessCallback;
+import tech.cherri.tpdirect.callback.TPDSamsungPayStatusListener;
+import tech.cherri.tpdirect.callback.dto.TPDCardDto;
+import tech.cherri.tpdirect.constant.TPDErrorConstants;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.wallet.AutoResolveHelper;
 import com.google.android.gms.wallet.PaymentData;
@@ -52,10 +58,16 @@ public class TappayManager {
   TPDGooglePay tpdGooglePay;
   TPDLinePay tpdLinePay;
 
-  TPDCard.CardType[] allowedNetworks = new TPDCard.CardType[] { TPDCard.CardType.Visa,
-      TPDCard.CardType.MasterCard, TPDCard.CardType.JCB, TPDCard.CardType.AmericanExpress };
-  TPDCard.AuthMethod[] allowedAuthMethods = new TPDCard.AuthMethod[] { TPDCard.AuthMethod.PanOnly,
-      TPDCard.AuthMethod.Cryptogram3DS };
+  TPDCard.CardType[] allowedNetworks = new TPDCard.CardType[] {
+      TPDCard.CardType.Visa,
+      TPDCard.CardType.MasterCard,
+      TPDCard.CardType.JCB,
+      TPDCard.CardType.AmericanExpress
+  };
+  TPDCard.AuthMethod[] allowedAuthMethods = new TPDCard.AuthMethod[] {
+      TPDCard.AuthMethod.PanOnly,
+      TPDCard.AuthMethod.Cryptogram3DS
+  };
   final int LOAD_PAYMENT_DATA_REQUEST_CODE = 102;
   final int REQUEST_READ_PHONE_STATE = 101;
 
@@ -77,6 +89,7 @@ public class TappayManager {
   String linePayCallbackUri;
   Boolean linePayIsReadyToPay = false;
   TPDLinePayActivityEvent mTPDLinePayActivityEvent;
+  TPDSamsungPay tpdSamsungPay;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -94,14 +107,14 @@ public class TappayManager {
               break;
             case Activity.RESULT_CANCELED:
               if (googlePayJsPromise != null) {
-                googlePayJsPromise.reject("Canceled by User");
+                googlePayJsPromise.reject("android error onActivityResult", "Canceled by User");
                 // googlePayJsPromise = null;
               }
               break;
             case AutoResolveHelper.RESULT_ERROR:
               if (googlePayJsPromise != null) {
                 Status status = AutoResolveHelper.getStatusFromIntent(data);
-                googlePayJsPromise.reject("java error onActivityResult   ",
+                googlePayJsPromise.reject("android error onActivityResult ",
                     "AutoResolveHelper.RESULT_ERROR : " + status.getStatusCode() + " , message = "
                         + status.getStatusMessage());
                 // googlePayJsPromise = null;
@@ -109,14 +122,14 @@ public class TappayManager {
               break;
             default:
               if (googlePayJsPromise != null) {
-                googlePayJsPromise.reject("java error onActivityResult default");
+                googlePayJsPromise.reject("android error onActivityResult default");
                 // googlePayJsPromise = null;
               }
           }
           break;
         default:
           if (googlePayJsPromise != null) {
-            googlePayJsPromise.reject("java error onActivityResult default");
+            googlePayJsPromise.reject("android error onActivityResult default");
             // googlePayJsPromise = null;
           }
       }
@@ -138,6 +151,9 @@ public class TappayManager {
 
     public void onParseFail(int status, String msg) {
     }
+  }
+
+  interface TPDSamsungPayGetPrimeCallback extends TPDSamsungPayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
 
   public TappayManager(ReactApplicationContext _reactContext) {
@@ -382,7 +398,7 @@ public class TappayManager {
 
       tpdGooglePay.getPrime(paymentData, TPDGooglePayGetPrimeCallback, TPDGooglePayGetPrimeCallback);
     } catch (Exception e) {
-      googlePayJsPromise.reject("java error revealGooglePaymentInfo", e);
+      googlePayJsPromise.reject("android error revealGooglePaymentInfo", e);
       // googlePayJsPromise = null;
     }
   }
@@ -461,7 +477,7 @@ public class TappayManager {
           super.onNewIntent(intent);
           if (intent.getDataString() != null && intent.getDataString().contains(linePayCallbackUri)) {
             tpdLinePay.parseToLinePayResult(reactContext.getApplicationContext(), intent.getData(),
-                    mTPDLinePayActivityEvent);
+                mTPDLinePayActivityEvent);
           }
         }
 
@@ -528,5 +544,106 @@ public class TappayManager {
             promise.reject("android error linePayParseToLinePayResult onParseFail", resultData);
           }
         });
+  }
+
+  public void samsungPayInit(String merchantName, String merchantId, String currencyCode, String serviceId,
+      Promise promise) {
+    try {
+      TPDMerchant tpdMerchant = new TPDMerchant();
+      tpdMerchant.setMerchantName(merchantName);
+      tpdMerchant.setSupportedNetworks(allowedNetworks);
+      tpdMerchant.setSamsungMerchantId(merchantId);
+      tpdMerchant.setCurrencyCode(currencyCode);
+      tpdSamsungPay = new TPDSamsungPay(reactContext, serviceId, tpdMerchant);
+
+      TPDSamsungPayStatusListener mTPDSamsungPayStatusListener = new TPDSamsungPayStatusListener() {
+        @Override
+        public void onReadyToPayChecked(boolean isReadyToPay, String msg) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putBoolean("isReadyToPay", isReadyToPay);
+            resultData.putString("msg", msg);
+
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error samsungPayInit onReadyToPayChecked", e);
+          }
+        }
+      };
+      tpdSamsungPay.isSamsungPayAvailable(mTPDSamsungPayStatusListener);
+    } catch (Exception e) {
+      promise.reject("android error samsungPayInit", e);
+    }
+  }
+
+  public void getSamsungPayPrime(String itemTotalAmount, String shippingPrice, String tax, String totalAmount,
+      Promise promise) {
+    try {
+
+      TPDSamsungPayGetPrimeCallback mTPDSamsungPayGetPrimeCallback = new TPDSamsungPayGetPrimeCallback() {
+        @Override
+        public void onSuccess(String prime, TPDCardInfoDto cardInfo, TPDMerchantReferenceInfoDto merchantReferenceInfo,
+            TPDCardDto card) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("prime", prime);
+
+            WritableNativeMap _cardInfo = new WritableNativeMap();
+            _cardInfo.putString("bincode", cardInfo.getBincode());
+            _cardInfo.putString("lastFour", cardInfo.getLastFour());
+            _cardInfo.putString("issuer", cardInfo.getIssuer());
+            _cardInfo.putString("level", cardInfo.getLevel());
+            _cardInfo.putString("country", cardInfo.getCountry());
+            _cardInfo.putString("countryCode", cardInfo.getCountryCode());
+            _cardInfo.putInt("cardType", cardInfo.getCardType());
+            _cardInfo.putInt("funding", cardInfo.getFunding());
+            _cardInfo.putString("issuerZhTw", cardInfo.getIssuerZhTw());
+            _cardInfo.putString("bankId", cardInfo.getBankId());
+            resultData.putMap("cardInfo", _cardInfo);
+
+            WritableNativeMap _merchantReferenceInfo = new WritableNativeMap();
+            WritableNativeArray _affiliateCodes = new WritableNativeArray();
+            merchantReferenceInfo.getAffiliateCodes().forEach((element) -> {
+              _affiliateCodes.pushString(element);
+            });
+            _merchantReferenceInfo.putArray("affiliateCodes", _affiliateCodes);
+            resultData.putMap("merchantReferenceInfo", _merchantReferenceInfo);
+
+            WritableNativeMap _card = new WritableNativeMap();
+            _card.putString("lastFour", card.getLastFour());
+            resultData.putMap("card", _card);
+
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error getSamsungPayPrime onSuccess", e);
+          }
+        }
+
+        @Override
+        public void onFailure(int status, String reportMsg) {
+          try {
+            if (status == TPDErrorConstants.ERROR_TPDSAMSUNGPAY_CANCELED_BY_USER) {
+              // Samsung Pay canceled by User
+              promise.reject("android error getSamsungPayPrime onFailure", "Canceled by User");
+            } else {
+              promise.reject("android error getSamsungPayPrime onFailure",
+                  reportMsg + ", Error Status:" + Integer.toString(status));
+            }
+          } catch (Exception e) {
+            promise.reject("android error getSamsungPayPrime onFailure", e);
+          }
+
+        }
+      };
+
+      tpdSamsungPay.getPrime(itemTotalAmount, shippingPrice, tax, totalAmount, mTPDSamsungPayGetPrimeCallback,
+          mTPDSamsungPayGetPrimeCallback);
+    } catch (Exception e) {
+      promise.reject("android error getSamsungPayPrime", e);
+    }
   }
 }

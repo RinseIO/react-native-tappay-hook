@@ -22,7 +22,8 @@ import {
   DirectPayCardIcon,
   GPayBtn,
   ApplePayBtn,
-  LinePayBtn
+  LinePayBtn,
+  SPayBtn
 } from '@tappay/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -47,6 +48,12 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'TWD'
         // );
         // await Tappay.linePayTest('linepayexample://tech.cherri');
+        // await Tappay.samsungTest(
+        //   'TapPay Samsung Pay Demo',
+        //   'tech.cherri.samsungpayexample',
+        //   'TWD',
+        //   'your samsung pay service id'
+        // );
       } catch (error) {
         // console.log(error);
       }
@@ -69,39 +76,38 @@ export function TappayScreen({ setPopUpMessage }: any) {
   // const linePayIsReady = useTPDLinePay('linepayexample://tech.cherri');
 
   async function handlerDirectPay() {
-    if (directPayIsValid) {
-      try {
-        const result = await Tappay.handlerDirectPay();
-        console.log(result);
-        setPopUpMessage({
-          label: '直接付款成功(測試)',
-          type: 'success'
-        });
-      } catch (error) {
-        setPopUpMessage({
-          label: '直接付款失敗(測試)',
-          type: 'error'
-        });
-      }
+    try {
+      const result = await Tappay.handlerDirectPay();
+      console.log(result);
+      setPopUpMessage({
+        label: '直接付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      console.log({ ...error });
+      setPopUpMessage({
+        label: '直接付款失敗(測試)',
+        type: 'error'
+      });
     }
   }
 
   async function handlerGooglePay() {
     try {
-      const result = await Tappay.handlerGooglePay(googlePayAmount);
+      const result = await Tappay.handlerGooglePay(googlePayAmount, 'TWD');
       console.log(result);
       setPopUpMessage({
         label: 'GooglePay付款成功(測試)',
         type: 'success'
       });
     } catch (error: any) {
+      console.log({ ...error });
       if (error.message === 'Canceled by User') {
         setPopUpMessage({
           label: 'GooglePay付款已取消',
           type: 'warning'
         });
       } else {
-        console.log(error);
         setPopUpMessage({
           label: 'GooglePay付款失敗(測試)',
           type: 'error'
@@ -125,7 +131,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
           type: 'warning'
         });
       } else {
-        console.log(error);
+        console.log({ ...error });
         setPopUpMessage({
           label: 'ApplePay付款失敗(測試)',
           type: 'error'
@@ -134,7 +140,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
     }
   }
 
-  async function handlerlinePay() {
+  async function handlerLinePay() {
     try {
       const result = await Tappay.handlerApplePay(appleAmount);
       console.log(result);
@@ -149,9 +155,33 @@ export function TappayScreen({ setPopUpMessage }: any) {
           type: 'warning'
         });
       } else {
-        console.log(error);
+        console.log({ ...error });
         setPopUpMessage({
           label: 'LinePay付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
+
+  async function handlerSamsungPay() {
+    try {
+      const result = await Tappay.getSamsungPayPrime('1', '0', '0', '1');
+      console.log(result);
+      setPopUpMessage({
+        label: 'SamsungPay付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: 'SamsungPay付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log({ ...error });
+        setPopUpMessage({
+          label: 'SamsungPay付款失敗(測試)',
           type: 'error'
         });
       }
@@ -302,7 +332,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
               : style.buttonStyle
           }
           disabled={linePayIsReady === false}
-          onPress={handlerlinePay}
+          onPress={handlerLinePay}
         >
           <Text
             style={
@@ -318,7 +348,25 @@ export function TappayScreen({ setPopUpMessage }: any) {
           linePayCallbackUri="linepayexample://tech.cherri"
           style={style.LinePayBtnStyle}
           disabledStyle={style.LinePayBtnDisabledStyle}
-          onPress={handlerlinePay}
+          onPress={handlerLinePay}
+        />
+
+        <View style={style.row}>
+          <Text style={style.label}>Samsung Pay付款金額:</Text>
+          <TextInput
+            style={style.inputBox}
+            value={lineAmount}
+            onChange={({ nativeEvent }) => setLinePayAmount(nativeEvent.text)}
+          />
+        </View>
+        <SPayBtn
+          merchantName="TapPay Samsung Pay Demo"
+          merchantId="tech.cherri.samsungpayexample"
+          currencyCode="TWD"
+          serviceId="your samsung pay service id"
+          style={style.SPayBtnStyle}
+          disabledStyle={style.SPayBtnDisabledStyle}
+          onPress={handlerSamsungPay}
         />
       </ScrollView>
     </SafeAreaView>

@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
 });
 
 export function LinePayBtn(props: Props) {
-  const { imagesProps = {}, linePayCallbackUri, ...ortherProps } = props;
-  const linePayIsReady = useTPDLinePay(linePayCallbackUri);
+  const { linePayCallbackUri, imagesProps = {}, ...ortherProps } = props;
+  const [linePayIsReady] = useTPDLinePay(linePayCallbackUri);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];

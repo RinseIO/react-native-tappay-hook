@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     padding: 5,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    height: 100
   },
   buttonDisable: {
     backgroundColor: '#b3b3b3'
@@ -33,15 +34,15 @@ const styles = StyleSheet.create({
 
 export function ApplePayBtn(props: Props) {
   const {
-    imagesProps = {},
     merchantName,
     merchantId,
     countryCode,
     currencyCode,
+    imagesProps = {},
     ...ortherProps
   } = props;
 
-  const applePayIsReady = useTPDApplePay(
+  const [applePayIsReady] = useTPDApplePay(
     merchantName,
     merchantId,
     countryCode,

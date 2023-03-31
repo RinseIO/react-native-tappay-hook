@@ -15,10 +15,27 @@
     <meta-data
       android:name="com.google.android.gms.version"
       android:value="@integer/google_play_services_version" />
-
     <meta-data
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
+
+    <!--For
+    Samsung Pay-->
+    <meta-data
+      android:name="debug_mode"
+      android:value="Y" />
+    <meta-data
+      android:name="spay_sdk_api_level"
+      android:value="1.8" />
+    <!--Only
+    Samsung accounts bound with below debug key can use Samsung Pay.-->
+    <!--Debug
+    Key is valid for 3 months;-->
+    <!--Remove
+    below metadata if in release mode-->
+    <meta-data
+      android:name="spay_debug_api_key"
+      android:value="your_debug_key" />
 
     <activity
       android:name=".MainActivity"
@@ -41,10 +58,14 @@
 
   </application>
 
-  <!-- required for line pay -->
   <queries>
+    <!-- required for line pay -->
     <!-- for line pay open -->
     <package android:name="jp.naver.line.android" />
+
+    <!-- required for samsung pay -->
+    <package android:name="com.samsung.android.spay" />
+    <package android:name="com.samsung.android.samsungpay.gear" />
   </queries>
 
 </manifest>

@@ -89,7 +89,7 @@ export function useTPDGooglePay(merchantName: string) {
         if (Tappay.initPromise?.then) {
           await Tappay.initPromise;
         }
-        const { isReadyToPay: _isReadyToPay, msg: _msg } =
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
           await Tappay.googlePayInit(merchantName);
 
         setIsReady(_isReadyToPay);
@@ -110,6 +110,7 @@ export function useTPDApplePay(
   currencyCode: string
 ) {
   const [isReady, setIsReady] = useState(false);
+  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -117,25 +118,28 @@ export function useTPDApplePay(
         if (Tappay.initPromise?.then) {
           await Tappay.initPromise;
         }
-        const { isReadyToPay: _isReadyToPay } = await Tappay.applePayInit(
-          merchantName,
-          merchantId,
-          countryCode,
-          currencyCode
-        );
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
+          await Tappay.applePayInit(
+            merchantName,
+            merchantId,
+            countryCode,
+            currencyCode
+          );
 
         setIsReady(_isReadyToPay);
+        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDApplePay error', { ...error });
       }
     })();
   }, []);
 
-  return isReady;
+  return [isReady, msg];
 }
 
 export function useTPDLinePay(linePayCallbackUri: string) {
   const [isReady, setIsReady] = useState(false);
+  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -143,16 +147,50 @@ export function useTPDLinePay(linePayCallbackUri: string) {
         if (Tappay.initPromise?.then) {
           await Tappay.initPromise;
         }
-        const { isReadyToPay: _isReadyToPay } = await Tappay.linePayInit(
-          linePayCallbackUri
-        );
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
+          await Tappay.linePayInit(linePayCallbackUri);
 
         setIsReady(_isReadyToPay);
+        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDApplePay error', { ...error });
       }
     })();
   }, [linePayCallbackUri]);
 
-  return isReady;
+  return [isReady, msg];
+}
+
+export function useTPDSamsungPay(
+  merchantName: string,
+  merchantId: string,
+  currencyCode: string,
+  serviceId: string
+) {
+  const [isReady, setIsReady] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (Tappay.initPromise?.then) {
+          await Tappay.initPromise;
+        }
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
+          await Tappay.samsungPayInit(
+            merchantName,
+            merchantId,
+            currencyCode,
+            serviceId
+          );
+
+        setIsReady(_isReadyToPay);
+        setMsg(_msg);
+      } catch (error: any) {
+        console.log('useTPDApplePay error', { ...error });
+      }
+    })();
+  }, [merchantName, merchantId, currencyCode, serviceId]);
+
+  return [isReady, msg];
 }

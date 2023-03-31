@@ -1,12 +1,15 @@
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-import { useTPDGooglePay } from '../hooks';
+import { useTPDSamsungPay } from '../hooks';
 
-import gpayBtnIcon from '../images/gpay_btn.png';
-import gpayDisabledBtnIcon from '../images/gpay_disabled_btn.png';
+import spayBtnIcon from '../images/spay_btn.png';
 
 interface Props {
   merchantName: string;
+  merchantId: string;
+  currencyCode: string;
+  serviceId: string;
+
   imagesProps?: {
     [key: string]: any;
   };
@@ -21,7 +24,7 @@ const styles = StyleSheet.create({
     height: 100
   },
   buttonDisable: {
-    backgroundColor: '#b3b3b3'
+    backgroundColor: '#c3c3c3'
   },
   icon: {
     width: '100%',
@@ -29,14 +32,26 @@ const styles = StyleSheet.create({
   }
 });
 
-export function GPayBtn(props: Props) {
-  const { merchantName, imagesProps = {}, ...ortherProps } = props;
-  const [googlePayIsReady] = useTPDGooglePay(merchantName);
+export function SPayBtn(props: Props) {
+  const {
+    merchantName,
+    merchantId,
+    currencyCode,
+    serviceId,
+    imagesProps = {},
+    ...ortherProps
+  } = props;
+  const [samsungPayIsReady] = useTPDSamsungPay(
+    merchantName,
+    merchantId,
+    currencyCode,
+    serviceId
+  );
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
 
-  if (googlePayIsReady === false) {
+  if (samsungPayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
 
     if (typeof ortherProps.disabledStyle === 'object') {
@@ -58,13 +73,13 @@ export function GPayBtn(props: Props) {
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={googlePayIsReady === false}
+      disabled={samsungPayIsReady === false}
     >
       <Image
         {...imagesProps}
         style={iconStyle}
         resizeMode="contain"
-        source={googlePayIsReady === false ? gpayDisabledBtnIcon : gpayBtnIcon}
+        source={spayBtnIcon}
       />
     </TouchableOpacity>
   );

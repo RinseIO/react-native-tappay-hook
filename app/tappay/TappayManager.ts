@@ -6,6 +6,7 @@ export class tappay {
   public googlePlayIsReady: boolean = false;
   public applePlayIsReady: boolean = false;
   public linePlayIsReady: boolean = false;
+  public samsungPayIsReady: boolean = false;
 
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {
@@ -21,6 +22,7 @@ export class tappay {
         return await this.getDeviceId();
       } catch (error: any) {
         console.log({ ...error });
+        this.initPromise = null;
       }
     })();
 
@@ -36,8 +38,7 @@ export class tappay {
       this.deviceId = deviceId;
       return deviceId;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
@@ -58,8 +59,7 @@ export class tappay {
 
       return validationResult;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
@@ -70,8 +70,7 @@ export class tappay {
       );
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
@@ -86,15 +85,11 @@ export class tappay {
       this.googlePlayIsReady = result.isReadyToPay;
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
-  public async handlerGooglePay(
-    totalPrice: string,
-    currencyCode: string = 'TWD'
-  ) {
+  public async handlerGooglePay(totalPrice: string, currencyCode: string) {
     if (Platform.OS !== 'android') {
       return;
     }
@@ -108,8 +103,7 @@ export class tappay {
       );
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
@@ -137,8 +131,7 @@ export class tappay {
       this.applePlayIsReady = result.isReadyToPay;
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
@@ -155,12 +148,11 @@ export class tappay {
       );
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
-  public async linePayHandleURL(openUri:string) {
+  public async linePayHandleURL(openUri: string) {
     return await NativeModules.RNToolsManager.TappayLinePayHandleURL(openUri);
   }
 
@@ -180,7 +172,6 @@ export class tappay {
       this.linePlayIsReady = result.isReadyToPay;
       return result;
     } catch (error: any) {
-      console.log({ ...error });
       throw error;
     }
   }
@@ -195,8 +186,7 @@ export class tappay {
       );
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
@@ -208,8 +198,7 @@ export class tappay {
       const result = await NativeModules.RNToolsManager.TappayGetLinePayPrime();
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
     }
   }
 
@@ -224,8 +213,57 @@ export class tappay {
         );
       return result;
     } catch (error: any) {
-      console.log({ ...error });
-      throw { ...error };
+      throw error;
+    }
+  }
+
+  public async samsungPayInit(
+    merchantName: string,
+    merchantId: string,
+    currencyCode: string,
+    serviceId: string
+  ) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    try {
+      const result = await NativeModules.RNToolsManager.TappaySamsungPayInit(
+        merchantName,
+        merchantId,
+        currencyCode,
+        serviceId
+      );
+      console.log(result);
+      this.samsungPayIsReady = result.isReadyToPay;
+      return result;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  public async getSamsungPayPrime(
+    itemTotalAmount: string,
+    shippingPrice: string,
+    tax: string,
+    totalAmount: string
+  ) {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+    if (this.samsungPayIsReady !== true) {
+      throw new Error('TappaySamsungPay has not been initialized!');
+    }
+    try {
+      const result =
+        await NativeModules.RNToolsManager.TappayGetSamsungPayPrime(
+          itemTotalAmount,
+          shippingPrice,
+          tax,
+          totalAmount
+        );
+      return result;
+    } catch (error: any) {
+      throw error;
     }
   }
 
@@ -248,10 +286,14 @@ export class tappay {
   }
 
   public async googlePayTest(merchantName: string) {
-    const { isReadyToPay } = await this.googlePayInit(merchantName);
-    if (isReadyToPay === true) {
-      const result = await this.handlerGooglePay('1', 'TWD');
-      console.log({ result });
+    try {
+      const { isReadyToPay } = await this.googlePayInit(merchantName);
+      if (isReadyToPay === true) {
+        const result = await this.handlerGooglePay('1', 'TWD');
+        console.log({ result });
+      }
+    } catch (error: any) {
+      console.log({ ...error });
     }
   }
 
@@ -261,23 +303,53 @@ export class tappay {
     countryCode: string,
     currencyCode: string
   ) {
-    const { isReadyToPay } = await this.applePayInit(
-      merchantName,
-      merchantId,
-      countryCode,
-      currencyCode
-    );
-    if (isReadyToPay === true) {
-      const result = await Tappay.handlerApplePay('1');
-      console.log(result);
+    try {
+      const { isReadyToPay } = await this.applePayInit(
+        merchantName,
+        merchantId,
+        countryCode,
+        currencyCode
+      );
+      if (isReadyToPay === true) {
+        const result = await Tappay.handlerApplePay('1');
+        console.log(result);
+      }
+    } catch (error: any) {
+      console.log({ ...error });
     }
   }
 
   public async linePayTest(linePayCallbackUri: string) {
-    const { isReadyToPay } = await this.linePayInit(linePayCallbackUri);
-    if (isReadyToPay === true) {
-      const result = await Tappay.getLinePayPrime();
-      console.log({ result });
+    try {
+      const { isReadyToPay } = await this.linePayInit(linePayCallbackUri);
+      if (isReadyToPay === true) {
+        const result = await Tappay.getLinePayPrime();
+        console.log({ result });
+      }
+    } catch (error: any) {
+      console.log({ ...error });
+    }
+  }
+
+  public async samsungTest(
+    merchantName: string,
+    merchantId: string,
+    currencyCode: string,
+    serviceId: string
+  ) {
+    try {
+      const { isReadyToPay } = await this.samsungPayInit(
+        merchantName,
+        merchantId,
+        currencyCode,
+        serviceId
+      );
+      if (isReadyToPay === true) {
+        const result = await Tappay.getSamsungPayPrime('1', '0', '0', '1');
+        console.log({ result });
+      }
+    } catch (error: any) {
+      console.log({ ...error });
     }
   }
 }

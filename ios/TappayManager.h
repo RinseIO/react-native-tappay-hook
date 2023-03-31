@@ -32,6 +32,9 @@
 @property () BOOL *linePayIsReadyToPay;
 @property () RCTPromiseResolveBlock linePayJsResolve;
 @property () RCTPromiseRejectBlock linePayJsReject;
+@property (nonatomic, strong) TPDJKOPay *jkoPay;
+@property () BOOL *jkoPayIsReadyToPay;
+@property () NSString *jkoPayUniversalLinks;
 
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
@@ -60,6 +63,16 @@
 - (void)linePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 - (void)getLinePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+- (void)tappayJKOPayExceptionHandler:(NSNotification *)notification;
+
+- (BOOL)isJkoPayAvailable;
+
+-(BOOL)jkoPayInit:(NSString *)_jkoPayUniversalLinks;
+
+-(void)getJkoPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(void)jkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 @end
 

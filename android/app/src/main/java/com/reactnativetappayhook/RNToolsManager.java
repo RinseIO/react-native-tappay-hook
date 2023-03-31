@@ -234,35 +234,55 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
     }
   }
 
-  // // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay的isJkoPayAvailable
-  // @ReactMethod
-  // public void TappayIsJkoPayAvailable(Promise promise) {
-  //   try {
-  //     boolean result = TappayManager.isJkoPayAvailable();
-  //     WritableNativeMap resultData = new WritableNativeMap();
-  //     resultData.putString("systemOS", "android");
-  //     resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
-  //     resultData.putBoolean("isReadyToPay", result);
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay的isJkoPayAvailable
+  @ReactMethod
+  public void TappayIsJkoPayAvailable(Promise promise) {
+    try {
+      boolean result = TappayManager.isJkoPayAvailable();
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
 
-  //     promise.resolve(resultData);
-  //   } catch (Exception e) {
-  //     promise.reject("android error TappayIsJkoPayAvailable", e);
-  //   }
-  // }
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsJkoPayAvailable", e);
+    }
+  }
 
-  // // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay的初始化方法
-  // @ReactMethod
-  // public void TappayJkoPayInit(String jkoPayUniversalLinks, Promise promise) {
-  //   try {
-  //     boolean result = TappayManager.jkoPayInit(jkoPayUniversalLinks);
-  //     WritableNativeMap resultData = new WritableNativeMap();
-  //     resultData.putString("systemOS", "android");
-  //     resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
-  //     resultData.putBoolean("isReadyToPay", result);
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay的初始化方法
+  @ReactMethod
+  public void TappayJkoPayInit(String jkoPayUniversalLinks, Promise promise) {
+    try {
+      boolean result = TappayManager.jkoPayInit(jkoPayUniversalLinks);
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
 
-  //     promise.resolve(resultData);
-  //   } catch (Exception e) {
-  //     promise.reject("android error TappayJkoPayInit", e);
-  //   }
-  // }
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayJkoPayInit", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay取得prime方法
+  @ReactMethod
+  public void TappayGetJkoPayPrime(Promise promise) {
+    try {
+      TappayManager.getJkoPayPrime(promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayGetJkoPayPrime", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay的跳轉付款方法
+  @ReactMethod
+  public void TappayJkoPayRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+      TappayManager.jkoPayRedirectWithUrl(paymentUrl, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayJkoPayRedirectWithUrl", e);
+    }
+  }
 }

@@ -218,12 +218,12 @@ RCT_EXPORT_METHOD(TappayLinePayRedirectWithUrl:(NSString *)paymentUrl resolver:(
 RCT_EXPORT_METHOD(TappaySamsungPayInit:(NSString *)merchantName merchantId:(NSString *)merchantId currencyCode:(NSString *)currencyCode serviceId:(NSString *)serviceId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-  resolve(@{
-    @"systemOS": @"ios",
-    @"tappaySDKVersion": self.TappayManager.SDKVersion,
-    @"isReadyToPay": @NO,
-    @"msg": @"ios not support SamsungPay"
-  });
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @NO,
+      @"msg": @"ios not support SamsungPay"
+    });
   }
   @catch (NSException *exception) {
     reject(@"ios error TappaySamsungPayInit", exception.description, nil);
@@ -234,6 +234,58 @@ RCT_EXPORT_METHOD(TappaySamsungPayInit:(NSString *)merchantName merchantId:(NSSt
 RCT_EXPORT_METHOD(TappayGetSamsungPayPrime:(NSString *)itemTotalAmount shippingPrice:(NSString *)shippingPrice tax:(NSString *)tax totalAmount:(NSString *)totalAmount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   reject(@"ios error TappayGetSamsungPayPrime", @"ios not support SamsungPay", nil);
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDJkoPay的isJkoPayAvailable
+RCT_EXPORT_METHOD(TappayIsJkoPayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @([self.TappayManager isJkoPayAvailable])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsJkoPayAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDJkoPay的初始化方法
+RCT_EXPORT_METHOD(TappayJkoPayInit:(NSString *)_jkoPayUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @([self.TappayManager jkoPayInit:_jkoPayUniversalLinks])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayJkoPayInit", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDJkoPay取得prime方法
+RCT_EXPORT_METHOD(TappayGetJkoPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager getJkoPayPrime:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayGetJkoPayPrime", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDJkoPay的跳轉付款方法
+RCT_EXPORT_METHOD(TappayJkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager jkoPayRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayJkoPayRedirectWithUrl", exception.description, nil);
+  }
 }
 
 @end

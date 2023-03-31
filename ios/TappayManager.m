@@ -284,6 +284,92 @@
   ];
 }
 
+- (void)tappayJKOPayExceptionHandler:(NSNotification *)notification {
+  if (self.linePayJsResolve != nil) {
+    TPDJKOPayResult * result = [TPDJKOPay parseURL:notification];
+    
+    self.linePayJsReject(@"ios error tappayLinePayExceptionHandler",
+     [NSString stringWithFormat: @"%ld", result.status],
+     @{
+        @"status": [NSString stringWithFormat: @"%ld", result.status],
+        @"orderNumber": result.orderNumber,
+        @"recTradeId": result.recTradeId,
+        @"bankTransactionId": result.bankTransactionId,
+      }
+    );
+  }
+}
+
+-(BOOL)isJkoPayAvailable {
+  return [TPDJKOPay isJKOPayAvailable];
+}
+
+-(BOOL)jkoPayInit:(NSString *)_jkoPayUniversalLinks {
+  if (self.jkoPayIsReadyToPay == YES && self.jkoPayUniversalLinks == _jkoPayUniversalLinks) {
+    return self.jkoPayIsReadyToPay;
+  }
+  
+  BOOL jkoPayIsReadyToPay = [self isJkoPayAvailable];
+  
+  #if jkoPayIsReadyToPay == YES
+    TPDJKOPay *jkoPay = [TPDJKOPay setupWithReturnUrl:_jkoPayUniversalLinks];
+    [TPDJKOPay addExceptionObserver:(@selector(tappayJKOPayExceptionHandler:))];
+
+    self.jkoPay = jkoPay;
+    self.jkoPayUniversalLinks = _jkoPayUniversalLinks;
+    self.jkoPayIsReadyToPay = &(jkoPayIsReadyToPay);
+  #endif
+
+  return jkoPayIsReadyToPay;
+}
+
+-(void)getJkoPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    [
+      [
+        [
+          self.jkoPay onSuccessCallback:^(NSString * _Nullable prime) {
+            resolve(@{
+              @"systemOS": @"ios",
+              @"SDKVersion": self.SDKVersion,
+              @"prime": prime
+            });
+          }
+        ]
+        onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error getJkoPayPrime onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+        }
+      ]
+      getPrime
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error getJkoPayPrime", exception.description, nil);
+  }
+}
+
+-(void)jkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    [
+      self.jkoPay redirect:paymentUrl completion:^(TPDJKOPayResult * _Nonnull result) {
+        resolve(@{
+          @"status":[NSString stringWithFormat:@"%ld", result.status],
+          @"recTradeId": result.recTradeId,
+          @"bankTransactionId": result.bankTransactionId,
+          @"orderNumber":result.orderNumber
+        });
+      }
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error getJkoPayPrime", exception.description, nil);
+  }
+}
+
 @end
 
 

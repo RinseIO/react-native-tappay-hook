@@ -180,7 +180,7 @@ public class TappayManager {
     public void onParseSuccess(TPDJkoPayResult tpdJkoPayResult) {
     }
 
-    public void onParseFail(int i, String s) {
+    public void onParseFail(int status, String msg) {
     }
   }
 
@@ -503,12 +503,16 @@ public class TappayManager {
           } catch (Exception e) {
             promise.reject("android error linePayRedirectWithUrl onParseSuccess", e);
           }
+          reactContext.removeActivityEventListener(mTPDLinePayActivityEvent);
+          mTPDLinePayActivityEvent = null;
         }
 
         @Override
         public void onParseFail(int status, String msg) {
           promise.reject("android error linePayRedirectWithUrl onParseFail",
               msg + ", Error Status:" + Integer.toString(status));
+          reactContext.removeActivityEventListener(mTPDLinePayActivityEvent);
+          mTPDLinePayActivityEvent = null;
         }
       };
 
@@ -634,60 +638,112 @@ public class TappayManager {
     }
   }
 
-  // public boolean isJkoPayAvailable() {
-  //   return TPDJkoPay.isJkoPayAvailable(reactContext);
-  // }
+  public boolean isJkoPayAvailable() {
+    return TPDJkoPay.isJkoPayAvailable(reactContext);
+  }
 
-  // public boolean jkoPayInit(String _jkoPayUniversalLinks) {
-  //   if (jkoPayIsReadyToPay == true && jkoPayUniversalLinks == _jkoPayUniversalLinks) {
-  //     return jkoPayIsReadyToPay;
-  //   }
+  public boolean jkoPayInit(String _jkoPayUniversalLinks) {
+    if (jkoPayIsReadyToPay == true && jkoPayUniversalLinks == _jkoPayUniversalLinks) {
+      return jkoPayIsReadyToPay;
+    }
 
-  //   boolean _jkoPayIsReadyToPay = false;
+    boolean _jkoPayIsReadyToPay = false;
 
-  //   try {
-  //     _jkoPayIsReadyToPay = isJkoPayAvailable();
+    try {
+      _jkoPayIsReadyToPay = isJkoPayAvailable();
 
-  //     if (_jkoPayIsReadyToPay == true) {
-  //       tpdJkoPay = new TPDJkoPay(reactContext, _jkoPayUniversalLinks);
-  //       jkoPayUniversalLinks = _jkoPayUniversalLinks;
-  //       jkoPayIsReadyToPay = _jkoPayIsReadyToPay;
-  //     }
+      if (_jkoPayIsReadyToPay == true) {
+        tpdJkoPay = new TPDJkoPay(reactContext, _jkoPayUniversalLinks);
+        jkoPayUniversalLinks = _jkoPayUniversalLinks;
+        jkoPayIsReadyToPay = _jkoPayIsReadyToPay;
+      }
 
-  //   } catch (TPDJkoPayException e) {
-  //     throw new RuntimeException(e);
-  //   }
+    } catch (TPDJkoPayException e) {
+      throw new RuntimeException(e);
+    }
 
-  //   return _jkoPayIsReadyToPay;
-  // }
+    return _jkoPayIsReadyToPay;
+  }
 
-  // public void getJkoPayPrime(Promise promise) {
-  //   try {
-  //     TPDJkoPayGetPrimeCallback mTPDJkoPayGetPrimeCallback = new TPDJkoPayGetPrimeCallback() {
-  //       @Override
-  //       public void onSuccess(String prime) {
-  //         try {
-  //           WritableNativeMap resultData = new WritableNativeMap();
-  //           resultData.putString("systemOS", "android");
-  //           resultData.putString("tappaySDKVersion", SDKVersion);
-  //           resultData.putString("prime", prime);
-  //           promise.resolve(resultData);
-  //         } catch (Exception e) {
-  //           promise.reject("android error getJkoPayPrime onSuccess", e);
-  //         }
-  //       }
+  public void getJkoPayPrime(Promise promise) {
+    try {
+      TPDJkoPayGetPrimeCallback mTPDJkoPayGetPrimeCallback = new TPDJkoPayGetPrimeCallback() {
+        @Override
+        public void onSuccess(String prime) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("prime", prime);
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error getJkoPayPrime onSuccess", e);
+          }
+        }
 
-  //       @Override
-  //       public void onFailure(int status, String msg) {
-  //         promise.reject("android error getJkoPayPrime onFailure",
-  //             msg + ", Error Status:" + Integer.toString(status));
-  //       }
-  //     };
+        @Override
+        public void onFailure(int status, String msg) {
+          promise.reject("android error getJkoPayPrime onFailure",
+              msg + ", Error Status:" + Integer.toString(status));
+        }
+      };
 
-  //     tpdJkoPay.getPrime(mTPDJkoPayGetPrimeCallback, mTPDJkoPayGetPrimeCallback);
-  //   } catch (Exception e) {
-  //     promise.reject("android error getJkoPayPrime", e);
-  //   }
-  // }
+      tpdJkoPay.getPrime(mTPDJkoPayGetPrimeCallback, mTPDJkoPayGetPrimeCallback);
+    } catch (Exception e) {
+      promise.reject("android error getJkoPayPrime", e);
+    }
+  }
+
+  public void jkoPayRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+
+      if (mTPDJkoPayActivityEvent != null) {
+        reactContext.removeActivityEventListener(mTPDJkoPayActivityEvent);
+      }
+
+      mTPDJkoPayActivityEvent = new TPDJkoPayActivityEvent() {
+        @Override
+        public void onNewIntent(Intent intent) {
+          super.onNewIntent(intent);
+          if (intent.getDataString() != null && intent.getDataString().contains(jkoPayUniversalLinks)) {
+            tpdJkoPay.parseToJkoPayResult(reactContext.getApplicationContext(), intent.getData(),
+                mTPDJkoPayActivityEvent);
+          }
+        }
+
+        @Override
+        public void onParseSuccess(TPDJkoPayResult tpdJkoPayResult) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putInt("status", tpdJkoPayResult.getStatus());
+            resultData.putString("nrecTradeId", tpdJkoPayResult.getRecTradeId());
+            resultData.putString("nbankTransactionId", tpdJkoPayResult.getBankTransactionId());
+            resultData.putString("norderNumber", tpdJkoPayResult.getOrderNumber());
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error jkoPayRedirectWithUrl onParseSuccess", e);
+          }
+          reactContext.removeActivityEventListener(mTPDJkoPayActivityEvent);
+          mTPDJkoPayActivityEvent = null;
+        }
+
+        @Override
+        public void onParseFail(int status, String msg) {
+          promise.reject("android error jkoPayRedirectWithUrl onParseFail",
+              msg + ", Error Status:" + Integer.toString(status));
+          reactContext.removeActivityEventListener(mTPDJkoPayActivityEvent);
+          mTPDJkoPayActivityEvent = null;
+        }
+      };
+
+      reactContext.addActivityEventListener(mTPDJkoPayActivityEvent);
+
+      tpdJkoPay.redirectWithUrl(paymentUrl);
+    } catch (Exception e) {
+      promise.reject("android error jkoPayRedirectWithUrl", e);
+    }
+  }
 
 }

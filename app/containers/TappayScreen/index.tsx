@@ -142,7 +142,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerLinePay() {
     try {
-      const result = await Tappay.handlerApplePay(appleAmount);
+      const result = await Tappay.handlerLinePay(appleAmount);
       console.log(result);
       setPopUpMessage({
         label: 'LinePay付款成功(測試)',

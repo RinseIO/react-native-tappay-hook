@@ -42,6 +42,15 @@ import tech.cherri.tpdirect.callback.TPDSamsungPayStatusListener;
 import tech.cherri.tpdirect.callback.dto.TPDCardDto;
 import tech.cherri.tpdirect.constant.TPDErrorConstants;
 
+import android.os.AsyncTask;
+import org.json.JSONException;
+import tech.cherri.tpdirect.api.TPDJkoPay;
+import tech.cherri.tpdirect.api.TPDJkoPayResult;
+import tech.cherri.tpdirect.callback.TPDJkoPayResultListener;
+import tech.cherri.tpdirect.exception.TPDJkoPayException;
+import tech.cherri.tpdirect.callback.TPDJkoPayGetPrimeSuccessCallback;
+import tech.cherri.tpdirect.constant.TPDNetworkConstants;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.wallet.AutoResolveHelper;
 import com.google.android.gms.wallet.PaymentData;
@@ -89,13 +98,16 @@ public class TappayManager {
   String linePayCallbackUri;
   Boolean linePayIsReadyToPay = false;
   TPDLinePayActivityEvent mTPDLinePayActivityEvent;
-  TPDSamsungPay tpdSamsungPay;
   Boolean samsungPayIsReadyToPay;
   String samsungPayMsg;
   String samsungPayMerchantName;
   String samsungPayMerchantId;
   String samsungPayCurrencyCode;
   String samsungPayServiceId;
+  TPDSamsungPay tpdSamsungPay;
+  boolean jkoPayIsReadyToPay;
+  String jkoPayUniversalLinks;
+  TPDJkoPay tpdJkoPay;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -160,6 +172,9 @@ public class TappayManager {
   }
 
   interface TPDSamsungPayGetPrimeCallback extends TPDSamsungPayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
+  }
+
+  interface TPDJkoPayGetPrimeCallback extends TPDJkoPayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
 
   public TappayManager(ReactApplicationContext _reactContext) {
@@ -416,23 +431,17 @@ public class TappayManager {
     return TPDLinePay.isLinePayAvailable(reactContext);
   }
 
-  public boolean linePayInit(String _linePayCallbackUri) {
+  public boolean linePayInit(String _linePayCallbackUri) throws TPDLinePayException {
     if (linePayIsReadyToPay == true && linePayCallbackUri == _linePayCallbackUri) {
       return linePayIsReadyToPay;
     }
 
-    boolean isLinePayAvailable = false;
-    try {
-      isLinePayAvailable = isLinePayAvailable();
+    boolean isLinePayAvailable = isLinePayAvailable();
 
-      if (isLinePayAvailable == true) {
-        tpdLinePay = new TPDLinePay(reactContext, _linePayCallbackUri);
-        linePayIsReadyToPay = isLinePayAvailable;
-        linePayCallbackUri = _linePayCallbackUri;
-      }
-
-    } catch (TPDLinePayException e) {
-      throw new RuntimeException(e);
+    if (isLinePayAvailable == true) {
+      tpdLinePay = new TPDLinePay(reactContext, _linePayCallbackUri);
+      linePayIsReadyToPay = isLinePayAvailable;
+      linePayCallbackUri = _linePayCallbackUri;
     }
 
     return isLinePayAvailable;
@@ -474,7 +483,6 @@ public class TappayManager {
 
   public void handlerLinePay(String paymentUrl, Promise promise) {
     try {
-      tpdLinePay.redirectWithUrl(paymentUrl);
 
       if (mTPDLinePayActivityEvent != null) {
         reactContext.removeActivityEventListener(mTPDLinePayActivityEvent);
@@ -508,16 +516,14 @@ public class TappayManager {
 
         @Override
         public void onParseFail(int status, String msg) {
-          WritableNativeMap resultData = new WritableNativeMap();
-          resultData.putString("systemOS", "android");
-          resultData.putString("tappaySDKVersion", SDKVersion);
-          resultData.putInt("status", status);
-          resultData.putString("status", msg);
-          promise.reject("android error handlerLinePay onParseFail", resultData);
+          promise.reject("android error handlerLinePay onParseFail",
+              msg + ", Error Status:" + Integer.toString(status));
         }
       };
 
       reactContext.addActivityEventListener(mTPDLinePayActivityEvent);
+
+      tpdLinePay.redirectWithUrl(paymentUrl);
     } catch (Exception e) {
       promise.reject("android error handlerLinePay", e);
     }
@@ -678,4 +684,31 @@ public class TappayManager {
       promise.reject("android error getSamsungPayPrime", e);
     }
   }
+
+  // public boolean isJkoPayAvailable() {
+  //   return TPDJkoPay.isJkoPayAvailable(reactContext);
+  // }
+
+  // public boolean jkoPayInit(String _jkoPayUniversalLinks) {
+  //   if (jkoPayIsReadyToPay == true && jkoPayUniversalLinks == _jkoPayUniversalLinks) {
+  //     return jkoPayIsReadyToPay;
+  //   }
+
+  //   boolean _jkoPayIsReadyToPay = false;
+
+  //   try {
+  //     _jkoPayIsReadyToPay = isJkoPayAvailable();
+
+  //     if (_jkoPayIsReadyToPay == true) {
+  //       tpdJkoPay = new TPDJkoPay(reactContext, _jkoPayUniversalLinks);
+  //       jkoPayUniversalLinks = _jkoPayUniversalLinks;
+  //       jkoPayIsReadyToPay = _jkoPayIsReadyToPay;
+  //     }
+
+  //   } catch (TPDJkoPayException e) {
+  //     throw new RuntimeException(e);
+  //   }
+
+  //   return _jkoPayIsReadyToPay;
+  // }
 }

@@ -89,7 +89,6 @@ public class TappayManager {
   String CCV;
   String SDKVersion;
   Promise googlePayJsPromise = null;
-  PaymentData paymentData;
   Boolean googlePayIsReadyToPay;
   String googlePayMsg;
   String googlePayMerchantName;
@@ -108,6 +107,7 @@ public class TappayManager {
   boolean jkoPayIsReadyToPay;
   String jkoPayUniversalLinks;
   TPDJkoPay tpdJkoPay;
+  TPDJkoPayActivityEvent mTPDJkoPayActivityEvent;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -119,8 +119,7 @@ public class TappayManager {
           switch (resultCode) {
             case Activity.RESULT_OK:
               if (googlePayJsPromise != null) {
-                paymentData = PaymentData.getFromIntent(data);
-                revealGooglePaymentInfo(paymentData);
+                revealGooglePaymentInfo(PaymentData.getFromIntent(data));
               }
               break;
             case Activity.RESULT_CANCELED:
@@ -175,6 +174,14 @@ public class TappayManager {
   }
 
   interface TPDJkoPayGetPrimeCallback extends TPDJkoPayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
+  }
+
+  class TPDJkoPayActivityEvent extends BaseActivityEventListener implements TPDJkoPayResultListener {
+    public void onParseSuccess(TPDJkoPayResult tpdJkoPayResult) {
+    }
+
+    public void onParseFail(int i, String s) {
+    }
   }
 
   public TappayManager(ReactApplicationContext _reactContext) {
@@ -259,8 +266,8 @@ public class TappayManager {
       @Override
       public void onFailure(int status, String reportMsg) {
         // Failure
-        promise.reject("android error handlerDirectPay onFailure", Integer.toString(status),
-            new RuntimeException(reportMsg));
+        promise.reject("android error handlerDirectPay onFailure",
+            reportMsg + ", Error Status:" + Integer.toString(status));
       }
     };
 
@@ -403,20 +410,9 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
-          try {
-            if (googlePayJsPromise == null) {
-              return;
-            }
-            WritableNativeMap resultData = new WritableNativeMap();
-            resultData.putInt("status", status);
-            resultData.putString("msg", msg);
-
-            googlePayJsPromise.resolve(resultData);
-            // googlePayJsPromise = null;
-          } catch (Exception e) {
-            googlePayJsPromise.reject("android error revealGooglePaymentInfo onFailure", e);
-            // googlePayJsPromise = null;
-          }
+          googlePayJsPromise.reject("android error revealGooglePaymentInfo onFailure",
+              msg + ", Error Status:" + Integer.toString(status));
+          // googlePayJsPromise = null;
         }
       };
 
@@ -465,13 +461,8 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
-          WritableNativeMap resultData = new WritableNativeMap();
-          resultData.putString("systemOS", "android");
-          resultData.putString("tappaySDKVersion", SDKVersion);
-          resultData.putInt("status", status);
-          resultData.putString("status", msg);
-
-          promise.reject("android error getLinePayPrime onFailure", resultData);
+          promise.reject("android error getLinePayPrime onFailure",
+              msg + ", Error Status:" + Integer.toString(status));
         }
       };
 
@@ -481,7 +472,7 @@ public class TappayManager {
     }
   }
 
-  public void handlerLinePay(String paymentUrl, Promise promise) {
+  public void linePayRedirectWithUrl(String paymentUrl, Promise promise) {
     try {
 
       if (mTPDLinePayActivityEvent != null) {
@@ -510,13 +501,13 @@ public class TappayManager {
             resultData.putString("norderNumber", tpdLinePayResult.getOrderNumber());
             promise.resolve(resultData);
           } catch (Exception e) {
-            promise.reject("android error handlerLinePay onParseSuccess", e);
+            promise.reject("android error linePayRedirectWithUrl onParseSuccess", e);
           }
         }
 
         @Override
         public void onParseFail(int status, String msg) {
-          promise.reject("android error handlerLinePay onParseFail",
+          promise.reject("android error linePayRedirectWithUrl onParseFail",
               msg + ", Error Status:" + Integer.toString(status));
         }
       };
@@ -525,40 +516,8 @@ public class TappayManager {
 
       tpdLinePay.redirectWithUrl(paymentUrl);
     } catch (Exception e) {
-      promise.reject("android error handlerLinePay", e);
+      promise.reject("android error linePayRedirectWithUrl", e);
     }
-  }
-
-  public void linePayRedirectWithUrl(String paymentUrl, Promise promise) {
-    tpdLinePay.redirectWithUrl(paymentUrl);
-    tpdLinePay.parseToLinePayResult(reactContext, reactContext.getCurrentActivity().getIntent().getData(),
-        new TPDLinePayActivityEvent() {
-          @Override
-          public void onParseSuccess(TPDLinePayResult tpdLinePayResult) {
-            try {
-              WritableNativeMap resultData = new WritableNativeMap();
-              resultData.putString("systemOS", "android");
-              resultData.putString("tappaySDKVersion", SDKVersion);
-              resultData.putInt("status", tpdLinePayResult.getStatus());
-              resultData.putString("nrecTradeId", tpdLinePayResult.getRecTradeId());
-              resultData.putString("nbankTransactionId", tpdLinePayResult.getBankTransactionId());
-              resultData.putString("norderNumber", tpdLinePayResult.getOrderNumber());
-              promise.resolve(resultData);
-            } catch (Exception e) {
-              promise.reject("android error linePayParseToLinePayResult", e);
-            }
-          }
-
-          @Override
-          public void onParseFail(int status, String msg) {
-            WritableNativeMap resultData = new WritableNativeMap();
-            resultData.putString("systemOS", "android");
-            resultData.putString("tappaySDKVersion", SDKVersion);
-            resultData.putInt("status", status);
-            resultData.putString("status", msg);
-            promise.reject("android error linePayParseToLinePayResult onParseFail", resultData);
-          }
-        });
   }
 
   public void samsungPayInit(String merchantName, String merchantId, String currencyCode, String serviceId,
@@ -663,18 +622,8 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String reportMsg) {
-          try {
-            if (status == TPDErrorConstants.ERROR_TPDSAMSUNGPAY_CANCELED_BY_USER) {
-              // Samsung Pay canceled by User
-              promise.reject("android error getSamsungPayPrime onFailure", "Canceled by User");
-            } else {
-              promise.reject("android error getSamsungPayPrime onFailure",
-                  reportMsg + ", Error Status:" + Integer.toString(status));
-            }
-          } catch (Exception e) {
-            promise.reject("android error getSamsungPayPrime onFailure", e);
-          }
-
+          promise.reject("android error getSamsungPayPrime onFailure",
+              reportMsg + ", Error Status:" + Integer.toString(status));
         }
       };
 
@@ -711,4 +660,34 @@ public class TappayManager {
 
   //   return _jkoPayIsReadyToPay;
   // }
+
+  // public void getJkoPayPrime(Promise promise) {
+  //   try {
+  //     TPDJkoPayGetPrimeCallback mTPDJkoPayGetPrimeCallback = new TPDJkoPayGetPrimeCallback() {
+  //       @Override
+  //       public void onSuccess(String prime) {
+  //         try {
+  //           WritableNativeMap resultData = new WritableNativeMap();
+  //           resultData.putString("systemOS", "android");
+  //           resultData.putString("tappaySDKVersion", SDKVersion);
+  //           resultData.putString("prime", prime);
+  //           promise.resolve(resultData);
+  //         } catch (Exception e) {
+  //           promise.reject("android error getJkoPayPrime onSuccess", e);
+  //         }
+  //       }
+
+  //       @Override
+  //       public void onFailure(int status, String msg) {
+  //         promise.reject("android error getJkoPayPrime onFailure",
+  //             msg + ", Error Status:" + Integer.toString(status));
+  //       }
+  //     };
+
+  //     tpdJkoPay.getPrime(mTPDJkoPayGetPrimeCallback, mTPDJkoPayGetPrimeCallback);
+  //   } catch (Exception e) {
+  //     promise.reject("android error getJkoPayPrime", e);
+  //   }
+  // }
+
 }

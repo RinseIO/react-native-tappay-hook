@@ -195,7 +195,6 @@
       @"recTradeId": result.recTradeId,
       @"bankTransactionId": result.bankTransactionId,
     });
-    self.linePayJsReject = nil;
   }
 }
 
@@ -225,7 +224,7 @@
   return linePayIsReadyToPay;
 }
 
--(void)handlerLinePay:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+-(void)linePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   self.linePayJsReject = reject;
   [
     [
@@ -240,16 +239,18 @@
               @"recTradeId": result.recTradeId,
               @"bankTransactionId": result.bankTransactionId
             });
+            self.linePayJsReject = nil;
 
           }];
         }
       ]
       onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
           reject(
-            @"ios error handlerLinePay onFailureCallback",
+            @"ios error linePayRedirectWithUrl onFailureCallback",
             [NSString stringWithFormat: @"%ld", status],
             [NSError errorWithDomain:message code:status userInfo:nil]
           );
+          self.linePayJsReject = nil;
       }
     ]
     getPrime
@@ -267,6 +268,7 @@
               @"tappaySDKVersion": self.SDKVersion,
               @"prime": prime,
             });
+            self.linePayJsReject = nil;
         }
       ]
       onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
@@ -275,30 +277,11 @@
             [NSString stringWithFormat: @"%ld", status],
             [NSError errorWithDomain:message code:status userInfo:nil]
           );
+          self.linePayJsReject = nil;
       }
     ]
     getPrime
   ];
-}
-
--(void)linePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-  @try {
-    UIViewController *rootViewcontroller= [UIApplication sharedApplication].keyWindow.rootViewController;
-
-    [self.TPDlinePay redirect:paymentUrl withViewController:rootViewcontroller completion:^(TPDLinePayResult * _Nonnull result) {
-
-      resolve(@{
-        @"status": [NSString stringWithFormat: @"%ld", result.status],
-        @"orderNumber": result.orderNumber,
-        @"recTradeId": result.recTradeId,
-        @"bankTransactionId": result.bankTransactionId
-      });
-
-    }];
-  }
-  @catch (NSException *exception) {
-    reject(@"ios error linePayRedirectWithUrl", exception.description, nil);
-  }
 }
 
 @end

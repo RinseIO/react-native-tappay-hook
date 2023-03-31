@@ -82,12 +82,12 @@ export async function linePayInit(linePayCallbackUri: string) {
   }
 }
 
-export async function handlerLinePay(paymentUrl: string) {
+export async function linePayRedirectWithUrl(paymentUrl: string) {
   if (Tappay.linePlayIsReady !== true) {
     throw new Error('TappayLinePay has not been initialized!');
   }
   try {
-    const result = await Tappay.handlerLinePay(paymentUrl);
+    const result = await Tappay.linePayRedirectWithUrl(paymentUrl);
     return result;
   } catch (error: any) {
     console.log({ ...error });
@@ -101,19 +101,6 @@ export async function getLinePayPrime() {
   }
   try {
     const result = await Tappay.getLinePayPrime();
-    return result;
-  } catch (error: any) {
-    console.log({ ...error });
-    throw { ...error };
-  }
-}
-
-export async function linePayRedirectWithUrl(paymentUrl: string) {
-  if (Tappay.linePlayIsReady !== true) {
-    throw new Error('TappayLinePay has not been initialized!');
-  }
-  try {
-    const result = await Tappay.linePayRedirectWithUrl(paymentUrl);
     return result;
   } catch (error: any) {
     console.log({ ...error });

@@ -176,7 +176,7 @@ export class tappay {
     }
   }
 
-  public async handlerLinePay(paymentUrl: string) {
+  public async linePayRedirectWithUrl(paymentUrl: string) {
     if (this.linePlayIsReady !== true) {
       throw new Error('TappayLinePay has not been initialized!');
     }
@@ -196,21 +196,6 @@ export class tappay {
     }
     try {
       const result = await NativeModules.RNToolsManager.TappayGetLinePayPrime();
-      return result;
-    } catch (error: any) {
-      throw error;
-    }
-  }
-
-  public async linePayRedirectWithUrl(paymentUrl: string) {
-    if (this.linePlayIsReady !== true) {
-      throw new Error('TappayLinePay has not been initialized!');
-    }
-    try {
-      const result =
-        await NativeModules.RNToolsManager.TappayLinePayRedirectWithUrl(
-          paymentUrl
-        );
       return result;
     } catch (error: any) {
       throw error;

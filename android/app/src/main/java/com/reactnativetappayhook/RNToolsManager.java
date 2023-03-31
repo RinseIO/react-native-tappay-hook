@@ -206,16 +206,6 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
 
   // 宣告給ReactNative使用的function名稱，TappaySDK的TPDLinePay的redirectWithUrl，並自動完成跳轉資料的監聽
   @ReactMethod
-  public void TappayHandlerLinePay(String paymentUrl, Promise promise) {
-    try {
-      TappayManager.handlerLinePay(paymentUrl, promise);
-    } catch (Exception e) {
-      promise.reject("android error TappayHandlerLinePay", e);
-    }
-  }
-
-  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDLinePay的redirectWithUrl
-  @ReactMethod
   public void TappayLinePayRedirectWithUrl(String paymentUrl, Promise promise) {
     try {
       TappayManager.linePayRedirectWithUrl(paymentUrl, promise);
@@ -243,4 +233,36 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
       promise.reject("android error TappayGetSamsungPayPrime", e);
     }
   }
+
+  // // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay的isJkoPayAvailable
+  // @ReactMethod
+  // public void TappayIsJkoPayAvailable(Promise promise) {
+  //   try {
+  //     boolean result = TappayManager.isJkoPayAvailable();
+  //     WritableNativeMap resultData = new WritableNativeMap();
+  //     resultData.putString("systemOS", "android");
+  //     resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+  //     resultData.putBoolean("isReadyToPay", result);
+
+  //     promise.resolve(resultData);
+  //   } catch (Exception e) {
+  //     promise.reject("android error TappayIsJkoPayAvailable", e);
+  //   }
+  // }
+
+  // // 宣告給ReactNative使用的function名稱，TappaySDK的TPDJkoPay的初始化方法
+  // @ReactMethod
+  // public void TappayJkoPayInit(String jkoPayUniversalLinks, Promise promise) {
+  //   try {
+  //     boolean result = TappayManager.jkoPayInit(jkoPayUniversalLinks);
+  //     WritableNativeMap resultData = new WritableNativeMap();
+  //     resultData.putString("systemOS", "android");
+  //     resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+  //     resultData.putBoolean("isReadyToPay", result);
+
+  //     promise.resolve(resultData);
+  //   } catch (Exception e) {
+  //     promise.reject("android error TappayJkoPayInit", e);
+  //   }
+  // }
 }

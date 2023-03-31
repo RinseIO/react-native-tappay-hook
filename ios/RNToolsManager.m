@@ -192,17 +192,6 @@ RCT_EXPORT_METHOD(TappayLinePayInit:(NSString *)linePayCallbackUri resolver:(RCT
   }
 }
 
-// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的付款方法
-RCT_EXPORT_METHOD(TappayHandlerLinePay:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
-{
-  @try {
-    [self.TappayManager handlerLinePay:paymentUrl resolver:resolve rejecter:reject];
-  }
-  @catch (NSException *exception) {
-    reject(@"ios error TappayGetLinePayPrime", exception.description, nil);
-  }
-}
-
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的getPrime
 RCT_EXPORT_METHOD(TappayGetLinePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {

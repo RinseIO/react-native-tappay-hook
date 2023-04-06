@@ -45,19 +45,14 @@ export async function getApplePayPrime(amount: string) {
     return;
   }
   if (Tappay.applePlayIsReady !== true) {
-    throw new Error('TappayApplePay has not been initialized!');
+    throw new Error('TappayApplePay is not ready!');
   }
-  try {
-    const result = await Tappay.getApplePayPrime(amount);
+  const result = await Tappay.getApplePayPrime(amount);
 
-    return result;
-  } catch (error: any) {
-    console.log({ ...error });
-    throw { ...error };
-  }
+  return result;
 }
 
-export async function linePayHandleURL(openUri:string) {
+export async function linePayHandleURL(openUri: string) {
   return await Tappay.linePayHandleURL(openUri);
 }
 
@@ -73,37 +68,85 @@ export async function linePayInit(linePayCallbackUri: string) {
     throw new Error('Tappay has not been initialized!');
   }
 
-  try {
-    const result = await Tappay.linePayInit(linePayCallbackUri);
-    return result;
-  } catch (error: any) {
-    console.log({ ...error });
-    throw error;
-  }
+  const result = await Tappay.linePayInit(linePayCallbackUri);
+  return result;
 }
 
 export async function linePayRedirectWithUrl(paymentUrl: string) {
   if (Tappay.linePlayIsReady !== true) {
-    throw new Error('TappayLinePay has not been initialized!');
+    throw new Error('TappayLinePay is not ready!');
   }
-  try {
-    const result = await Tappay.linePayRedirectWithUrl(paymentUrl);
-    return result;
-  } catch (error: any) {
-    console.log({ ...error });
-    throw { ...error };
-  }
+  const result = await Tappay.linePayRedirectWithUrl(paymentUrl);
+  return result;
 }
 
 export async function getLinePayPrime() {
   if (Tappay.linePlayIsReady !== true) {
-    throw new Error('TappayLinePay has not been initialized!');
+    throw new Error('TappayLinePay is not ready!');
   }
-  try {
-    const result = await Tappay.getLinePayPrime();
-    return result;
-  } catch (error: any) {
-    console.log({ ...error });
-    throw { ...error };
+  const result = await Tappay.getLinePayPrime();
+  return result;
+}
+
+export async function samsungPayInit(
+  merchantName: string,
+  merchantId: string,
+  currencyCode: string,
+  serviceId: string
+) {
+  if (Tappay.initPromise === null) {
+    throw new Error('Tappay has not been initialized!');
   }
+
+  const result = await Tappay.samsungPayInit(
+    merchantName,
+    merchantId,
+    currencyCode,
+    serviceId
+  );
+
+  return result;
+}
+
+export async function getSamsungPayPrime(
+  itemTotalAmount: string,
+  shippingPrice: string,
+  tax: string,
+  totalAmount: string
+) {
+  if (Tappay.samsungPayIsReady !== true) {
+    throw new Error('TappaySamsungPay is not ready!');
+  }
+  const result = await Tappay.getSamsungPayPrime(
+    itemTotalAmount,
+    shippingPrice,
+    tax,
+    totalAmount
+  );
+  return result;
+}
+
+export async function jkoPayInit(jkoPayUniversalLinks: string) {
+  if (Tappay.initPromise === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+
+  const result = await Tappay.jkoPayInit(jkoPayUniversalLinks);
+  return result;
+}
+
+export async function getJkoPayPrime() {
+  if (Tappay.linePlayIsReady !== true) {
+    throw new Error('TappayJkoPay is not ready!');
+  }
+  const result = await Tappay.getJkoPayPrime();
+  return result;
+}
+
+export async function jkoPayRedirectWithUrl(paymentUrl: string) {
+  if (Tappay.jkoPayIsReady !== true) {
+    throw new Error('TappayJkoPay is not ready!');
+  }
+  const result = await Tappay.jkoPayRedirectWithUrl(paymentUrl);
+  return result;
 }

@@ -366,7 +366,7 @@
     ];
   }
   @catch (NSException *exception) {
-    reject(@"ios error getJkoPayPrime", exception.description, nil);
+    reject(@"ios error jkoPayRedirectWithUrl", exception.description, nil);
   }
 }
 

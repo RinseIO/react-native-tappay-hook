@@ -2,20 +2,20 @@ import { Image } from 'react-native';
 
 import { useSetDirectPayTPDCard } from '../hooks';
 
-import cardUnknown from '../images/card_unknown.png';
-import cardAmex from '../images/card_amex.png';
-import cardMmastercard from '../images/card_mastercard.png';
-import cardUnionPay from '../images/card_union_pay.png';
-import cardVisa from '../images/card_visa.png';
-import cardJcb from '../images/card_jcb.png';
+import cardUnknownIcon from '../images/card_unknown.png';
+import cardAmexIcon from '../images/card_amex.png';
+import cardMmastercardIcon from '../images/card_mastercard.png';
+import cardUnionPayIcon from '../images/card_union_pay.png';
+import cardVisaIcon from '../images/card_visa.png';
+import cardJcbIcon from '../images/card_jcb.png';
 
-const defaultCardIcon = cardUnknown;
+const defaultCardIcon = cardUnknownIcon;
 const cardIcon: any = {
-  AmericanExpress: cardAmex,
-  MasterCard: cardMmastercard,
-  UnionPay: cardUnionPay,
-  Visa: cardVisa,
-  JCB: cardJcb
+  AmericanExpress: cardAmexIcon,
+  MasterCard: cardMmastercardIcon,
+  UnionPay: cardUnionPayIcon,
+  Visa: cardVisaIcon,
+  JCB: cardJcbIcon
 };
 
 export function DirectPayCardIcon(props: any) {

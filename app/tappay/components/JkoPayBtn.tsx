@@ -1,11 +1,11 @@
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-import { useTPDLinePay } from '../hooks';
+import { useTPDJkoPay } from '../hooks';
 
-import linePayBtnIcon from '../images/LINE_Pay_h.png';
+import JkoPayBtnIcon from '../images/JKOPAY_btn.png';
 
 interface Props {
-  linePayCallbackUri: string;
+  jkoPayUniversalLinks: string;
   imagesProps?: {
     [key: string]: any;
   };
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     padding: 5,
-    backgroundColor: '#00be3b',
+    backgroundColor: '#fff',
     height: 100
   },
   buttonDisable: {
@@ -28,14 +28,14 @@ const styles = StyleSheet.create({
   }
 });
 
-export function LinePayBtn(props: Props) {
-  const { linePayCallbackUri, imagesProps = {}, ...ortherProps } = props;
-  const [linePayIsReady] = useTPDLinePay(linePayCallbackUri);
+export function JkoPayBtn(props: Props) {
+  const { jkoPayUniversalLinks, imagesProps = {}, ...ortherProps } = props;
+  const [jkoPayIsReady] = useTPDJkoPay(jkoPayUniversalLinks);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
 
-  if (linePayIsReady === false) {
+  if (jkoPayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
 
     if (typeof ortherProps.disabledStyle === 'object') {
@@ -57,13 +57,13 @@ export function LinePayBtn(props: Props) {
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={linePayIsReady === false}
+      disabled={jkoPayIsReady === false}
     >
       <Image
         {...imagesProps}
         style={iconStyle}
         resizeMode="contain"
-        source={linePayBtnIcon}
+        source={JkoPayBtnIcon}
       />
     </TouchableOpacity>
   );

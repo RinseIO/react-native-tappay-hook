@@ -3,3 +3,4 @@ export * from './GPayBtn';
 export * from './ApplePayBtn';
 export * from './LinePayBtn';
 export * from './SPayBtn';
+export * from './JkoPayBtn';

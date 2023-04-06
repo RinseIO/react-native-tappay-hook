@@ -84,6 +84,17 @@ export const SPayBtnDisabledStyle: StyleProp<ViewStyle> = {
   ...SPayBtnStyle,
   backgroundColor: '#c3c3c3'
 };
+
+export const JkoPayBtnStyle: StyleProp<ViewStyle> = {
+  ...buttonStyle,
+  backgroundColor: '#fff',
+  height: 50
+};
+export const JkoPayBtnDisabledStyle: StyleProp<ViewStyle> = {
+  ...LinePayBtnStyle,
+  backgroundColor: '#c3c3c3'
+};
+
 export const styles = StyleSheet.create({
   root,
   context,
@@ -100,7 +111,9 @@ export const styles = StyleSheet.create({
   LinePayBtnStyle,
   LinePayBtnDisabledStyle,
   SPayBtnStyle,
-  SPayBtnDisabledStyle
+  SPayBtnDisabledStyle,
+  JkoPayBtnStyle,
+  JkoPayBtnDisabledStyle
 });
 
 export default styles;

@@ -64,8 +64,13 @@
     <package android:name="jp.naver.line.android" />
 
     <!-- required for samsung pay -->
+    <!-- for samsung pay open -->
     <package android:name="com.samsung.android.spay" />
     <package android:name="com.samsung.android.samsungpay.gear" />
+
+    <!-- required for jko pay-->
+    <!-- for jko pay open -->
+    <package android:name="com.jkos.app" />
   </queries>
 
 </manifest>

@@ -8,7 +8,7 @@ import {
   SafeAreaView
 } from 'react-native';
 
-import style from '@containers/TappayScreen/style';
+import styles from '@containers/TappayScreen/style';
 
 import {
   Tappay,
@@ -23,7 +23,8 @@ import {
   GPayBtn,
   ApplePayBtn,
   LinePayBtn,
-  SPayBtn
+  SPayBtn,
+  JkoPayBtn
 } from '@tappay/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -33,7 +34,13 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [ccv, setCcv] = useState('465');
   const [googlePayAmount, setGooglePayAmount] = useState('1');
   const [appleAmount, setApplePayAmount] = useState('1');
-  const [lineAmount, setLinePayAmount] = useState('1');
+  const [linePayAmount, setLinePayAmount] = useState('1');
+  const [samsungPayItemTotalAmount, setSamsungPayItemTotalAmount] =
+    useState('1');
+  const [samsungPayShippingPrice, setSamsungPayShippingPrice] = useState('0');
+  const [samsungPayTax, setSamsungPayTax] = useState('0');
+  const [samsungPayTotalAmount, setSamsungPayTotalAmount] = useState('1');
+  const [jkoPayAmount, setJkoPayAmount] = useState('1');
   // const [directPayIsValid, setDirectPayIsValid] = useState(false);
 
   useEffect(() => {
@@ -54,6 +61,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'TWD',
         //   'your samsung pay service id'
         // );
+        // await Tappay.jkoPayTest('jkoexample://jko.uri:8888/test');
       } catch (error) {
         // console.log(error);
       }
@@ -143,7 +151,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   async function handlerLinePay() {
     try {
       const result = await Tappay.getLinePayPrime();
-      console.log(result);
+      console.log({ ...result, linePayAmount });
       setPopUpMessage({
         label: 'LinePay付款成功(測試)',
         type: 'success'
@@ -166,8 +174,13 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerSamsungPay() {
     try {
-      const result = await Tappay.getSamsungPayPrime('1', '0', '0', '1');
-      console.log(result);
+      const result = await Tappay.getSamsungPayPrime(
+        samsungPayItemTotalAmount,
+        samsungPayShippingPrice,
+        samsungPayTax,
+        samsungPayTotalAmount
+      );
+      console.log({ ...result, samsungPayItemTotalAmount });
       setPopUpMessage({
         label: 'SamsungPay付款成功(測試)',
         type: 'success'
@@ -188,40 +201,64 @@ export function TappayScreen({ setPopUpMessage }: any) {
     }
   }
 
+  async function handlerJkoPay() {
+    try {
+      const result = await Tappay.getJkoPayPrime();
+      console.log({ ...result, jkoPayAmount });
+      setPopUpMessage({
+        label: '街口支付付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: '街口支付付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log({ ...error });
+        setPopUpMessage({
+          label: '街口支付付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
+
   return (
-    <SafeAreaView style={style.root}>
-      <ScrollView style={style.context}>
-        <View style={style.row}>
-          <Text style={style.label}>直接付款信用卡卡號:</Text>
-          <DirectPayCardIcon style={style.cardIcon} cardNumber={cardNumber} />
+    <SafeAreaView style={styles.root}>
+      <ScrollView style={styles.context}>
+        <View style={styles.row}>
+          <Text style={styles.label}>直接付款信用卡卡號:</Text>
+          <DirectPayCardIcon style={styles.cardIcon} cardNumber={cardNumber} />
           <TextInput
-            style={style.inputBox}
+            style={styles.inputBox}
             value={cardNumber}
             onChange={({ nativeEvent }) => setCardNumber(nativeEvent.text)}
           />
         </View>
 
-        <View style={style.row}>
-          <Text style={style.label}>直接付款信用卡過期月份:</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>直接付款信用卡過期月份:</Text>
           <TextInput
-            style={style.inputBox}
+            style={styles.inputBox}
             value={dueMonth}
             onChange={({ nativeEvent }) => setDueMonth(nativeEvent.text)}
           />
         </View>
-        <View style={style.row}>
-          <Text style={style.label}>直接付款信用卡過期年份:</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>直接付款信用卡過期年份:</Text>
           <TextInput
-            style={style.inputBox}
+            style={styles.inputBox}
             value={dueYear}
             onChange={({ nativeEvent }) => setDueYear(nativeEvent.text)}
           />
         </View>
 
-        <View style={style.row}>
-          <Text style={style.label}>直接付款信用卡檢查碼:</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>直接付款信用卡檢查碼:</Text>
           <TextInput
-            style={style.inputBox}
+            style={styles.inputBox}
             value={ccv}
             onChange={({ nativeEvent }) => setCcv(nativeEvent.text)}
           />
@@ -229,8 +266,8 @@ export function TappayScreen({ setPopUpMessage }: any) {
         <TouchableOpacity
           style={
             directPayIsValid === false
-              ? style.buttonDisabledStyle
-              : style.buttonStyle
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle
           }
           disabled={directPayIsValid === false}
           onPress={handlerDirectPay}
@@ -238,18 +275,18 @@ export function TappayScreen({ setPopUpMessage }: any) {
           <Text
             style={
               directPayIsValid === false
-                ? style.buttonDisabledFontStyle
-                : style.buttonFontStyle
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
             }
           >
             直接付款測試
           </Text>
         </TouchableOpacity>
 
-        <View style={style.row}>
-          <Text style={style.label}>Google Pay付款金額:</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Google Pay付款金額:</Text>
           <TextInput
-            style={style.inputBox}
+            style={styles.inputBox}
             value={googlePayAmount}
             onChange={({ nativeEvent }) => setGooglePayAmount(nativeEvent.text)}
           />
@@ -257,8 +294,8 @@ export function TappayScreen({ setPopUpMessage }: any) {
         {/* <TouchableOpacity
           style={
             googlePayIsReady === false
-              ? style.buttonDisabledStyle
-              : style.buttonStyle
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle
           }
           disabled={googlePayIsReady === false}
           onPress={handlerGooglePay}
@@ -266,8 +303,8 @@ export function TappayScreen({ setPopUpMessage }: any) {
           <Text
             style={
               googlePayIsReady === false
-                ? style.buttonDisabledFontStyle
-                : style.buttonFontStyle
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
             }
           >
             google pay付款測試
@@ -275,15 +312,15 @@ export function TappayScreen({ setPopUpMessage }: any) {
         </TouchableOpacity> */}
         <GPayBtn
           merchantName="TEST MERCHANT NAME"
-          style={style.PayBtnStyle}
-          disabledStyle={style.PayBtnDisabledStyle}
+          style={styles.PayBtnStyle}
+          disabledStyle={styles.PayBtnDisabledStyle}
           onPress={handlerGooglePay}
         />
 
-        <View style={style.row}>
-          <Text style={style.label}>Apple Pay付款金額:</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Apple Pay付款金額:</Text>
           <TextInput
-            style={style.inputBox}
+            style={styles.inputBox}
             value={appleAmount}
             onChange={({ nativeEvent }) => setApplePayAmount(nativeEvent.text)}
           />
@@ -291,8 +328,8 @@ export function TappayScreen({ setPopUpMessage }: any) {
         {/* <TouchableOpacity
           style={
             applePayIsReady === false
-              ? style.buttonDisabledStyle
-              : style.buttonStyle
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle
           }
           disabled={applePayIsReady === false}
           onPress={handlerApplePay}
@@ -300,8 +337,8 @@ export function TappayScreen({ setPopUpMessage }: any) {
           <Text
             style={
               applePayIsReady === false
-                ? style.buttonDisabledFontStyle
-                : style.buttonFontStyle
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
             }
           >
             apple pay付款測試
@@ -312,24 +349,24 @@ export function TappayScreen({ setPopUpMessage }: any) {
           merchantId="TEST MERCHANT ID"
           countryCode="TW"
           currencyCode="TWD"
-          style={style.PayBtnStyle}
-          disabledStyle={style.PayBtnDisabledStyle}
+          style={styles.PayBtnStyle}
+          disabledStyle={styles.PayBtnDisabledStyle}
           onPress={handlerApplePay}
         />
 
-        <View style={style.row}>
-          <Text style={style.label}>Line Pay付款金額:</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Line Pay付款金額:</Text>
           <TextInput
-            style={style.inputBox}
-            value={lineAmount}
+            style={styles.inputBox}
+            value={linePayAmount}
             onChange={({ nativeEvent }) => setLinePayAmount(nativeEvent.text)}
           />
         </View>
         {/* <TouchableOpacity
           style={
             linePayIsReady === false
-              ? style.buttonDisabledStyle
-              : style.buttonStyle
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle
           }
           disabled={linePayIsReady === false}
           onPress={handlerLinePay}
@@ -337,8 +374,8 @@ export function TappayScreen({ setPopUpMessage }: any) {
           <Text
             style={
               linePayIsReady === false
-                ? style.buttonDisabledFontStyle
-                : style.buttonFontStyle
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
             }
           >
             line pay付款測試
@@ -346,17 +383,47 @@ export function TappayScreen({ setPopUpMessage }: any) {
         </TouchableOpacity> */}
         <LinePayBtn
           linePayCallbackUri="linepayexample://tech.cherri"
-          style={style.LinePayBtnStyle}
-          disabledStyle={style.LinePayBtnDisabledStyle}
+          style={styles.LinePayBtnStyle}
+          disabledStyle={styles.LinePayBtnDisabledStyle}
           onPress={handlerLinePay}
         />
 
-        <View style={style.row}>
-          <Text style={style.label}>Samsung Pay付款金額:</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Samsung Pay付款品項總金額:</Text>
           <TextInput
-            style={style.inputBox}
-            value={lineAmount}
-            onChange={({ nativeEvent }) => setLinePayAmount(nativeEvent.text)}
+            style={styles.inputBox}
+            value={samsungPayItemTotalAmount}
+            onChange={({ nativeEvent }) => {
+              setSamsungPayItemTotalAmount(nativeEvent.text);
+            }}
+          />
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Samsung Pay付款運費金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={samsungPayShippingPrice}
+            onChange={({ nativeEvent }) => {
+              setSamsungPayShippingPrice(nativeEvent.text);
+            }}
+          />
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Samsung Pay付款稅金金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={samsungPayTax}
+            onChange={({ nativeEvent }) => setSamsungPayTax(nativeEvent.text)}
+          />
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Samsung Pay付款總金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={samsungPayTotalAmount}
+            onChange={({ nativeEvent }) =>
+              setSamsungPayTotalAmount(nativeEvent.text)
+            }
           />
         </View>
         <SPayBtn
@@ -364,9 +431,24 @@ export function TappayScreen({ setPopUpMessage }: any) {
           merchantId="tech.cherri.samsungpayexample"
           currencyCode="TWD"
           serviceId="your samsung pay service id"
-          style={style.SPayBtnStyle}
-          disabledStyle={style.SPayBtnDisabledStyle}
+          style={styles.SPayBtnStyle}
+          disabledStyle={styles.SPayBtnDisabledStyle}
           onPress={handlerSamsungPay}
+        />
+
+        <View style={styles.row}>
+          <Text style={styles.label}>街口支付付款金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={jkoPayAmount}
+            onChange={({ nativeEvent }) => setJkoPayAmount(nativeEvent.text)}
+          />
+        </View>
+        <JkoPayBtn
+          jkoPayUniversalLinks="jkoexample://jko.uri:8888/test"
+          styles={styles.JkoPayBtnStyle}
+          disabledStyle={styles.JkoPayBtnDisabledStyle}
+          onPress={handlerJkoPay}
         />
       </ScrollView>
     </SafeAreaView>

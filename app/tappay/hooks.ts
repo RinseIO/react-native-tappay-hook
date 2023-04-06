@@ -194,3 +194,27 @@ export function useTPDSamsungPay(
 
   return [isReady, msg];
 }
+
+export function useTPDJkoPay(jkoPayUniversalLinks: string) {
+  const [isReady, setIsReady] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (Tappay.initPromise?.then) {
+          await Tappay.initPromise;
+        }
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
+          await Tappay.jkoPayInit(jkoPayUniversalLinks);
+
+        setIsReady(_isReadyToPay);
+        setMsg(_msg);
+      } catch (error: any) {
+        console.log('useTPDJkoPay error', { ...error });
+      }
+    })();
+  }, [jkoPayUniversalLinks]);
+
+  return [isReady, msg];
+}

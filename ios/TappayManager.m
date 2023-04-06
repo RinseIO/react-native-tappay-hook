@@ -507,6 +507,7 @@
       result.message,
       nil
     );
+    self.applePayJsResolve = nil;
     self.applePayJsReject = nil;
   }
 }
@@ -522,6 +523,7 @@
       @"Canceled by User",
       nil
     );
+    self.applePayJsResolve = nil;
     self.applePayJsReject = nil;
   }
 }
@@ -615,6 +617,7 @@
         @"paymentMethod": self.tpdConsumer.paymentMethod
       });
     self.applePayJsResolve = nil;
+    self.applePayJsReject = nil;
     }
 }
 

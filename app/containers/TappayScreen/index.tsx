@@ -446,7 +446,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
         </View>
         <JkoPayBtn
           jkoPayUniversalLinks="jkoexample://jko.uri:8888/test"
-          styles={styles.JkoPayBtnStyle}
+          style={styles.JkoPayBtnStyle}
           disabledStyle={styles.JkoPayBtnDisabledStyle}
           onPress={handlerJkoPay}
         />

@@ -44,9 +44,6 @@ export async function getApplePayPrime(amount: string) {
   if (Platform.OS !== 'ios') {
     return;
   }
-  if (Tappay.applePlayIsReady !== true) {
-    throw new Error('TappayApplePay is not ready!');
-  }
   const result = await Tappay.getApplePayPrime(amount);
 
   return result;
@@ -73,17 +70,11 @@ export async function linePayInit(linePayCallbackUri: string) {
 }
 
 export async function linePayRedirectWithUrl(paymentUrl: string) {
-  if (Tappay.linePlayIsReady !== true) {
-    throw new Error('TappayLinePay is not ready!');
-  }
   const result = await Tappay.linePayRedirectWithUrl(paymentUrl);
   return result;
 }
 
 export async function getLinePayPrime() {
-  if (Tappay.linePlayIsReady !== true) {
-    throw new Error('TappayLinePay is not ready!');
-  }
   const result = await Tappay.getLinePayPrime();
   return result;
 }
@@ -96,6 +87,9 @@ export async function samsungPayInit(
 ) {
   if (Tappay.initPromise === null) {
     throw new Error('Tappay has not been initialized!');
+  }
+  if (Platform.OS !== 'android') {
+    return;
   }
 
   const result = await Tappay.samsungPayInit(
@@ -114,9 +108,6 @@ export async function getSamsungPayPrime(
   tax: string,
   totalAmount: string
 ) {
-  if (Tappay.samsungPayIsReady !== true) {
-    throw new Error('TappaySamsungPay is not ready!');
-  }
   const result = await Tappay.getSamsungPayPrime(
     itemTotalAmount,
     shippingPrice,
@@ -136,17 +127,11 @@ export async function jkoPayInit(jkoPayUniversalLinks: string) {
 }
 
 export async function getJkoPayPrime() {
-  if (Tappay.linePlayIsReady !== true) {
-    throw new Error('TappayJkoPay is not ready!');
-  }
   const result = await Tappay.getJkoPayPrime();
   return result;
 }
 
 export async function jkoPayRedirectWithUrl(paymentUrl: string) {
-  if (Tappay.jkoPayIsReady !== true) {
-    throw new Error('TappayJkoPay is not ready!');
-  }
   const result = await Tappay.jkoPayRedirectWithUrl(paymentUrl);
   return result;
 }
@@ -161,17 +146,11 @@ export async function easyWalletInit(easyWalletUniversalLinks: string) {
 }
 
 export async function getEasyWalletPrime() {
-  if (Tappay.linePlayIsReady !== true) {
-    throw new Error('TappayEasyWallet is not ready!');
-  }
   const result = await Tappay.getEasyWalletPrime();
   return result;
 }
 
 export async function easyWalletRedirectWithUrl(paymentUrl: string) {
-  if (Tappay.jkoPayIsReady !== true) {
-    throw new Error('TappayEasyWallet is not ready!');
-  }
   const result = await Tappay.easyWalletRedirectWithUrl(paymentUrl);
   return result;
 }

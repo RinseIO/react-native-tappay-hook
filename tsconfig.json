@@ -13,6 +13,9 @@
       "@tappay/components": [
         "./app/tappay/components"
       ],
+      "@tappay/images": [
+        "./app/tappay/images"
+      ],
       "@components": [
         "./app/components/index"
       ],

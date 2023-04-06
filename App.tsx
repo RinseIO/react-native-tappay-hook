@@ -39,7 +39,6 @@ function App(): JSX.Element {
   }
 
   function setPopUpMessage({ label = '', type = 'info' } = {}) {
-    console.log({ label, type });
     setMessageType(type);
     setMessageText(label);
   }

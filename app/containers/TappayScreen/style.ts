@@ -91,7 +91,17 @@ export const JkoPayBtnStyle: StyleProp<ViewStyle> = {
   height: 50
 };
 export const JkoPayBtnDisabledStyle: StyleProp<ViewStyle> = {
-  ...LinePayBtnStyle,
+  ...JkoPayBtnStyle,
+  backgroundColor: '#c3c3c3'
+};
+
+export const EasyWalleBtnStyle: StyleProp<ViewStyle> = {
+  ...buttonStyle,
+  backgroundColor: '#fff',
+  height: 50
+};
+export const EasyWalleBtnDisabledStyle: StyleProp<ViewStyle> = {
+  ...EasyWalleBtnStyle,
   backgroundColor: '#c3c3c3'
 };
 
@@ -113,7 +123,9 @@ export const styles = StyleSheet.create({
   SPayBtnStyle,
   SPayBtnDisabledStyle,
   JkoPayBtnStyle,
-  JkoPayBtnDisabledStyle
+  JkoPayBtnDisabledStyle,
+  EasyWalleBtnStyle,
+  EasyWalleBtnDisabledStyle
 });
 
 export default styles;

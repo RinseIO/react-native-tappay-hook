@@ -24,7 +24,8 @@ import {
   ApplePayBtn,
   LinePayBtn,
   SPayBtn,
-  JkoPayBtn
+  JkoPayBtn,
+  EasyWalletBtn
 } from '@tappay/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -41,6 +42,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [samsungPayTax, setSamsungPayTax] = useState('0');
   const [samsungPayTotalAmount, setSamsungPayTotalAmount] = useState('1');
   const [jkoPayAmount, setJkoPayAmount] = useState('1');
+  const [easyWalleAmount, setEasyWalleAmount] = useState('1');
   // const [directPayIsValid, setDirectPayIsValid] = useState(false);
 
   useEffect(() => {
@@ -220,6 +222,30 @@ export function TappayScreen({ setPopUpMessage }: any) {
         console.log({ ...error });
         setPopUpMessage({
           label: '街口支付付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
+
+  async function handlerEasyWallet() {
+    try {
+      const result = await Tappay.getEasyWalletPrime();
+      console.log({ ...result, easyWalleAmount });
+      setPopUpMessage({
+        label: '悠遊支付付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: '悠遊支付付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log({ ...error });
+        setPopUpMessage({
+          label: '悠遊支付付款失敗(測試)',
           type: 'error'
         });
       }
@@ -450,6 +476,21 @@ export function TappayScreen({ setPopUpMessage }: any) {
           style={styles.JkoPayBtnStyle}
           disabledStyle={styles.JkoPayBtnDisabledStyle}
           onPress={handlerJkoPay}
+        />
+
+        <View style={styles.row}>
+          <Text style={styles.label}>悠遊支付付款金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={easyWalleAmount}
+            onChange={({ nativeEvent }) => setEasyWalleAmount(nativeEvent.text)}
+          />
+        </View>
+        <EasyWalletBtn
+          easyWalletUniversalLinks="https://google.com.tw"
+          style={styles.EasyWalleBtnStyle}
+          disabledStyle={styles.EasyWalleBtnDisabledStyle}
+          onPress={handlerEasyWallet}
         />
       </ScrollView>
     </SafeAreaView>

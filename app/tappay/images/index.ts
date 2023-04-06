@@ -18,6 +18,8 @@ import linePay2BtnIcon from './LINE_Pay_v.png';
 
 import spayBtnIcon from './spay_btn.png';
 
+import easyWalletBtnIcon from './Easy_Wallet_btn.png';
+
 export {
   cardUnknownIcon,
   cardAmexIcon,
@@ -32,5 +34,6 @@ export {
   JkoPayBtnIcon,
   linePay1BtnIcon,
   linePay2BtnIcon,
-  spayBtnIcon
+  spayBtnIcon,
+  easyWalletBtnIcon
 };

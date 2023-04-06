@@ -218,3 +218,27 @@ export function useTPDJkoPay(jkoPayUniversalLinks: string) {
 
   return [isReady, msg];
 }
+
+export function useTPDEasyWallet(easyWalletUniversalLinks: string) {
+  const [isReady, setIsReady] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (Tappay.initPromise?.then) {
+          await Tappay.initPromise;
+        }
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
+          await Tappay.easyWalletInit(easyWalletUniversalLinks);
+
+        setIsReady(_isReadyToPay);
+        setMsg(_msg);
+      } catch (error: any) {
+        console.log('useTPDEasyWallet error', { ...error });
+      }
+    })();
+  }, [easyWalletUniversalLinks]);
+
+  return [isReady, msg];
+}

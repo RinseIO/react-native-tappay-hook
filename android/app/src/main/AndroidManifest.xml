@@ -71,6 +71,10 @@
     <!-- required for jko pay-->
     <!-- for jko pay open -->
     <package android:name="com.jkos.app" />
+
+    <!-- required for easy-wallet-->
+    <!-- for easy-wallet open -->
+    <package android:name="com.easycard.wallet" />
   </queries>
 
 </manifest>

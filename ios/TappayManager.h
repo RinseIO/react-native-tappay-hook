@@ -21,20 +21,25 @@
 @property () NSString *CCV;
 @property () NSString *SDKVersion;
 @property () BOOL *applePayIsReadyToPay;
-@property (nonatomic, strong) TPDMerchant *TPDmerchant;
-@property (nonatomic, strong) TPDConsumer *TPDconsumer;
-@property (nonatomic, strong) TPDCart *TPDcart;
-@property (nonatomic, strong) TPDApplePay *TPDapplePay;
+@property (nonatomic, strong) TPDMerchant *tpdMerchant;
+@property (nonatomic, strong) TPDConsumer *tpdConsumer;
+@property (nonatomic, strong) TPDCart *tpdCart;
+@property (nonatomic, strong) TPDApplePay *tpdApplePay;
 @property () RCTPromiseResolveBlock applePayJsResolve;
 @property () RCTPromiseRejectBlock applePayJsReject;
-@property (nonatomic, strong) TPDLinePay *TPDlinePay;
+@property (nonatomic, strong) TPDLinePay *tpdLinePay;
 @property () NSString *linePayCallbackUri;
 @property () BOOL *linePayIsReadyToPay;
 @property () RCTPromiseResolveBlock linePayJsResolve;
 @property () RCTPromiseRejectBlock linePayJsReject;
-@property (nonatomic, strong) TPDJKOPay *jkoPay;
+@property (nonatomic, strong) TPDJKOPay *tpdJkoPay;
 @property () BOOL *jkoPayIsReadyToPay;
 @property () NSString *jkoPayUniversalLinks;
+@property (nonatomic, strong) TPDEasyWallet *tpdEasyWallet;
+@property () BOOL *easyWalletIsReadyToPay;
+@property () NSString *easyWalletUniversalLinks;
+@property () RCTPromiseResolveBlock easyWalletJsResolve;
+@property () RCTPromiseRejectBlock easyWalletJsReject;
 
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
@@ -68,21 +73,31 @@
 
 - (BOOL)isJkoPayAvailable;
 
--(BOOL)jkoPayInit:(NSString *)_jkoPayUniversalLinks;
+- (BOOL)jkoPayInit:(NSString *)_jkoPayUniversalLinks;
 
--(void)getJkoPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+- (void)getJkoPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
--(void)jkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+- (void)jkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+- (void)tappayEasyWalletExceptionHandler:(NSNotification *)notification;
+
+- (BOOL)isEasyWalletAvailable;
+
+- (BOOL)easyWalletInit:(NSString *)_easyWalletUniversalLinks;
+
+- (void)getEasyWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+- (void)easyWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 @end
 
 @interface TPDApplePayDelegate:NSObject
 
 @property () NSString *SDKVersion;
-@property (nonatomic, strong) TPDMerchant *TPDmerchant;
-@property (nonatomic, strong) TPDConsumer *TPDconsumer;
-@property (nonatomic, strong) TPDCart *TPDcart;
-@property (nonatomic, strong) TPDApplePay *TPDapplePay;
+@property (nonatomic, strong) TPDMerchant *tpdMerchant;
+@property (nonatomic, strong) TPDConsumer *tpdConsumer;
+@property (nonatomic, strong) TPDCart *tpdCart;
+@property (nonatomic, strong) TPDApplePay *tpdApplePay;
 @property () RCTPromiseResolveBlock applePayJsResolve;
 @property () RCTPromiseRejectBlock applePayJsReject;
 

@@ -110,13 +110,13 @@
 
 - (void)applePayInit:(NSString *)merchantName merchantId:(NSString *)merchantId countryCode:(NSString *)countryCode currencyCode:(NSString *)currencyCode resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
-    self.TPDmerchant = [TPDMerchant new];
-    self.TPDmerchant.merchantName               = merchantName;
-    self.TPDmerchant.merchantCapability         = PKMerchantCapability3DS;
-    self.TPDmerchant.applePayMerchantIdentifier = merchantId; // Your Apple Pay Merchant ID (https://developer.apple.com/account/ios/identifier/merchant)
-    self.TPDmerchant.countryCode                = countryCode;
-    self.TPDmerchant.currencyCode               = currencyCode;
-    self.TPDmerchant.supportedNetworks          = @[PKPaymentNetworkAmex, PKPaymentNetworkVisa ,PKPaymentNetworkMasterCard];
+    self.tpdMerchant = [TPDMerchant new];
+    self.tpdMerchant.merchantName               = merchantName;
+    self.tpdMerchant.merchantCapability         = PKMerchantCapability3DS;
+    self.tpdMerchant.applePayMerchantIdentifier = merchantId; // Your Apple Pay Merchant ID (https://developer.apple.com/account/ios/identifier/merchant)
+    self.tpdMerchant.countryCode                = countryCode;
+    self.tpdMerchant.currencyCode               = currencyCode;
+    self.tpdMerchant.supportedNetworks          = @[PKPaymentNetworkAmex, PKPaymentNetworkVisa ,PKPaymentNetworkMasterCard];
 
     // Set Consumer Contact.
     PKContact *contact  = [PKContact new];
@@ -125,11 +125,11 @@
     // name.givenName  = @"TapPay";
     contact.name = name;
     
-    self.TPDconsumer = [TPDConsumer new];
-    self.TPDconsumer.billingContact    = contact;
-    self.TPDconsumer.shippingContact   = contact;
-    // self.TPDconsumer.requiredShippingAddressFields  = PKAddressFieldNone;
-    // self.TPDconsumer.requiredBillingAddressFields   = PKAddressFieldNone;
+    self.tpdConsumer = [TPDConsumer new];
+    self.tpdConsumer.billingContact    = contact;
+    self.tpdConsumer.shippingContact   = contact;
+    // self.tpdConsumer.requiredShippingAddressFields  = PKAddressFieldNone;
+    // self.tpdConsumer.requiredBillingAddressFields   = PKAddressFieldNone;
 
     // self.applePayJsResolve = resolve;
     // self.applePayJsReject = reject;
@@ -138,10 +138,10 @@
     _TPDApplePayDelegate.applePayJsResolve = resolve;
     _TPDApplePayDelegate.applePayJsReject = reject;
     _TPDApplePayDelegate.SDKVersion = self.SDKVersion;
-    _TPDApplePayDelegate.TPDconsumer = self.TPDconsumer;
+    _TPDApplePayDelegate.tpdConsumer = self.tpdConsumer;
 
-    TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:[TPDCart new] withDelegate:_TPDApplePayDelegate];
-    // TPDApplePay *TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:nil withDelegate:_TPDApplePayDelegate];
+    TPDApplePay *tpdApplePay = [TPDApplePay setupWthMerchant:self.tpdMerchant withConsumer:self.tpdConsumer withCart:[TPDCart new] withDelegate:_TPDApplePayDelegate];
+    // TPDApplePay *tpdApplePay = [TPDApplePay setupWthMerchant:self.tpdMerchant withConsumer:self.tpdConsumer withCart:nil withDelegate:_TPDApplePayDelegate];
 
     resolve(@{
       @"isReadyToPay": @([self isApplePayAvailable]),
@@ -154,15 +154,15 @@
 
 - (void)getApplePayPrime:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
-    self.TPDcart = [TPDCart new];
-    self.TPDcart.isAmountPending = YES;
-    self.TPDcart.isShowTotalAmount = NO;
+    self.tpdCart = [TPDCart new];
+    self.tpdCart.isAmountPending = YES;
+    self.tpdCart.isShowTotalAmount = NO;
 
     TPDPaymentItem *final = [TPDPaymentItem paymentItemWithItemName:@"final" withAmount:[NSDecimalNumber decimalNumberWithString:amount]];
-    [self.TPDcart addPaymentItem:final];
+    [self.tpdCart addPaymentItem:final];
 
     TPDPaymentItem * pending = [TPDPaymentItem pendingPaymentItemWithItemName:@"pending"];
-    [self.TPDcart addPaymentItem:pending];
+    [self.tpdCart addPaymentItem:pending];
 
     self.applePayJsResolve = resolve;
     self.applePayJsReject = reject;
@@ -171,12 +171,12 @@
     _TPDApplePayDelegate.applePayJsResolve = resolve;
     _TPDApplePayDelegate.applePayJsReject = reject;
     _TPDApplePayDelegate.SDKVersion = self.SDKVersion;
-    _TPDApplePayDelegate.TPDconsumer = self.TPDconsumer;
+    _TPDApplePayDelegate.tpdConsumer = self.tpdConsumer;
 
     // Without Handle Payment
-    self.TPDapplePay = [TPDApplePay setupWthMerchant:self.TPDmerchant withConsumer:self.TPDconsumer withCart:self.TPDcart withDelegate:_TPDApplePayDelegate];
+    self.tpdApplePay = [TPDApplePay setupWthMerchant:self.tpdMerchant withConsumer:self.tpdConsumer withCart:self.tpdCart withDelegate:_TPDApplePayDelegate];
 
-    [self.TPDapplePay startPayment];
+    [self.tpdApplePay startPayment];
 
   }
   @catch (NSException *exception) {
@@ -216,7 +216,7 @@
 
   #if linePayIsReadyToPay == YES
     [TPDLinePay addExceptionObserver:(@selector(tappayLinePayExceptionHandler:))];
-    self.TPDlinePay = [TPDLinePay setupWithReturnUrl:linePayCallbackUri];
+    self.tpdLinePay = [TPDLinePay setupWithReturnUrl:linePayCallbackUri];
     self.linePayIsReadyToPay = &(linePayIsReadyToPay);
     self.linePayCallbackUri = linePayCallbackUri;
   #endif
@@ -228,10 +228,10 @@
   self.linePayJsReject = reject;
   [
     [
-      [self.TPDlinePay onSuccessCallback:^(NSString * _Nullable prime) {
+      [self.tpdLinePay onSuccessCallback:^(NSString * _Nullable prime) {
           UIViewController *rootViewcontroller= [UIApplication sharedApplication].keyWindow.rootViewController;
 
-          [self.TPDlinePay redirect:paymentUrl withViewController:rootViewcontroller completion:^(TPDLinePayResult * _Nonnull result) {
+          [self.tpdLinePay redirect:paymentUrl withViewController:rootViewcontroller completion:^(TPDLinePayResult * _Nonnull result) {
 
             resolve(@{
               @"status": [NSString stringWithFormat: @"%ld", result.status],
@@ -262,7 +262,7 @@
   self.linePayJsReject = reject;
   [
     [
-      [self.TPDlinePay onSuccessCallback:^(NSString * _Nullable prime) {
+      [self.tpdLinePay onSuccessCallback:^(NSString * _Nullable prime) {
             resolve(@{
               @"systemOS": @"ios",
               @"tappaySDKVersion": self.SDKVersion,
@@ -312,10 +312,10 @@
   BOOL jkoPayIsReadyToPay = [self isJkoPayAvailable];
   
   #if jkoPayIsReadyToPay == YES
-    TPDJKOPay *jkoPay = [TPDJKOPay setupWithReturnUrl:_jkoPayUniversalLinks];
+    TPDJKOPay *tpdJkoPay = [TPDJKOPay setupWithReturnUrl:_jkoPayUniversalLinks];
     [TPDJKOPay addExceptionObserver:(@selector(tappayJKOPayExceptionHandler:))];
 
-    self.jkoPay = jkoPay;
+    self.tpdJkoPay = tpdJkoPay;
     self.jkoPayUniversalLinks = _jkoPayUniversalLinks;
     self.jkoPayIsReadyToPay = &(jkoPayIsReadyToPay);
   #endif
@@ -328,7 +328,7 @@
     [
       [
         [
-          self.jkoPay onSuccessCallback:^(NSString * _Nullable prime) {
+          self.tpdJkoPay onSuccessCallback:^(NSString * _Nullable prime) {
             resolve(@{
               @"systemOS": @"ios",
               @"SDKVersion": self.SDKVersion,
@@ -355,7 +355,7 @@
 -(void)jkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
     [
-      self.jkoPay redirect:paymentUrl completion:^(TPDJKOPayResult * _Nonnull result) {
+      self.tpdJkoPay redirect:paymentUrl completion:^(TPDJKOPayResult * _Nonnull result) {
         resolve(@{
           @"status":[NSString stringWithFormat:@"%ld", result.status],
           @"recTradeId": result.recTradeId,
@@ -367,6 +367,97 @@
   }
   @catch (NSException *exception) {
     reject(@"ios error jkoPayRedirectWithUrl", exception.description, nil);
+  }
+}
+
+- (void)tappayEasyWalletExceptionHandler:(NSNotification *)notification {
+    TPDEasyWalletResult * result = [TPDEasyWallet parseURL:notification];
+
+    if (self.self.easyWalletJsReject != nil) {
+      self.easyWalletJsReject(@"ios error tappayEasyWalletExceptionHandler", [NSString stringWithFormat: @"%ld", result.status], @{
+        @"status": [NSString stringWithFormat: @"%ld", result.status],
+        @"orderNumber": result.orderNumber,
+        @"recTradeId": result.recTradeId,
+        @"bankTransactionId": result.bankTransactionId,
+      });
+      self.easyWalletJsReject = nil;
+    }
+}
+
+-(BOOL)isEasyWalletAvailable {
+  return [TPDEasyWallet isEasyWalletAvailable];
+}
+
+-(BOOL)easyWalletInit:(NSString *)_easyWalletUniversalLinks {
+  if (self.easyWalletIsReadyToPay == YES && self.easyWalletUniversalLinks == _easyWalletUniversalLinks) {
+    return self.easyWalletIsReadyToPay;
+  }
+  
+  BOOL easyWalletIsReadyToPay = [self isEasyWalletAvailable];
+  
+  #if easyWalletIsReadyToPay == YES
+  TPDEasyWallet *tpdEasyWallet = [TPDEasyWallet setupWithReturUrl:_easyWalletUniversalLinks];
+    [TPDEasyWallet addExceptionObserver:(@selector(tappayEasyWalletExceptionHandler:))];
+
+    self.tpdEasyWallet = tpdEasyWallet;
+    self.easyWalletUniversalLinks = _easyWalletUniversalLinks;
+    self.easyWalletIsReadyToPay = &(easyWalletIsReadyToPay);
+  #endif
+
+  return easyWalletIsReadyToPay;
+}
+
+-(void)getEasyWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.easyWalletJsReject = reject;
+    [
+      [
+        [
+          self.tpdEasyWallet onSuccessCallback:^(NSString * _Nullable prime) {
+            resolve(@{
+              @"systemOS": @"ios",
+              @"SDKVersion": self.SDKVersion,
+              @"prime": prime
+            });
+            self.easyWalletJsReject = nil;
+          }
+        ]
+        onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error getEasyWalletPrime onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+          self.easyWalletJsReject = nil;
+        }
+      ]
+      getPrime
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error getEasyWalletPrime", exception.description, nil);
+    self.easyWalletJsReject = nil;
+  }
+}
+
+-(void)easyWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.easyWalletJsReject = reject;
+    [
+      self.tpdEasyWallet redirect:paymentUrl completion:^(TPDEasyWalletResult * _Nonnull result) {
+        resolve(@{
+          @"status":[NSString stringWithFormat:@"%ld", result.status],
+          @"recTradeId": result.recTradeId,
+          @"bankTransactionId": result.bankTransactionId,
+          @"orderNumber":result.orderNumber
+        });
+        self.easyWalletJsReject = nil;
+      }
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error easyWalletRedirectWithUrl", exception.description, nil);
+    self.easyWalletJsReject = nil;
   }
 }
 
@@ -459,11 +550,11 @@
     NSLog(@"===================================================== \n\n");
     
     if (paymentMethod.type == PKPaymentMethodTypeDebit) {
-        [self.TPDcart addPaymentItem:[TPDPaymentItem paymentItemWithItemName:@"Discount"
+        [self.tpdCart addPaymentItem:[TPDPaymentItem paymentItemWithItemName:@"Discount"
                                                                withAmount:[NSDecimalNumber decimalNumberWithString:@"-1.00"]]];
     }
     
-    return self.TPDcart;
+    return self.tpdCart;
 }
 
 - (BOOL)tpdApplePay:(TPDApplePay *)applePay canAuthorizePaymentWithShippingContact:(PKContact *)shippingContact {
@@ -494,7 +585,7 @@
     // NSLog(@"shippingContact.emailAddress : %@", applePay.consumer.shippingContact.emailAddress);
     // NSLog(@"shippingContact.phoneNumber : %@", applePay.consumer.shippingContact.phoneNumber.stringValue);
 
-    PKPaymentMethod * paymentMethod = self.TPDconsumer.paymentMethod;
+    PKPaymentMethod * paymentMethod = self.tpdConsumer.paymentMethod;
 
     NSLog(@"tpye : %ld", paymentMethod.type);
     NSLog(@"Network : %@", paymentMethod.network);
@@ -521,7 +612,7 @@
         @"merchantReferenceInfo": merchantReferenceInfo,
         @"cart": applePay.cart,
         @"consumer": applePay.consumer,
-        @"paymentMethod": self.TPDconsumer.paymentMethod
+        @"paymentMethod": self.tpdConsumer.paymentMethod
       });
     self.applePayJsResolve = nil;
     }

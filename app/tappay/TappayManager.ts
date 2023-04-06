@@ -8,6 +8,7 @@ export class tappay {
   public linePlayIsReady: boolean = false;
   public samsungPayIsReady: boolean = false;
   public jkoPayIsReady: boolean = false;
+  public easyWalletIsReady: boolean = false;
 
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {
@@ -237,6 +238,40 @@ export class tappay {
     return result;
   }
 
+  public async easyWalletInit(easyWalletUniversalLinks: string) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const result = await NativeModules.RNToolsManager.TappayEasyWalletInit(
+      easyWalletUniversalLinks
+    );
+    this.easyWalletIsReady = result.isReadyToPay;
+    return { ...result, msg: result.msg || '' };
+  }
+
+  public async getEasyWalletPrime() {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+    if (this.easyWalletIsReady !== true) {
+      throw new Error('TappayEasyWallet is not ready!');
+    }
+    const result =
+      await NativeModules.RNToolsManager.TappayGetEasyWalletPrime();
+    return result;
+  }
+
+  public async easyWalletRedirectWithUrl(paymentUrl: string) {
+    if (this.easyWalletIsReady !== true) {
+      throw new Error('TappayEasyWallet is not ready!');
+    }
+    const result =
+      await NativeModules.RNToolsManager.TappayEasyWalletRedirectWithUrl(
+        paymentUrl
+      );
+    return result;
+  }
+
   public async directPayTest() {
     try {
       const validationResult = await this.setDirectPayTPDCard(
@@ -328,6 +363,18 @@ export class tappay {
       const { isReadyToPay } = await this.jkoPayInit(jkoPayUniversalLinks);
       if (isReadyToPay === true) {
         const result = await Tappay.getJkoPayPrime();
+        console.log({ result });
+      }
+    } catch (error: any) {
+      console.log({ ...error });
+    }
+  }
+
+  public async easyWalletTest(easyWalletUniversalLinks: string) {
+    try {
+      const { isReadyToPay } = await this.easyWalletInit(easyWalletUniversalLinks);
+      if (isReadyToPay === true) {
+        const result = await Tappay.getEasyWalletPrime();
         console.log({ result });
       }
     } catch (error: any) {

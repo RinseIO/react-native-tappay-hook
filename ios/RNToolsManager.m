@@ -288,4 +288,59 @@ RCT_EXPORT_METHOD(TappayJkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(R
   }
 }
 
+
+
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDEasyWallet的isEasyWalletAvailable
+RCT_EXPORT_METHOD(TappayIsEasyWalletAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @([self.TappayManager isEasyWalletAvailable])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsEasyWalletAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDEasyWallet的初始化方法
+RCT_EXPORT_METHOD(TappayEasyWalletInit:(NSString *)_easyWalletUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @([self.TappayManager easyWalletInit:_easyWalletUniversalLinks])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayEasyWalletInit", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDEasyWallet取得prime方法
+RCT_EXPORT_METHOD(TappayGetEasyWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager getEasyWalletPrime:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayGetEasyWalletPrime", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDEasyWallet的跳轉付款方法
+RCT_EXPORT_METHOD(TappayEasyWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager easyWalletRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayEasyWalletRedirectWithUrl", exception.description, nil);
+  }
+}
+
 @end

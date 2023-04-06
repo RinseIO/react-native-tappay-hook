@@ -285,4 +285,58 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
       promise.reject("android error TappayJkoPayRedirectWithUrl", e);
     }
   }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDEasyWallet的isEasyWalletAvailable
+  @ReactMethod
+  public void TappayIsEasyWalletAvailable(Promise promise) {
+    try {
+      boolean result = TappayManager.isEasyWalletAvailable();
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsEasyWalletAvailable", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDEasyWallet的easyWalletInit
+  @ReactMethod
+  public void TappayEasyWalletInit(String easyWalletUniversalLinks, Promise promise) {
+    try {
+      boolean result = TappayManager.easyWalletInit(easyWalletUniversalLinks);
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+      resultData.putString("easyWalletUniversalLinks", easyWalletUniversalLinks);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayEasyWalletInit", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDEasyWallet的getPrime
+  @ReactMethod
+  public void TappayGetEasyWalletPrime(Promise promise) {
+    try {
+      TappayManager.getEasyWalletPrime(promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayGetEasyWalletPrime", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDEasyWallet的redirectWithUrl，並自動完成跳轉資料的監聽
+  @ReactMethod
+  public void TappayEasyWalletRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+      TappayManager.easyWalletRedirectWithUrl(paymentUrl, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayEasyWalletRedirectWithUrl", e);
+    }
+  }
+
 }

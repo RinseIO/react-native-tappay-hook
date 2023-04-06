@@ -150,3 +150,28 @@ export async function jkoPayRedirectWithUrl(paymentUrl: string) {
   const result = await Tappay.jkoPayRedirectWithUrl(paymentUrl);
   return result;
 }
+
+export async function easyWalletInit(easyWalletUniversalLinks: string) {
+  if (Tappay.initPromise === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+
+  const result = await Tappay.easyWalletInit(easyWalletUniversalLinks);
+  return result;
+}
+
+export async function getEasyWalletPrime() {
+  if (Tappay.linePlayIsReady !== true) {
+    throw new Error('TappayEasyWallet is not ready!');
+  }
+  const result = await Tappay.getEasyWalletPrime();
+  return result;
+}
+
+export async function easyWalletRedirectWithUrl(paymentUrl: string) {
+  if (Tappay.jkoPayIsReady !== true) {
+    throw new Error('TappayEasyWallet is not ready!');
+  }
+  const result = await Tappay.easyWalletRedirectWithUrl(paymentUrl);
+  return result;
+}

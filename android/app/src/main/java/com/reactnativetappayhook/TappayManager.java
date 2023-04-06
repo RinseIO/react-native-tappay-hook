@@ -1,7 +1,6 @@
 package com.reactnativetappayhook;
 
 import java.util.List;
-import android.util.Log;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -12,6 +11,12 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.bridge.BaseActivityEventListener;
+
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.wallet.AutoResolveHelper;
+import com.google.android.gms.wallet.PaymentData;
+import com.google.android.gms.wallet.TransactionInfo;
+import com.google.android.gms.wallet.WalletConstants;
 
 import tech.cherri.tpdirect.api.TPDCard;
 
@@ -40,26 +45,18 @@ import tech.cherri.tpdirect.api.TPDSamsungPay;
 import tech.cherri.tpdirect.callback.TPDSamsungPayGetPrimeSuccessCallback;
 import tech.cherri.tpdirect.callback.TPDSamsungPayStatusListener;
 import tech.cherri.tpdirect.callback.dto.TPDCardDto;
-import tech.cherri.tpdirect.constant.TPDErrorConstants;
 
-import android.os.AsyncTask;
-import org.json.JSONException;
 import tech.cherri.tpdirect.api.TPDJkoPay;
 import tech.cherri.tpdirect.api.TPDJkoPayResult;
 import tech.cherri.tpdirect.callback.TPDJkoPayResultListener;
 import tech.cherri.tpdirect.exception.TPDJkoPayException;
 import tech.cherri.tpdirect.callback.TPDJkoPayGetPrimeSuccessCallback;
-import tech.cherri.tpdirect.constant.TPDNetworkConstants;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.wallet.AutoResolveHelper;
-import com.google.android.gms.wallet.PaymentData;
-import com.google.android.gms.wallet.TransactionInfo;
-import com.google.android.gms.wallet.WalletConstants;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.Class;
+import tech.cherri.tpdirect.api.TPDEasyWallet;
+import tech.cherri.tpdirect.api.TPDEasyWalletResult;
+import tech.cherri.tpdirect.callback.TPDEasyWalletResultListener;
+import tech.cherri.tpdirect.exception.TPDEasyWalletException;
+import tech.cherri.tpdirect.callback.TPDEasyWalletGetPrimeSuccessCallback;
 
 // https://portal.tappaysdk.com/document/androidnoform
 public class TappayManager {
@@ -108,6 +105,10 @@ public class TappayManager {
   String jkoPayUniversalLinks;
   TPDJkoPay tpdJkoPay;
   TPDJkoPayActivityEvent mTPDJkoPayActivityEvent;
+  TPDEasyWallet tpdEasyWallet;
+  String easyWalletUniversalLinks;
+  boolean easyWalletIsReadyToPay;
+  TPDEasyWalletActivityEvent mTPDEasyWalletActivityEvent;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -178,6 +179,17 @@ public class TappayManager {
 
   class TPDJkoPayActivityEvent extends BaseActivityEventListener implements TPDJkoPayResultListener {
     public void onParseSuccess(TPDJkoPayResult tpdJkoPayResult) {
+    }
+
+    public void onParseFail(int status, String msg) {
+    }
+  }
+
+  interface TPDEasyWalletGetPrimeCallback extends TPDEasyWalletGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
+  }
+
+  class TPDEasyWalletActivityEvent extends BaseActivityEventListener implements TPDEasyWalletResultListener {
+    public void onParseSuccess(TPDEasyWalletResult tpdEasyWalletResult) {
     }
 
     public void onParseFail(int status, String msg) {
@@ -743,6 +755,114 @@ public class TappayManager {
       tpdJkoPay.redirectWithUrl(paymentUrl);
     } catch (Exception e) {
       promise.reject("android error jkoPayRedirectWithUrl", e);
+    }
+  }
+
+  public boolean isEasyWalletAvailable() {
+    return TPDEasyWallet.isAvailable(reactContext);
+  }
+
+  public boolean easyWalletInit(String _easyWalletUniversalLinks) {
+    if (easyWalletIsReadyToPay == true && easyWalletUniversalLinks == _easyWalletUniversalLinks) {
+      return easyWalletIsReadyToPay;
+    }
+
+    boolean _easyWalletIsReadyToPay = false;
+
+    try {
+      _easyWalletIsReadyToPay = isEasyWalletAvailable();
+
+      if (_easyWalletIsReadyToPay == true) {
+        tpdEasyWallet = new TPDEasyWallet(reactContext, _easyWalletUniversalLinks);
+        easyWalletUniversalLinks = _easyWalletUniversalLinks;
+        easyWalletIsReadyToPay = _easyWalletIsReadyToPay;
+      }
+
+    } catch (TPDEasyWalletException e) {
+      throw new RuntimeException(e);
+    }
+
+    return _easyWalletIsReadyToPay;
+  }
+
+  public void getEasyWalletPrime(Promise promise) {
+    try {
+      TPDEasyWalletGetPrimeCallback mTPDEasyWalletGetPrimeCallback = new TPDEasyWalletGetPrimeCallback() {
+        @Override
+        public void onSuccess(String prime) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("prime", prime);
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error getJkoPayPrime onSuccess", e);
+          }
+        }
+
+        @Override
+        public void onFailure(int status, String msg) {
+          promise.reject("android error getJkoPayPrime onFailure",
+              msg + ", Error Status:" + Integer.toString(status));
+        }
+      };
+
+      tpdEasyWallet.getPrime(mTPDEasyWalletGetPrimeCallback, mTPDEasyWalletGetPrimeCallback);
+    } catch (Exception e) {
+      promise.reject("android error getJkoPayPrime", e);
+    }
+  }
+
+  public void easyWalletRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+
+      if (mTPDEasyWalletActivityEvent != null) {
+        reactContext.removeActivityEventListener(mTPDEasyWalletActivityEvent);
+      }
+
+      mTPDEasyWalletActivityEvent = new TPDEasyWalletActivityEvent() {
+        @Override
+        public void onNewIntent(Intent intent) {
+          super.onNewIntent(intent);
+          if (intent.getDataString() != null && intent.getDataString().contains(easyWalletUniversalLinks)) {
+            tpdEasyWallet.parseToEasyWalletResult(reactContext.getApplicationContext(), intent.getData(),
+                mTPDEasyWalletActivityEvent);
+          }
+        }
+
+        @Override
+        public void onParseSuccess(TPDEasyWalletResult tpdEasyWalletResult) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putInt("status", tpdEasyWalletResult.getStatus());
+            resultData.putString("nrecTradeId", tpdEasyWalletResult.getRecTradeId());
+            resultData.putString("nbankTransactionId", tpdEasyWalletResult.getBankTransactionId());
+            resultData.putString("norderNumber", tpdEasyWalletResult.getOrderNumber());
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error easyWalletRedirectWithUrl onParseSuccess", e);
+          }
+          reactContext.removeActivityEventListener(mTPDEasyWalletActivityEvent);
+          mTPDEasyWalletActivityEvent = null;
+        }
+
+        @Override
+        public void onParseFail(int status, String msg) {
+          promise.reject("android error easyWalletRedirectWithUrl onParseFail",
+              msg + ", Error Status:" + Integer.toString(status));
+          reactContext.removeActivityEventListener(mTPDEasyWalletActivityEvent);
+          mTPDEasyWalletActivityEvent = null;
+        }
+      };
+
+      reactContext.addActivityEventListener(mTPDEasyWalletActivityEvent);
+
+      tpdJkoPay.redirectWithUrl(paymentUrl);
+    } catch (Exception e) {
+      promise.reject("android error easyWalletRedirectWithUrl", e);
     }
   }
 

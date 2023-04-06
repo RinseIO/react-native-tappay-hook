@@ -62,6 +62,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'your samsung pay service id'
         // );
         // await Tappay.jkoPayTest('jkoexample://jko.uri:8888/test');
+        await Tappay.easyWalletTest('https://google.com.tw');
       } catch (error) {
         // console.log(error);
       }

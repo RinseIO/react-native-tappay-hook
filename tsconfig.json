@@ -13,6 +13,9 @@
       "@tappay/hooks": [
         "./tappay/hooks"
       ],
+      "@tappay/TappayManager": [
+        "./tappay/TappayManager"
+      ],
       "@tappay/components": [
         "./tappay/components/index"
       ],

@@ -12,6 +12,7 @@ module.exports = {
           '@tappay': './tappay',
           '@tappay/fp': './tappay/fp',
           '@tappay/hooks': './tappay/hooks',
+          '@tappay/TappayManager': './tappay/TappayManager',
           '@tappay/components': './tappay/components',
           '@tappay/images': './tappay/images',
           '@': './app',

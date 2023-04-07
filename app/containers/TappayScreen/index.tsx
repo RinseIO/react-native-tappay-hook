@@ -11,12 +11,13 @@ import {
 import styles from '@containers/TappayScreen/style';
 
 import {
-  Tappay,
   useSetDirectPayTPDCard
-  // useTPDGooglePay,
+  // ,useTPDGooglePay,
   // useTPDApplePay,
   // useTPDLinePay
-} from '@tappay';
+} from '@tappay/hooks';
+
+import { Tappay } from '@tappay';
 
 import {
   DirectPayCardIcon,

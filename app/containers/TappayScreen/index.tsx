@@ -13,11 +13,19 @@ import styles from '@containers/TappayScreen/style';
 import { Tappay } from '@tappay';
 
 import {
-  useSetDirectPayTPDCard
-  // ,useTPDGooglePay,
-  // useTPDApplePay,
-  // useTPDLinePay
-} from '@tappay/hooks';
+  getDirectPayPrime,
+  getGooglePayPrime,
+  getApplePayPrime,
+  getLinePayPrime,
+  getSamsungPayPrime,
+  getJkoPayPrime,
+  getEasyWalletPrime,
+  getPiWalletPrime,
+  getPlusPayPrime,
+  getAtomePayPrime
+} from '@tappay/fp';
+
+import { useSetDirectPayTPDCard } from '@tappay/hooks';
 
 import {
   DirectPayCardIcon,
@@ -28,7 +36,8 @@ import {
   JkoPayBtn,
   EasyWalletBtn,
   PiWalletBtn,
-  PlusPayBtn
+  PlusPayBtn,
+  AtomePayBtn
 } from '@tappay/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -48,7 +57,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [easyWalleAmount, setEasyWalleAmount] = useState('1');
   const [piWalleAmount, setPiWalleAmount] = useState('1');
   const [plusPayAmount, setPlusPayAmount] = useState('1');
-  // const [directPayIsValid, setDirectPayIsValid] = useState(false);
+  const [atomePayAmount, setAtomePayAmount] = useState('1');
 
   useEffect(() => {
     (async () => {
@@ -62,12 +71,12 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'TWD'
         // );
         // await Tappay.linePayTest('linepayexample://tech.cherri');
-        // await Tappay.samsungTest(
-        //   'TapPay Samsung Pay Demo',
-        //   'tech.cherri.samsungpayexample',
-        //   'TWD',
-        //   'your samsung pay service id'
-        // );
+        await Tappay.samsungTest(
+          'TapPay Samsung Pay Demo',
+          'tech.cherri.samsungpayexample',
+          'TWD',
+          'your samsung pay service id'
+        );
         // await Tappay.jkoPayTest('jkoexample://jko.uri:8888/test');
         // await Tappay.easyWalletTest('https://google.com.tw');
         // await Tappay.piWalletTest('https://google.com.tw');
@@ -84,18 +93,10 @@ export function TappayScreen({ setPopUpMessage }: any) {
     dueYear,
     ccv
   );
-  // const [googlePayIsReady] = useTPDGooglePay('TEST MERCHANT NAME');
-  // const applePayIsReady = useTPDApplePay(
-  //   'TEST MERCHANT NAME',
-  //   'TEST MERCHANT ID',
-  //   'TW',
-  //   'TWD'
-  // );
-  // const linePayIsReady = useTPDLinePay('linepayexample://tech.cherri');
 
   async function handlerDirectPay() {
     try {
-      const result = await Tappay.getDirectPayPrime();
+      const result = await getDirectPayPrime();
       console.log(result);
       setPopUpMessage({
         label: '直接付款成功(測試)',
@@ -112,7 +113,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerGooglePay() {
     try {
-      const result = await Tappay.getGooglePayPrime(googlePayAmount, 'TWD');
+      const result = await getGooglePayPrime(googlePayAmount, 'TWD');
       console.log(result);
       setPopUpMessage({
         label: 'GooglePay付款成功(測試)',
@@ -136,7 +137,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerApplePay() {
     try {
-      const result = await Tappay.getApplePayPrime(appleAmount);
+      const result = await getApplePayPrime(appleAmount);
       console.log(result);
       setPopUpMessage({
         label: 'ApplePay付款成功(測試)',
@@ -160,7 +161,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerLinePay() {
     try {
-      const result = await Tappay.getLinePayPrime();
+      const result = await getLinePayPrime();
       console.log({ ...result, linePayAmount });
       setPopUpMessage({
         label: 'LinePay付款成功(測試)',
@@ -184,7 +185,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerSamsungPay() {
     try {
-      const result = await Tappay.getSamsungPayPrime(
+      const result = await getSamsungPayPrime(
         samsungPayItemTotalAmount,
         samsungPayShippingPrice,
         samsungPayTax,
@@ -213,7 +214,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerJkoPay() {
     try {
-      const result = await Tappay.getJkoPayPrime();
+      const result = await getJkoPayPrime();
       console.log({ ...result, jkoPayAmount });
       setPopUpMessage({
         label: '街口支付付款成功(測試)',
@@ -237,7 +238,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerEasyWallet() {
     try {
-      const result = await Tappay.getEasyWalletPrime();
+      const result = await getEasyWalletPrime();
       console.log({ ...result, easyWalleAmount });
       setPopUpMessage({
         label: '悠遊支付付款成功(測試)',
@@ -261,7 +262,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerPiWallet() {
     try {
-      const result = await Tappay.getPiWalletPrime();
+      const result = await getPiWalletPrime();
       console.log({ ...result, piWalleAmount });
       setPopUpMessage({
         label: 'Pi錢包付款成功(測試)',
@@ -285,7 +286,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
 
   async function handlerPlusPay() {
     try {
-      const result = await Tappay.getPlusPayPrime();
+      const result = await getPlusPayPrime();
       console.log({ ...result, plusPayAmount });
       setPopUpMessage({
         label: '全盈+PAY付款成功(測試)',
@@ -307,6 +308,29 @@ export function TappayScreen({ setPopUpMessage }: any) {
     }
   }
 
+  async function handlerAtomePay() {
+    try {
+      const result = await getAtomePayPrime();
+      console.log({ ...result, atomePayAmount });
+      setPopUpMessage({
+        label: 'Atome付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: 'Atome付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log({ ...error });
+        setPopUpMessage({
+          label: 'Atome付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
   return (
     <SafeAreaView style={styles.root}>
       <ScrollView style={styles.context}>
@@ -373,25 +397,6 @@ export function TappayScreen({ setPopUpMessage }: any) {
             onChange={({ nativeEvent }) => setGooglePayAmount(nativeEvent.text)}
           />
         </View>
-        {/* <TouchableOpacity
-          style={
-            googlePayIsReady === false
-              ? styles.buttonDisabledStyle
-              : styles.buttonStyle
-          }
-          disabled={googlePayIsReady === false}
-          onPress={handlerGooglePay}
-        >
-          <Text
-            style={
-              googlePayIsReady === false
-                ? styles.buttonDisabledFontStyle
-                : styles.buttonFontStyle
-            }
-          >
-            google pay付款測試
-          </Text>
-        </TouchableOpacity> */}
         <GPayBtn
           merchantName="TEST MERCHANT NAME"
           style={styles.PayBtnStyle}
@@ -407,25 +412,6 @@ export function TappayScreen({ setPopUpMessage }: any) {
             onChange={({ nativeEvent }) => setApplePayAmount(nativeEvent.text)}
           />
         </View>
-        {/* <TouchableOpacity
-          style={
-            applePayIsReady === false
-              ? styles.buttonDisabledStyle
-              : styles.buttonStyle
-          }
-          disabled={applePayIsReady === false}
-          onPress={handlerApplePay}
-        >
-          <Text
-            style={
-              applePayIsReady === false
-                ? styles.buttonDisabledFontStyle
-                : styles.buttonFontStyle
-            }
-          >
-            apple pay付款測試
-          </Text>
-        </TouchableOpacity> */}
         <ApplePayBtn
           merchantName="TEST MERCHANT NAME"
           merchantId="TEST MERCHANT ID"
@@ -444,25 +430,6 @@ export function TappayScreen({ setPopUpMessage }: any) {
             onChange={({ nativeEvent }) => setLinePayAmount(nativeEvent.text)}
           />
         </View>
-        {/* <TouchableOpacity
-          style={
-            linePayIsReady === false
-              ? styles.buttonDisabledStyle
-              : styles.buttonStyle
-          }
-          disabled={linePayIsReady === false}
-          onPress={handlerLinePay}
-        >
-          <Text
-            style={
-              linePayIsReady === false
-                ? styles.buttonDisabledFontStyle
-                : styles.buttonFontStyle
-            }
-          >
-            line pay付款測試
-          </Text>
-        </TouchableOpacity> */}
         <LinePayBtn
           linePayCallbackUri="linepayexample://tech.cherri"
           style={styles.LinePayBtnStyle}
@@ -578,13 +545,34 @@ export function TappayScreen({ setPopUpMessage }: any) {
           />
         </View>
         <PlusPayBtn
-          plusPayUniversalLinks="https://google.com.tw"
+          plusPayUniversalLinks="tpdirectexamplepluspay://tech.cherri/myaccount/detail"
           style={styles.PlusPayBtnStyle}
           disabledStyle={styles.PlusPayBtnDisabledStyle}
           onPress={handlerPlusPay}
           // disabledOnPress={() =>
           //   setPopUpMessage({
           //     label: '無法使用全盈+PAY，請檢查設定',
+          //     type: 'info'
+          //   })
+          // }
+        />
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Atome 付款金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={atomePayAmount}
+            onChange={({ nativeEvent }) => setAtomePayAmount(nativeEvent.text)}
+          />
+        </View>
+        <AtomePayBtn
+          atomePayUniversalLinks="https://google.com.tw"
+          style={styles.AtomePayBtnStyle}
+          disabledStyle={styles.AtomePayBtnDisabledStyle}
+          onPress={handlerAtomePay}
+          // disabledOnPress={() =>
+          //   setPopUpMessage({
+          //     label: '無法使用Atome，請檢查設定',
           //     type: 'info'
           //   })
           // }

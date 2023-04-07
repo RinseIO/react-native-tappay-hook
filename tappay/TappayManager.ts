@@ -12,6 +12,7 @@ export class tappay {
   public easyWalletIsReady: boolean = false;
   public piWalletIsReady: boolean = false;
   public plusPayIsReady: boolean = false;
+  public atomePayIsReady: boolean = false;
 
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {
@@ -366,6 +367,45 @@ export class tappay {
     }
     const result =
       await NativeModules.RNToolsManager.TappayPlusPayRedirectWithUrl(
+        paymentUrl
+      );
+    return result;
+  }
+
+  public async isAtomePayAvailable() {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const { isReadyToPay } =
+      await NativeModules.RNToolsManager.TappayIsAtomePayAvailable();
+    return isReadyToPay;
+  }
+
+  public async atomePayInit(atomePayUniversalLinks: string) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const result = await NativeModules.RNToolsManager.TappayPlusPayInit(
+      atomePayUniversalLinks
+    );
+    this.atomePayIsReady = result.isReadyToPay;
+    return { ...result, msg: result.msg || '' };
+  }
+
+  public async getAtomePayPrime() {
+    if (this.atomePayIsReady !== true) {
+      throw new Error('TappayAtomePay is not ready!');
+    }
+    const result = await NativeModules.RNToolsManager.TappayGetAtomePayPrime();
+    return result;
+  }
+
+  public async atomePayRedirectWithUrl(paymentUrl: string) {
+    if (this.atomePayIsReady !== true) {
+      throw new Error('TappayAtomePay is not ready!');
+    }
+    const result =
+      await NativeModules.RNToolsManager.TappayAtomePayRedirectWithUrl(
         paymentUrl
       );
     return result;

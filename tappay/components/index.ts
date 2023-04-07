@@ -7,3 +7,4 @@ export * from './JkoPayBtn';
 export * from './EasyWalletBtn';
 export * from './PiWalletBtn';
 export * from './PlusPayBtn';
+export * from './AtomePayBtn';

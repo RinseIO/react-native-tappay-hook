@@ -170,3 +170,22 @@ export async function plusPayRedirectWithUrl(paymentUrl: string) {
   const result = await Tappay.plusPayRedirectWithUrl(paymentUrl);
   return result;
 }
+
+export async function isAtomePayAvailable() {
+  return await Tappay.isAtomePayAvailable();
+}
+
+export async function atomePayInit(atomePayUniversalLinks: string) {
+  const result = await Tappay.atomePayInit(atomePayUniversalLinks);
+  return result;
+}
+
+export async function getAtomePayPrime() {
+  const result = await Tappay.getAtomePayPrime();
+  return result;
+}
+
+export async function atomePayRedirectWithUrl(paymentUrl: string) {
+  const result = await Tappay.atomePayRedirectWithUrl(paymentUrl);
+  return result;
+}

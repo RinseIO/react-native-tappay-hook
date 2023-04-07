@@ -447,4 +447,57 @@ RCT_EXPORT_METHOD(TappayPlusPayRedirectWithUrl:(NSString *)paymentUrl resolver:(
   }
 }
 
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的isAtomePayAvailable
+RCT_EXPORT_METHOD(TappayIsAtomePayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @([self.TappayManager isAtomePayAvailable])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsAtomePayAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的初始化方法
+RCT_EXPORT_METHOD(TappayAtomePayInit:(NSString *)atomePayUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"atomePayUniversalLinks": atomePayUniversalLinks,
+      @"isReadyToPay": @([self.TappayManager atomePayInit:atomePayUniversalLinks])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayAtomePayInit", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDAtomePay取得prime方法
+RCT_EXPORT_METHOD(TappayGetAtomePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager getAtomePayPrime:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayGetAtomePayPrime", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDAtomePay的跳轉付款方法
+RCT_EXPORT_METHOD(TappayAtomePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager atomePayRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayAtomePayRedirectWithUrl", exception.description, nil);
+  }
+}
+
 @end

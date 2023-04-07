@@ -445,4 +445,56 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
     }
   }
 
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的isAtomePayAppAvailable
+  @ReactMethod
+  public void TappayIsAtomePayAvailable(Promise promise) {
+    try {
+      boolean result = TappayManager.isAtomePayAvailable();
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsAtomePayAvailable", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的atomePayInit
+  @ReactMethod
+  public void TappayAtomePayInit(String atomePayUniversalLinks, Promise promise) {
+    try {
+      boolean result = TappayManager.atomePayInit(atomePayUniversalLinks);
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+      resultData.putString("atomePayUniversalLinks", atomePayUniversalLinks);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayAtomePayInit", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的getPrime
+  @ReactMethod
+  public void TappayGetAtomePayPrime(Promise promise) {
+    try {
+      TappayManager.getAtomePayPrime(promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayGetAtomePayPrime", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的redirectWithUrl，並自動完成跳轉資料的監聽
+  @ReactMethod
+  public void TappayAtomePayRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+      TappayManager.atomePayRedirectWithUrl(paymentUrl, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayAtomePayRedirectWithUrl", e);
+    }
+  }
 }

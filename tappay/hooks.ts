@@ -291,3 +291,27 @@ export function useTPDPlusPay(plusPayUniversalLinks: string) {
 
   return [isReady, msg];
 }
+
+export function useTPDAtomePay(atomePayUniversalLinks: string) {
+  const [isReady, setIsReady] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (Tappay.initPromise?.then) {
+          await Tappay.initPromise;
+        }
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
+          await Tappay.atomePayInit(atomePayUniversalLinks);
+
+        setIsReady(_isReadyToPay);
+        setMsg(_msg);
+      } catch (error: any) {
+        console.log('useTPDAtomePay error', { ...error });
+      }
+    })();
+  }, [atomePayUniversalLinks]);
+
+  return [isReady, msg];
+}

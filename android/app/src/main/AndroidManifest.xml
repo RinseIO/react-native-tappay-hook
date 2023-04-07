@@ -87,6 +87,10 @@
     <package android:name="grasea.familife" />
     <!-- for plus pay sandbox app -->
     <!-- <package android:name="tw.com.pluspay.vendor.uat" /> -->
+
+    <!-- required for atome pay-->
+    <!-- for atome pay open -->
+    <package android:name="tw.atome.paylater" />
   </queries>
 
 </manifest>

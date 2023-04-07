@@ -70,6 +70,12 @@ import tech.cherri.tpdirect.callback.TPDPlusPayGetPrimeSuccessCallback;
 import tech.cherri.tpdirect.callback.TPDPlusPayResultListener;
 import tech.cherri.tpdirect.exception.TPDCustomException;
 
+import tech.cherri.tpdirect.api.TPDAtomePay;
+import tech.cherri.tpdirect.api.TPDAtomePayResult;
+import tech.cherri.tpdirect.callback.TPDAtomePayGetPrimeSuccessCallback;
+import tech.cherri.tpdirect.callback.TPDAtomePayResultListener;
+import tech.cherri.tpdirect.exception.TPDAtomePayException;
+
 // https://portal.tappaysdk.com/document/androidnoform
 public class TappayManager {
   ReactApplicationContext reactContext;
@@ -136,6 +142,11 @@ public class TappayManager {
   String plusPayUniversalLinks;
   Boolean plusPayIsReadyToPay = false;
   TPDPlusPayActivityEvent mTPDPlusPayActivityEvent;
+
+  TPDAtomePay tpdAtomePay;
+  String atomePayUniversalLinks;
+  Boolean atomePayIsReadyToPay = false;
+  TPDAtomePayActivityEvent mTPDAtomePayActivityEvent;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -239,6 +250,17 @@ public class TappayManager {
 
   class TPDPlusPayActivityEvent extends BaseActivityEventListener implements TPDPlusPayResultListener {
     public void onParseSuccess(TPDPlusPayResult result) {
+    }
+
+    public void onParseFail(int status, String msg) {
+    }
+  }
+
+  interface TPDAtomePayGetPrimeCallback extends TPDAtomePayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
+  }
+
+  class TPDAtomePayActivityEvent extends BaseActivityEventListener implements TPDAtomePayResultListener {
+    public void onParseSuccess(TPDAtomePayResult result) {
     }
 
     public void onParseFail(int status, String msg) {
@@ -1131,6 +1153,114 @@ public class TappayManager {
       tpdPlusPay.redirectWithUrl(paymentUrl);
     } catch (Exception e) {
       promise.reject("android error plusPayRedirectWithUrl", e);
+    }
+  }
+
+  public boolean isAtomePayAvailable() {
+    return TPDAtomePay.isAtomePayAppAvailable(reactContext);
+  }
+
+  public boolean atomePayInit(String _atomePayUniversalLinks) {
+    if (atomePayIsReadyToPay == true && atomePayUniversalLinks == _atomePayUniversalLinks) {
+      return atomePayIsReadyToPay;
+    }
+
+    boolean _atomePayIsReadyToPay = false;
+
+    try {
+      _atomePayIsReadyToPay = isAtomePayAvailable();
+
+      if (_atomePayIsReadyToPay == true) {
+        tpdAtomePay = new TPDAtomePay(reactContext, _atomePayUniversalLinks);
+        atomePayUniversalLinks = _atomePayUniversalLinks;
+        atomePayIsReadyToPay = _atomePayIsReadyToPay;
+      }
+
+    } catch (TPDAtomePayException e) {
+      throw new RuntimeException(e);
+    }
+
+    return _atomePayIsReadyToPay;
+  }
+
+  public void getAtomePayPrime(Promise promise) {
+    try {
+      TPDAtomePayGetPrimeCallback mTPDAtomePayGetPrimeCallback = new TPDAtomePayGetPrimeCallback() {
+        @Override
+        public void onSuccess(String prime) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("prime", prime);
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error getAtomePayPrime onSuccess", e);
+          }
+        }
+
+        @Override
+        public void onFailure(int status, String msg) {
+          promise.reject("android error getAtomePayPrime onFailure",
+              msg + ", Error Status:" + Integer.toString(status));
+        }
+      };
+
+      tpdAtomePay.getPrime(mTPDAtomePayGetPrimeCallback, mTPDAtomePayGetPrimeCallback);
+    } catch (Exception e) {
+      promise.reject("android error getAtomePayPrime", e);
+    }
+  }
+
+  public void atomePayRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+
+      if (mTPDAtomePayActivityEvent != null) {
+        reactContext.removeActivityEventListener(mTPDAtomePayActivityEvent);
+      }
+
+      mTPDAtomePayActivityEvent = new TPDAtomePayActivityEvent() {
+        @Override
+        public void onNewIntent(Intent intent) {
+          super.onNewIntent(intent);
+          if (intent.getDataString() != null && intent.getDataString().contains(atomePayUniversalLinks)) {
+            tpdAtomePay.parseToAtomePayResult(reactContext.getApplicationContext(), intent.getData(),
+                mTPDAtomePayActivityEvent);
+          }
+        }
+
+        @Override
+        public void onParseSuccess(TPDAtomePayResult result) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putInt("status", result.getStatus());
+            resultData.putString("nrecTradeId", result.getRecTradeId());
+            resultData.putString("nbankTransactionId", result.getBankTransactionId());
+            resultData.putString("norderNumber", result.getOrderNumber());
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error atomePayRedirectWithUrl onParseSuccess", e);
+          }
+          reactContext.removeActivityEventListener(mTPDAtomePayActivityEvent);
+          mTPDAtomePayActivityEvent = null;
+        }
+
+        @Override
+        public void onParseFail(int status, String msg) {
+          promise.reject("android error atomePayRedirectWithUrl onParseFail",
+              msg + ", Error Status:" + Integer.toString(status));
+          reactContext.removeActivityEventListener(mTPDAtomePayActivityEvent);
+          mTPDAtomePayActivityEvent = null;
+        }
+      };
+
+      reactContext.addActivityEventListener(mTPDAtomePayActivityEvent);
+
+      tpdAtomePay.redirectWithUrl(paymentUrl);
+    } catch (Exception e) {
+      promise.reject("android error atomePayRedirectWithUrl", e);
     }
   }
 

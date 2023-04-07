@@ -57,6 +57,12 @@
 @property () RCTPromiseResolveBlock plusPayJsResolve;
 @property () RCTPromiseRejectBlock plusPayJsReject;
 
+@property (nonatomic, strong) TPDAtome *tpdAtome;
+@property () BOOL *atomePayIsReadyToPay;
+@property () NSString *atomePayUniversalLinks;
+@property () RCTPromiseResolveBlock atomePayJsResolve;
+@property () RCTPromiseRejectBlock atomePayJsReject;
+
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
 - (id)TPDCard:(NSString *)cardNumber dueMonth:(NSString *)dueMonth dueYear:(NSString *)dueYear CCV:(NSString *)CCV;
@@ -124,6 +130,16 @@
 -(void)getPlusPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 -(void)plusPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(void)tappayAtomeExceptionHandler:(NSNotification *)notification;
+
+-(BOOL)isAtomePayAvailable;
+
+-(BOOL)atomePayInit:(NSString *)_atomePayUniversalLinks;
+
+-(void)getAtomePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(void)atomePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 @end
 

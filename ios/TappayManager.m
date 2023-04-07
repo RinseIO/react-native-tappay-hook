@@ -576,7 +576,6 @@
   }
 }
 
-
 -(BOOL)isPlusPayAvailable {
   return [TPDPlusPay isPlusPayAvailable];
 }
@@ -651,6 +650,105 @@
   @catch (NSException *exception) {
     reject(@"ios error plusPayRedirectWithUrl", exception.description, nil);
     self.plusPayJsReject = nil;
+  }
+}
+
+
+
+
+
+
+-(void)tappayAtomeExceptionHandler:(NSNotification *)notification {
+  if (self.atomePayJsReject != nil) {
+    TPDAtomeResult * result = [TPDAtome parseURL:notification];
+    
+    self.atomePayJsReject(@"ios error tappayAtomeExceptionHandler",
+     [NSString stringWithFormat: @"%ld", result.status],
+     @{
+        @"status": [NSString stringWithFormat: @"%ld", result.status],
+        @"orderNumber": result.orderNumber,
+        @"recTradeId": result.recTradeId,
+        @"bankTransactionId": result.bankTransactionId,
+      }
+    );
+    self.atomePayJsReject = nil;
+  }
+}
+
+-(BOOL)isAtomePayAvailable {
+  return [TPDAtome isAtomeAvailable];
+}
+
+-(BOOL)atomePayInit:(NSString *)_atomePayUniversalLinks {
+  if (self.atomePayIsReadyToPay == YES && self.atomePayUniversalLinks == _atomePayUniversalLinks) {
+    return self.atomePayIsReadyToPay;
+  }
+  
+  BOOL atomePayIsReadyToPay = [self isAtomePayAvailable];
+  
+  #if atomePayIsReadyToPay == YES
+    TPDAtome *tpdAtome = [TPDAtome setupWithReturnUrl:_atomePayUniversalLinks];
+    [TPDAtome addExceptionObserver:(@selector(tappayAtomeExceptionHandler:))];
+
+    self.tpdAtome = tpdAtome;
+    self.atomePayUniversalLinks = _atomePayUniversalLinks;
+    self.atomePayIsReadyToPay = &(atomePayIsReadyToPay);
+  #endif
+
+  return atomePayIsReadyToPay;
+}
+
+-(void)getAtomePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.atomePayJsReject = reject;
+    [
+      [
+        [
+          self.tpdAtome onSuccessCallback:^(NSString * _Nullable prime) {
+            resolve(@{
+              @"systemOS": @"ios",
+              @"SDKVersion": self.SDKVersion,
+              @"prime": prime
+            });
+            self.atomePayJsReject = nil;
+          }
+        ]
+        onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error getAtomePayPrime onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+          self.atomePayJsReject = nil;
+        }
+      ]
+      getPrime
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error getAtomePayPrime", exception.description, nil);
+    self.atomePayJsReject = nil;
+  }
+}
+
+-(void)atomePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.atomePayJsReject = reject;
+    [
+      self.tpdAtome redirect:paymentUrl completion:^(TPDAtomeResult * _Nonnull result) {
+        resolve(@{
+          @"status":[NSString stringWithFormat:@"%ld", result.status],
+          @"recTradeId": result.recTradeId,
+          @"bankTransactionId": result.bankTransactionId,
+          @"orderNumber":result.orderNumber
+        });
+        self.atomePayJsReject = nil;
+      }
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error atomePayRedirectWithUrl", exception.description, nil);
+    self.atomePayJsReject = nil;
   }
 }
 

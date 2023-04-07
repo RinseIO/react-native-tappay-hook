@@ -14,9 +14,6 @@ export class tappay {
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {
       try {
-        if (this.initPromise !== null) {
-          return this.deviceId;
-        }
         await NativeModules.RNToolsManager.TappayInitInstance(
           appId,
           appKey,
@@ -180,9 +177,6 @@ export class tappay {
     if (this.initPromise === null) {
       throw new Error('Tappay has not been initialized!');
     }
-    if (Platform.OS !== 'android') {
-      return;
-    }
     const result = await NativeModules.RNToolsManager.TappaySamsungPayInit(
       merchantName,
       merchantId,
@@ -312,7 +306,6 @@ export class tappay {
     const result = await NativeModules.RNToolsManager.TappayPiWalletInit(
       piWalletUniversalLinks
     );
-    console.log(result);
     this.piWalletIsReady = result.isReadyToPay;
     return { ...result, msg: result.msg || '' };
   }

@@ -224,6 +224,9 @@ public class TappayManager {
   }
 
   public void initInstance(int _APP_ID, String _APP_KEY, Boolean _prod) {
+    // if (APP_ID == _APP_ID && APP_KEY == _APP_KEY && prod == _prod) {
+    //   return;
+    // }
     APP_ID = _APP_ID;
     APP_KEY = _APP_KEY;
     prod = _prod;

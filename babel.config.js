@@ -9,9 +9,9 @@ module.exports = {
       {
         alias: {
           // This needs to be mirrored in tsconfig.json
+          '@tappay': './tappay',
           '@': './app',
           '@components': './app/components',
-          '@tappay': './app/tappay',
           '@containers': './app/containers',
           '@hooks': './app/hooks'
         },

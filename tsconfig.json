@@ -2,19 +2,25 @@
 {
   "extends": "@tsconfig/react-native/tsconfig.json", /* Recommended React Native TSConfig base */
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "./app"
-      ],
       "@tappay": [
-        "./app/tappay/index"
+        "./tappay/index"
       ],
       "@tappay/components": [
-        "./app/tappay/components"
+        "./tappay/components/index"
+      ],
+      "@tappay/components/*": [
+        "./tappay/components/*"
       ],
       "@tappay/images": [
-        "./app/tappay/images"
+        "./tappay/images/index"
+      ],
+      "@tappay/images/*": [
+        "./tappay/images/index"
+      ],
+      "@/*": [
+        "./app"
       ],
       "@components": [
         "./app/components/index"

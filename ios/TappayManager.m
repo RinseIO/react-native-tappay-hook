@@ -10,6 +10,9 @@
 @implementation TappayManager
 
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod {
+  // if (self.APP_ID == APP_ID && self.APP_KEY == APP_KEY && self.prod == prod) {
+  //   return;
+  // }
   self.APP_ID = APP_ID;
   self.APP_KEY = APP_KEY;
   self.prod = &prod;

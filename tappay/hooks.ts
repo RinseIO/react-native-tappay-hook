@@ -153,7 +153,7 @@ export function useTPDLinePay(linePayCallbackUri: string) {
         setIsReady(_isReadyToPay);
         setMsg(_msg);
       } catch (error: any) {
-        console.log('useTPDApplePay error', { ...error });
+        console.log('useTPDLinePay error', { ...error });
       }
     })();
   }, [linePayCallbackUri]);
@@ -187,7 +187,8 @@ export function useTPDSamsungPay(
         setIsReady(_isReadyToPay);
         setMsg(_msg);
       } catch (error: any) {
-        console.log('useTPDApplePay error', { ...error });
+        console.log(error);
+        console.log('useTPDSamsungPay error', { ...error });
       }
     })();
   }, [merchantName, merchantId, currencyCode, serviceId]);

@@ -7,6 +7,12 @@
       "@tappay": [
         "./tappay/index"
       ],
+      "@tappay/fp": [
+        "./tappay/fp"
+      ],
+      "@tappay/hooks": [
+        "./tappay/hooks"
+      ],
       "@tappay/components": [
         "./tappay/components/index"
       ],

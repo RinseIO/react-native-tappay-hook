@@ -10,6 +10,7 @@ interface Props {
   merchantId: string;
   countryCode: string;
   currencyCode: string;
+  disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
   };
@@ -38,6 +39,7 @@ export function ApplePayBtn(props: Props) {
     merchantId,
     countryCode,
     currencyCode,
+    disabledOnPress,
     imagesProps = {},
     ...ortherProps
   } = props;
@@ -51,6 +53,9 @@ export function ApplePayBtn(props: Props) {
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
+  let activeOpacity;
+  let disabled = applePayIsReady === false;
+  let onPress = ortherProps.onPress;
 
   if (applePayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
@@ -69,11 +74,19 @@ export function ApplePayBtn(props: Props) {
       iconStyle.push(imagesProps.style);
     }
   }
+
+  if (typeof disabledOnPress === 'function' && applePayIsReady === false) {
+    activeOpacity = 0;
+    onPress = disabledOnPress;
+  }
+
   return (
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={applePayIsReady === false}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      onPress={onPress}
     >
       <Image
         {...imagesProps}

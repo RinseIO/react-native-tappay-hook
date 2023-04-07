@@ -44,6 +44,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [samsungPayTotalAmount, setSamsungPayTotalAmount] = useState('1');
   const [jkoPayAmount, setJkoPayAmount] = useState('1');
   const [easyWalleAmount, setEasyWalleAmount] = useState('1');
+  const [piWalleAmount, setPiWalleAmount] = useState('1');
   // const [directPayIsValid, setDirectPayIsValid] = useState(false);
 
   useEffect(() => {
@@ -248,6 +249,30 @@ export function TappayScreen({ setPopUpMessage }: any) {
         console.log({ ...error });
         setPopUpMessage({
           label: '悠遊支付付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
+
+  async function handlerPiWallet() {
+    try {
+      const result = await Tappay.getPiWalletPrime();
+      console.log({ ...result, piWalleAmount });
+      setPopUpMessage({
+        label: 'Pi錢包付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: 'Pi錢包付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log({ ...error });
+        setPopUpMessage({
+          label: 'Pi錢包付款失敗(測試)',
           type: 'error'
         });
       }
@@ -499,15 +524,21 @@ export function TappayScreen({ setPopUpMessage }: any) {
           <Text style={styles.label}>Pi錢包付款金額:</Text>
           <TextInput
             style={styles.inputBox}
-            value={easyWalleAmount}
-            onChange={({ nativeEvent }) => setEasyWalleAmount(nativeEvent.text)}
+            value={piWalleAmount}
+            onChange={({ nativeEvent }) => setPiWalleAmount(nativeEvent.text)}
           />
         </View>
         <PiWalletBtn
           piWalletUniversalLinks="https://google.com.tw"
           style={styles.PiWalleBtnStyle}
           disabledStyle={styles.PiWalleBtnDisabledStyle}
-          // onPress={handlerEasyWallet}
+          onPress={handlerPiWallet}
+          disabledOnPress={() =>
+            setPopUpMessage({
+              label: '無法使用Pi錢包，請檢查設定',
+              type: 'info'
+            })
+          }
         />
       </ScrollView>
     </SafeAreaView>

@@ -7,6 +7,7 @@ import gpayDisabledBtnIcon from '../images/gpay_disabled_btn.png';
 
 interface Props {
   merchantName: string;
+  disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
   };
@@ -30,11 +31,19 @@ const styles = StyleSheet.create({
 });
 
 export function GPayBtn(props: Props) {
-  const { merchantName, imagesProps = {}, ...ortherProps } = props;
+  const {
+    merchantName,
+    disabledOnPress,
+    imagesProps = {},
+    ...ortherProps
+  } = props;
   const [googlePayIsReady] = useTPDGooglePay(merchantName);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
+  let activeOpacity;
+  let disabled = googlePayIsReady === false;
+  let onPress = ortherProps.onPress;
 
   if (googlePayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
@@ -54,11 +63,19 @@ export function GPayBtn(props: Props) {
     }
   }
 
+  if (typeof disabledOnPress === 'function' && googlePayIsReady === false) {
+    activeOpacity = 1;
+    onPress = disabledOnPress;
+    disabled = false;
+  }
+
   return (
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={googlePayIsReady === false}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      onPress={onPress}
     >
       <Image
         {...imagesProps}

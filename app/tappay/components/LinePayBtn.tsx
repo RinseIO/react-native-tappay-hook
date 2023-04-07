@@ -6,6 +6,7 @@ import linePayBtnIcon from '../images/LINE_Pay_h.png';
 
 interface Props {
   linePayCallbackUri: string;
+  disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
   };
@@ -29,11 +30,19 @@ const styles = StyleSheet.create({
 });
 
 export function LinePayBtn(props: Props) {
-  const { linePayCallbackUri, imagesProps = {}, ...ortherProps } = props;
+  const {
+    linePayCallbackUri,
+    disabledOnPress,
+    imagesProps = {},
+    ...ortherProps
+  } = props;
   const [linePayIsReady] = useTPDLinePay(linePayCallbackUri);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
+  let activeOpacity;
+  let disabled = linePayIsReady === false;
+  let onPress = ortherProps.onPress;
 
   if (linePayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
@@ -53,11 +62,19 @@ export function LinePayBtn(props: Props) {
     }
   }
 
+  if (typeof disabledOnPress === 'function' && linePayIsReady === false) {
+    activeOpacity = 1;
+    onPress = disabledOnPress;
+    disabled = false;
+  }
+
   return (
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={linePayIsReady === false}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      onPress={onPress}
     >
       <Image
         {...imagesProps}

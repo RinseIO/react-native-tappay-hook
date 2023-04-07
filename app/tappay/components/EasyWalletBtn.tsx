@@ -6,6 +6,7 @@ import easyWalletBtnIcon from '../images/Easy_Wallet_btn.png';
 
 interface Props {
   easyWalletUniversalLinks: string;
+  disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
   };
@@ -29,11 +30,19 @@ const styles = StyleSheet.create({
 });
 
 export function EasyWalletBtn(props: Props) {
-  const { easyWalletUniversalLinks, imagesProps = {}, ...ortherProps } = props;
+  const {
+    easyWalletUniversalLinks,
+    disabledOnPress,
+    imagesProps = {},
+    ...ortherProps
+  } = props;
   const [easyWalletIsReady] = useTPDEasyWallet(easyWalletUniversalLinks);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
+  let activeOpacity;
+  let disabled = easyWalletIsReady === false;
+  let onPress = ortherProps.onPress;
 
   if (easyWalletIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
@@ -53,11 +62,19 @@ export function EasyWalletBtn(props: Props) {
     }
   }
 
+  if (typeof disabledOnPress === 'function' && easyWalletIsReady === false) {
+    activeOpacity = 1;
+    onPress = disabledOnPress;
+    disabled = false;
+  }
+
   return (
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={easyWalletIsReady === false}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      onPress={onPress}
     >
       <Image
         {...imagesProps}

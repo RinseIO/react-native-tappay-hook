@@ -7,6 +7,7 @@ import piWalletDisabledBtnIcon from '../images/pi_wallet_disabled_btn.png';
 
 interface Props {
   piWalletUniversalLinks: string;
+  disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
   };
@@ -27,11 +28,19 @@ const styles = StyleSheet.create({
 });
 
 export function PiWalletBtn(props: Props) {
-  const { piWalletUniversalLinks, imagesProps = {}, ...ortherProps } = props;
+  const {
+    piWalletUniversalLinks,
+    disabledOnPress,
+    imagesProps = {},
+    ...ortherProps
+  } = props;
   const [piWalletIsReady] = useTPDPiWallet(piWalletUniversalLinks);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
+  let activeOpacity;
+  let disabled = piWalletIsReady === false;
+  let onPress = ortherProps.onPress;
 
   if (piWalletIsReady === false) {
     if (typeof ortherProps.disabledStyle === 'object') {
@@ -49,11 +58,19 @@ export function PiWalletBtn(props: Props) {
     }
   }
 
+  if (typeof disabledOnPress === 'function' && piWalletIsReady === false) {
+    activeOpacity = 1;
+    onPress = disabledOnPress;
+    disabled = false;
+  }
+
   return (
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={piWalletIsReady === false}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      onPress={onPress}
     >
       <Image
         {...imagesProps}

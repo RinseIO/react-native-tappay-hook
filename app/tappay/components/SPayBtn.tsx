@@ -9,7 +9,7 @@ interface Props {
   merchantId: string;
   currencyCode: string;
   serviceId: string;
-
+  disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
   };
@@ -38,6 +38,7 @@ export function SPayBtn(props: Props) {
     merchantId,
     currencyCode,
     serviceId,
+    disabledOnPress,
     imagesProps = {},
     ...ortherProps
   } = props;
@@ -50,6 +51,10 @@ export function SPayBtn(props: Props) {
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
+  let activeOpacity;
+  let disabled = samsungPayIsReady === false;
+  let onPress = ortherProps.onPress;
+
 
   if (samsungPayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
@@ -69,11 +74,19 @@ export function SPayBtn(props: Props) {
     }
   }
 
+  if (typeof disabledOnPress === 'function' && samsungPayIsReady === false) {
+    activeOpacity = 1;
+    onPress = disabledOnPress;
+    disabled = false;
+  }
+
   return (
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={samsungPayIsReady === false}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      onPress={onPress}
     >
       <Image
         {...imagesProps}

@@ -6,6 +6,7 @@ import JkoPayBtnIcon from '../images/JKOPAY_btn.png';
 
 interface Props {
   jkoPayUniversalLinks: string;
+  disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
   };
@@ -29,11 +30,19 @@ const styles = StyleSheet.create({
 });
 
 export function JkoPayBtn(props: Props) {
-  const { jkoPayUniversalLinks, imagesProps = {}, ...ortherProps } = props;
+  const {
+    jkoPayUniversalLinks,
+    disabledOnPress,
+    imagesProps = {},
+    ...ortherProps
+  } = props;
   const [jkoPayIsReady] = useTPDJkoPay(jkoPayUniversalLinks);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
+  let activeOpacity;
+  let disabled = jkoPayIsReady === false;
+  let onPress = ortherProps.onPress;
 
   if (jkoPayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
@@ -53,11 +62,19 @@ export function JkoPayBtn(props: Props) {
     }
   }
 
+  if (typeof disabledOnPress === 'function' && jkoPayIsReady === false) {
+    activeOpacity = 1;
+    onPress = disabledOnPress;
+    disabled = false;
+  }
+
   return (
     <TouchableOpacity
       {...ortherProps}
       style={buttonStyle}
-      disabled={jkoPayIsReady === false}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      onPress={onPress}
     >
       <Image
         {...imagesProps}

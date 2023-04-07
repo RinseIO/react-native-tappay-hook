@@ -1,6 +1,7 @@
 import { Platform, NativeModules } from 'react-native';
 
 export class tappay {
+  public prod: boolean = false;
   public initPromise: any = null;
   public deviceId: string = '';
   public googlePlayIsReady: boolean = false;
@@ -19,6 +20,7 @@ export class tappay {
           appKey,
           prod
         );
+        this.prod = prod;
         return await this.getDeviceId();
       } catch (error: any) {
         console.log({ ...error });
@@ -331,6 +333,9 @@ export class tappay {
 
   public async directPayTest() {
     try {
+      if (this.prod === true) {
+        return;
+      }
       const validationResult = await this.setDirectPayTPDCard(
         '4679270817026199',
         '08',
@@ -349,6 +354,9 @@ export class tappay {
 
   public async googlePayTest(merchantName: string) {
     try {
+      if (this.prod === true) {
+        return;
+      }
       const { isReadyToPay } = await this.googlePayInit(merchantName);
       if (isReadyToPay === true) {
         const result = await this.getGooglePayPrime('1', 'TWD');
@@ -366,6 +374,9 @@ export class tappay {
     currencyCode: string
   ) {
     try {
+      if (this.prod === true) {
+        return;
+      }
       const { isReadyToPay } = await this.applePayInit(
         merchantName,
         merchantId,
@@ -383,6 +394,9 @@ export class tappay {
 
   public async linePayTest(linePayCallbackUri: string) {
     try {
+      if (this.prod === true) {
+        return;
+      }
       const { isReadyToPay } = await this.linePayInit(linePayCallbackUri);
       if (isReadyToPay === true) {
         const result = await this.getLinePayPrime();
@@ -400,6 +414,9 @@ export class tappay {
     serviceId: string
   ) {
     try {
+      if (this.prod === true) {
+        return;
+      }
       const { isReadyToPay } = await this.samsungPayInit(
         merchantName,
         merchantId,
@@ -417,6 +434,9 @@ export class tappay {
 
   public async jkoPayTest(jkoPayUniversalLinks: string) {
     try {
+      if (this.prod === true) {
+        return;
+      }
       const { isReadyToPay } = await this.jkoPayInit(jkoPayUniversalLinks);
       if (isReadyToPay === true) {
         const result = await this.getJkoPayPrime();
@@ -429,6 +449,9 @@ export class tappay {
 
   public async easyWalletTest(easyWalletUniversalLinks: string) {
     try {
+      if (this.prod === true) {
+        return;
+      }
       const { isReadyToPay } = await this.easyWalletInit(
         easyWalletUniversalLinks
       );
@@ -443,6 +466,9 @@ export class tappay {
 
   public async piWalletTest(piWalletUniversalLinks: string) {
     try {
+      if (this.prod === true) {
+        return;
+      }
       // Sandbox模式底下，isReadyToPay皆為false，故不測試最後是否能取得Prime
       await this.piWalletInit(piWalletUniversalLinks);
       // const { isReadyToPay } = await this.piWalletInit(piWalletUniversalLinks);

@@ -64,11 +64,15 @@ import tech.cherri.tpdirect.exception.TPDPiWalletException;
 import tech.cherri.tpdirect.callback.TPDPiWalletGetPrimeSuccessCallback;
 import tech.cherri.tpdirect.api.TPDPiWalletResult;
 
+import tech.cherri.tpdirect.api.pluspay.TPDPlusPay;
+import tech.cherri.tpdirect.api.pluspay.TPDPlusPayResult;
+import tech.cherri.tpdirect.callback.TPDPlusPayGetPrimeSuccessCallback;
+import tech.cherri.tpdirect.callback.TPDPlusPayResultListener;
+import tech.cherri.tpdirect.exception.TPDCustomException;
+
 // https://portal.tappaysdk.com/document/androidnoform
 public class TappayManager {
   ReactApplicationContext reactContext;
-  TPDGooglePay tpdGooglePay;
-  TPDLinePay tpdLinePay;
 
   TPDCard.CardType[] allowedNetworks = new TPDCard.CardType[] {
       TPDCard.CardType.Visa,
@@ -83,6 +87,7 @@ public class TappayManager {
   final int LOAD_PAYMENT_DATA_REQUEST_CODE = 102;
   final int REQUEST_READ_PHONE_STATE = 101;
 
+  String SDKVersion;
   int APP_ID;
   String APP_KEY;
   Boolean prod;
@@ -90,36 +95,47 @@ public class TappayManager {
   String dueMonth;
   String dueYear;
   String CCV;
-  String SDKVersion;
+
+  TPDGooglePay tpdGooglePay;
   Promise googlePayJsPromise = null;
-  Boolean googlePayIsReadyToPay;
+  Boolean googlePayIsReadyToPay = false;
   String googlePayMsg;
   String googlePayMerchantName;
   TPDGooglePayActivityEvent mTPDGooglePayActivityEvent;
+
+  TPDLinePay tpdLinePay;
   Promise linePayJsPromise = null;
   String linePayCallbackUri;
   Boolean linePayIsReadyToPay = false;
   TPDLinePayActivityEvent mTPDLinePayActivityEvent;
-  Boolean samsungPayIsReadyToPay;
+
+  TPDSamsungPay tpdSamsungPay;
+  Boolean samsungPayIsReadyToPay = false;
   String samsungPayMsg;
   String samsungPayMerchantName;
   String samsungPayMerchantId;
   String samsungPayCurrencyCode;
   String samsungPayServiceId;
-  TPDSamsungPay tpdSamsungPay;
-  boolean jkoPayIsReadyToPay;
-  String jkoPayUniversalLinks;
+
   TPDJkoPay tpdJkoPay;
+  Boolean jkoPayIsReadyToPay = false;
+  String jkoPayUniversalLinks;
   TPDJkoPayActivityEvent mTPDJkoPayActivityEvent;
+
   TPDEasyWallet tpdEasyWallet;
   String easyWalletUniversalLinks;
-  boolean easyWalletIsReadyToPay;
+  Boolean easyWalletIsReadyToPay = false;
   TPDEasyWalletActivityEvent mTPDEasyWalletActivityEvent;
 
   TPDPiWallet tpdPiWalletPay;
   String piWalletUniversalLinks;
-  boolean piWalletIsReadyToPay;
+  Boolean piWalletIsReadyToPay = false;
   TPDPiWalletActivityEvent mTPDPiWalletActivityEvent;
+
+  TPDPlusPay tpdPlusPay;
+  String plusPayUniversalLinks;
+  Boolean plusPayIsReadyToPay = false;
+  TPDPlusPayActivityEvent mTPDPlusPayActivityEvent;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -218,6 +234,17 @@ public class TappayManager {
     }
   }
 
+  interface TPDPlusPayGetPrimeCallback extends TPDPlusPayGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
+  }
+
+  class TPDPlusPayActivityEvent extends BaseActivityEventListener implements TPDPlusPayResultListener {
+    public void onParseSuccess(TPDPlusPayResult result) {
+    }
+
+    public void onParseFail(int status, String msg) {
+    }
+  }
+
   public TappayManager(ReactApplicationContext _reactContext) {
     reactContext = _reactContext;
     SDKVersion = TPDSetup.getVersion();
@@ -225,7 +252,7 @@ public class TappayManager {
 
   public void initInstance(int _APP_ID, String _APP_KEY, Boolean _prod) {
     // if (APP_ID == _APP_ID && APP_KEY == _APP_KEY && prod == _prod) {
-    //   return;
+    // return;
     // }
     APP_ID = _APP_ID;
     APP_KEY = _APP_KEY;
@@ -996,6 +1023,114 @@ public class TappayManager {
       tpdPiWalletPay.redirectWithUrl(paymentUrl);
     } catch (Exception e) {
       promise.reject("android error piWalletRedirectWithUrl", e);
+    }
+  }
+
+  public boolean isPlusPayAvailable() {
+    return TPDPlusPay.isPlusPayAvailable(reactContext);
+  }
+
+  public boolean plusPayInit(String _plusPayUniversalLinks) {
+    if (plusPayIsReadyToPay == true && plusPayUniversalLinks == _plusPayUniversalLinks) {
+      return plusPayIsReadyToPay;
+    }
+
+    boolean _plusPayIsReadyToPay = false;
+
+    try {
+      _plusPayIsReadyToPay = isPiWalletAvailable();
+
+      if (_plusPayIsReadyToPay == true) {
+        tpdPlusPay = new TPDPlusPay(reactContext, _plusPayUniversalLinks);
+        plusPayUniversalLinks = _plusPayUniversalLinks;
+        plusPayIsReadyToPay = _plusPayIsReadyToPay;
+      }
+
+    } catch (TPDCustomException e) {
+      throw new RuntimeException(e);
+    }
+
+    return _plusPayIsReadyToPay;
+  }
+
+  public void getPlusPayPrime(Promise promise) {
+    try {
+      TPDPlusPayGetPrimeCallback mTPDPlusPayGetPrimeCallback = new TPDPlusPayGetPrimeCallback() {
+        @Override
+        public void onSuccess(String prime) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("prime", prime);
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error getPlusPayPrime onSuccess", e);
+          }
+        }
+
+        @Override
+        public void onFailure(int status, String msg) {
+          promise.reject("android error getPlusPayPrime onFailure",
+              msg + ", Error Status:" + Integer.toString(status));
+        }
+      };
+
+      tpdPlusPay.getPrime(mTPDPlusPayGetPrimeCallback, mTPDPlusPayGetPrimeCallback);
+    } catch (Exception e) {
+      promise.reject("android error getPlusPayPrime", e);
+    }
+  }
+
+  public void plusPayRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+
+      if (mTPDPlusPayActivityEvent != null) {
+        reactContext.removeActivityEventListener(mTPDPlusPayActivityEvent);
+      }
+
+      mTPDPlusPayActivityEvent = new TPDPlusPayActivityEvent() {
+        @Override
+        public void onNewIntent(Intent intent) {
+          super.onNewIntent(intent);
+          if (intent.getDataString() != null && intent.getDataString().contains(piWalletUniversalLinks)) {
+            tpdPlusPay.parseToPlusPayResult(reactContext.getApplicationContext(), intent.getData(),
+                mTPDPlusPayActivityEvent);
+          }
+        }
+
+        @Override
+        public void onParseSuccess(TPDPlusPayResult result) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putInt("status", result.getStatus());
+            resultData.putString("nrecTradeId", result.getRecTradeId());
+            resultData.putString("nbankTransactionId", result.getBankTransactionId());
+            resultData.putString("norderNumber", result.getOrderNumber());
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error plusPayRedirectWithUrl onParseSuccess", e);
+          }
+          reactContext.removeActivityEventListener(mTPDPlusPayActivityEvent);
+          mTPDPlusPayActivityEvent = null;
+        }
+
+        @Override
+        public void onParseFail(int status, String msg) {
+          promise.reject("android error plusPayRedirectWithUrl onParseFail",
+              msg + ", Error Status:" + Integer.toString(status));
+          reactContext.removeActivityEventListener(mTPDPlusPayActivityEvent);
+          mTPDPlusPayActivityEvent = null;
+        }
+      };
+
+      reactContext.addActivityEventListener(mTPDPlusPayActivityEvent);
+
+      tpdPlusPay.redirectWithUrl(paymentUrl);
+    } catch (Exception e) {
+      promise.reject("android error plusPayRedirectWithUrl", e);
     }
   }
 

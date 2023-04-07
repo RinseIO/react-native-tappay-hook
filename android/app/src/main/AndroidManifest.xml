@@ -81,6 +81,12 @@
     <package android:name="tw.com.pchome.android.pi" />
     <!-- for pi-wallet test app open -->
     <!-- <package android:name="tw.com.pchome.android.pi.partner" /> -->
+
+    <!-- required for plus pay-->
+    <!-- for plus pay production app -->
+    <package android:name="grasea.familife" />
+    <!-- for plus pay sandbox app -->
+    <!-- <package android:name="tw.com.pluspay.vendor.uat" /> -->
   </queries>
 
 </manifest>

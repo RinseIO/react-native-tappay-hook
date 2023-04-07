@@ -151,3 +151,22 @@ export async function piWalletRedirectWithUrl(paymentUrl: string) {
   const result = await Tappay.piWalletRedirectWithUrl(paymentUrl);
   return result;
 }
+
+export async function isPlusPayAvailable() {
+  return await Tappay.isPlusPayAvailable();
+}
+
+export async function plusPayInit(plusPayUniversalLinks: string) {
+  const result = await Tappay.plusPayInit(plusPayUniversalLinks);
+  return result;
+}
+
+export async function getPlusPayPrime() {
+  const result = await Tappay.getPlusPayPrime();
+  return result;
+}
+
+export async function plusPayRedirectWithUrl(paymentUrl: string) {
+  const result = await Tappay.plusPayRedirectWithUrl(paymentUrl);
+  return result;
+}

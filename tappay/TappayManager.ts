@@ -11,6 +11,7 @@ export class tappay {
   public jkoPayIsReady: boolean = false;
   public easyWalletIsReady: boolean = false;
   public piWalletIsReady: boolean = false;
+  public plusPayIsReady: boolean = false;
 
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {
@@ -331,6 +332,45 @@ export class tappay {
     return result;
   }
 
+  public async isPlusPayAvailable() {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const { isReadyToPay } =
+      await NativeModules.RNToolsManager.TappayIsPlusPayAvailable();
+    return isReadyToPay;
+  }
+
+  public async plusPayInit(plusPayUniversalLinks: string) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const result = await NativeModules.RNToolsManager.TappayPlusPayInit(
+      plusPayUniversalLinks
+    );
+    this.plusPayIsReady = result.isReadyToPay;
+    return { ...result, msg: result.msg || '' };
+  }
+
+  public async getPlusPayPrime() {
+    if (this.plusPayIsReady !== true) {
+      throw new Error('TappayPlusPay is not ready!');
+    }
+    const result = await NativeModules.RNToolsManager.TappayGetPlusPayPrime();
+    return result;
+  }
+
+  public async plusPayRedirectWithUrl(paymentUrl: string) {
+    if (this.plusPayIsReady !== true) {
+      throw new Error('TappayPlusPay is not ready!');
+    }
+    const result =
+      await NativeModules.RNToolsManager.TappayPlusPayRedirectWithUrl(
+        paymentUrl
+      );
+    return result;
+  }
+
   public async directPayTest() {
     try {
       if (this.prod === true) {
@@ -474,6 +514,23 @@ export class tappay {
       // const { isReadyToPay } = await this.piWalletInit(piWalletUniversalLinks);
       // if (isReadyToPay === true) {
       //   const result = await this.getPiWalletPrime();
+      //   console.log({ result });
+      // }
+    } catch (error: any) {
+      console.log({ ...error });
+    }
+  }
+
+  public async plusPayTest(plusPayUniversalLinks: string) {
+    try {
+      if (this.prod === true) {
+        return;
+      }
+      // Sandbox模式底下，isReadyToPay皆為false，故不測試最後是否能取得Prime
+      await this.plusPayInit(plusPayUniversalLinks);
+      // const { isReadyToPay } = await this.plusPayInit(plusPayUniversalLinks);
+      // if (isReadyToPay === true) {
+      //   const result = await this.getPlusPayPrime();
       //   console.log({ result });
       // }
     } catch (error: any) {

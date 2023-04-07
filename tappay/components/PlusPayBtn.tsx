@@ -1,12 +1,11 @@
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-import { useTPDPiWallet } from '../hooks';
+import { useTPDPlusPay } from '../hooks';
 
-import piWalletBtnIcon from '../images/pi_wallet_btn.png';
-import piWalletDisabledBtnIcon from '../images/pi_wallet_disabled_btn.png';
+import plusPayBtnIcon from '../images/plus_pay_btn.png';
 
 interface Props {
-  piWalletUniversalLinks: string;
+  plusPayUniversalLinks: string;
   disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
@@ -18,11 +17,11 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     padding: 5,
-    backgroundColor: '#1da7fc',
+    backgroundColor: '#fff',
     height: 100
   },
   buttonDisable: {
-    backgroundColor: '#000'
+    backgroundColor: '#c3c3c3'
   },
   icon: {
     width: '100%',
@@ -30,22 +29,22 @@ const styles = StyleSheet.create({
   }
 });
 
-export function PiWalletBtn(props: Props) {
+export function PlusPayBtn(props: Props) {
   const {
-    piWalletUniversalLinks,
+    plusPayUniversalLinks,
     disabledOnPress,
     imagesProps = {},
     ...ortherProps
   } = props;
-  const [piWalletIsReady] = useTPDPiWallet(piWalletUniversalLinks);
+  const [plusPayIsReady] = useTPDPlusPay(plusPayUniversalLinks);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
   let activeOpacity;
-  let disabled = piWalletIsReady === false;
+  let disabled = plusPayIsReady === false;
   let onPress = ortherProps.onPress;
 
-  if (piWalletIsReady === false) {
+  if (plusPayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
 
     if (typeof ortherProps.disabledStyle === 'object') {
@@ -63,7 +62,7 @@ export function PiWalletBtn(props: Props) {
     }
   }
 
-  if (typeof disabledOnPress === 'function' && piWalletIsReady === false) {
+  if (typeof disabledOnPress === 'function' && plusPayIsReady === false) {
     activeOpacity = 1;
     onPress = disabledOnPress;
     disabled = false;
@@ -81,9 +80,7 @@ export function PiWalletBtn(props: Props) {
         {...imagesProps}
         style={iconStyle}
         resizeMode="contain"
-        source={
-          piWalletIsReady === false ? piWalletDisabledBtnIcon : piWalletBtnIcon
-        }
+        source={plusPayBtnIcon}
       />
     </TouchableOpacity>
   );

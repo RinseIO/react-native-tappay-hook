@@ -465,7 +465,6 @@
   }
 }
 
-
 - (void)tappayPiWalletExceptionHandler:(NSNotification *)notification {
   if (self.piWalletJsReject != nil) {
     TPDPiWalletResult * result = [TPDPiWallet parseURL:notification];
@@ -495,7 +494,7 @@
   BOOL piWalletIsReadyToPay = [self isPiWalletAvailable];
   
   #if piWalletIsReadyToPay == YES
-    TPDPiWallet *tpdPiWallet = [TPDPiWallet setupWithReturUrl:_easyWalletUniversalLinks];
+    TPDPiWallet *tpdPiWallet = [TPDPiWallet setupWithReturUrl:_piWalletUniversalLinks];
     [TPDPiWallet addExceptionObserver:(@selector(tappayPiWalletExceptionHandler:))];
 
     self.tpdPiWallet = tpdPiWallet;
@@ -560,7 +559,100 @@
   }
 }
 
+-(void)tappayPlusPayExceptionHandler:(NSNotification *)notification {
+  if (self.plusPayJsReject != nil) {
+    TPDPlusPayResult * result = [TPDPlusPay parseURL:notification];
+    
+    self.plusPayJsReject(@"ios error tappayPlusPayExceptionHandler",
+     [NSString stringWithFormat: @"%ld", result.status],
+     @{
+        @"status": [NSString stringWithFormat: @"%ld", result.status],
+        @"orderNumber": result.orderNumber,
+        @"recTradeId": result.recTradeId,
+        @"bankTransactionId": result.bankTransactionId,
+      }
+    );
+    self.plusPayJsReject = nil;
+  }
+}
 
+
+-(BOOL)isPlusPayAvailable {
+  return [TPDPlusPay isPlusPayAvailable];
+}
+
+-(BOOL)plusPayInit:(NSString *)_plusPayUniversalLinks {
+  if (self.plusPayIsReadyToPay == YES && self.plusPayUniversalLinks == _plusPayUniversalLinks) {
+    return self.plusPayIsReadyToPay;
+  }
+  
+  BOOL plusPayIsReadyToPay = [self isPlusPayAvailable];
+  
+  #if plusPayIsReadyToPay == YES
+    TPDPlusPay *tpdPlusPay = [TPDPlusPay setupWithReturnUrl:_plusPayUniversalLinks];
+    [TPDPlusPay addExceptionObserver:(@selector(tappayPlusPayExceptionHandler:))];
+
+    self.tpdPlusPay = tpdPlusPay;
+    self.plusPayUniversalLinks = _plusPayUniversalLinks;
+    self.plusPayIsReadyToPay = &(plusPayIsReadyToPay);
+  #endif
+
+  return plusPayIsReadyToPay;
+}
+
+-(void)getPlusPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.plusPayJsReject = reject;
+    [
+      [
+        [
+          self.tpdPlusPay onSuccessCallback:^(NSString * _Nullable prime) {
+            resolve(@{
+              @"systemOS": @"ios",
+              @"SDKVersion": self.SDKVersion,
+              @"prime": prime
+            });
+            self.plusPayJsReject = nil;
+          }
+        ]
+        onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error getPiWalletPrime onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+          self.plusPayJsReject = nil;
+        }
+      ]
+      getPrime
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error getPlusPayPrime", exception.description, nil);
+    self.plusPayJsReject = nil;
+  }
+}
+
+-(void)plusPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.plusPayJsReject = reject;
+    [
+      self.tpdPlusPay redirect:paymentUrl completion:^(TPDPlusPayResult * _Nonnull result) {
+        resolve(@{
+          @"status":[NSString stringWithFormat:@"%ld", result.status],
+          @"recTradeId": result.recTradeId,
+          @"bankTransactionId": result.bankTransactionId,
+          @"orderNumber":result.orderNumber
+        });
+        self.plusPayJsReject = nil;
+      }
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error plusPayRedirectWithUrl", exception.description, nil);
+    self.plusPayJsReject = nil;
+  }
+}
 
 @end
 

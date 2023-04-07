@@ -106,13 +106,23 @@ export const EasyWalleBtnDisabledStyle: StyleProp<ViewStyle> = {
 };
 
 export const PiWalleBtnStyle: StyleProp<ViewStyle> = {
-  ...buttonStyle,
-  backgroundColor: undefined,
-  height: 100
+  borderRadius: 10,
+  margin: 10,
+  padding: 0,
+  height: 50
 };
 export const PiWalleBtnDisabledStyle: StyleProp<ViewStyle> = {
-  ...PiWalleBtnStyle,
-  backgroundColor: undefined
+  ...PiWalleBtnStyle
+};
+
+export const PlusPayBtnStyle: StyleProp<ViewStyle> = {
+  ...buttonStyle,
+  backgroundColor: '#fff',
+  height: 50
+};
+export const PlusPayBtnDisabledStyle: StyleProp<ViewStyle> = {
+  ...PlusPayBtnStyle,
+  backgroundColor: '#c3c3c3'
 };
 
 export const styles = StyleSheet.create({
@@ -137,7 +147,9 @@ export const styles = StyleSheet.create({
   EasyWalleBtnStyle,
   EasyWalleBtnDisabledStyle,
   PiWalleBtnStyle,
-  PiWalleBtnDisabledStyle
+  PiWalleBtnDisabledStyle,
+  PlusPayBtnStyle,
+  PlusPayBtnDisabledStyle
 });
 
 export default styles;

@@ -394,5 +394,57 @@ RCT_EXPORT_METHOD(TappayPiWalletRedirectWithUrl:(NSString *)paymentUrl resolver:
   }
 }
 
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的isPlusPayAvailable
+RCT_EXPORT_METHOD(TappayIsPlusPayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @([self.TappayManager isPlusPayAvailable])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsPlusPayAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的初始化方法
+RCT_EXPORT_METHOD(TappayPlusPayInit:(NSString *)plusPayUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"piWalletUniversalLinks": plusPayUniversalLinks,
+      @"isReadyToPay": @([self.TappayManager plusPayInit:plusPayUniversalLinks])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayPlusPayInit", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay取得prime方法
+RCT_EXPORT_METHOD(TappayGetPlusPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager getPlusPayPrime:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayGetPlusPayPrime", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的跳轉付款方法
+RCT_EXPORT_METHOD(TappayPlusPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager plusPayRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayPlusPayRedirectWithUrl", exception.description, nil);
+  }
+}
 
 @end

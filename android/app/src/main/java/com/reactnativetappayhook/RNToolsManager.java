@@ -368,7 +368,7 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
 
       promise.resolve(resultData);
     } catch (Exception e) {
-      promise.reject("android error TappayEasyWalletInit", e);
+      promise.reject("android error TappayPiWalletInit", e);
     }
   }
 
@@ -389,6 +389,59 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
       TappayManager.piWalletRedirectWithUrl(paymentUrl, promise);
     } catch (Exception e) {
       promise.reject("android error TappayPiWalletRedirectWithUrl", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPlusPay的isPlusPayAvailable
+  @ReactMethod
+  public void TappayIsPlusPayAvailable(Promise promise) {
+    try {
+      boolean result = TappayManager.isPlusPayAvailable();
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsPlusPayAvailable", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPlusPay的plusPayInit
+  @ReactMethod
+  public void TappayPlusPayInit(String plusPayUniversalLinks, Promise promise) {
+    try {
+      boolean result = TappayManager.plusPayInit(plusPayUniversalLinks);
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+      resultData.putString("plusPayUniversalLinks", plusPayUniversalLinks);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayPlusPayInit", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPlusPay的getPrime
+  @ReactMethod
+  public void TappayGetPlusPayPrime(Promise promise) {
+    try {
+      TappayManager.getPlusPayPrime(promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayGetPlusPayPrime", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPlusPay的redirectWithUrl，並自動完成跳轉資料的監聽
+  @ReactMethod
+  public void TappayPlusPayRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+      TappayManager.plusPayRedirectWithUrl(paymentUrl, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayPlusPayRedirectWithUrl", e);
     }
   }
 

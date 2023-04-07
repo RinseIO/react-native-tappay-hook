@@ -10,14 +10,14 @@ import {
 
 import styles from '@containers/TappayScreen/style';
 
+import { Tappay } from '@tappay';
+
 import {
   useSetDirectPayTPDCard
   // ,useTPDGooglePay,
   // useTPDApplePay,
   // useTPDLinePay
 } from '@tappay/hooks';
-
-import { Tappay } from '@tappay';
 
 import {
   DirectPayCardIcon,
@@ -27,7 +27,8 @@ import {
   SPayBtn,
   JkoPayBtn,
   EasyWalletBtn,
-  PiWalletBtn
+  PiWalletBtn,
+  PlusPayBtn
 } from '@tappay/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -46,6 +47,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [jkoPayAmount, setJkoPayAmount] = useState('1');
   const [easyWalleAmount, setEasyWalleAmount] = useState('1');
   const [piWalleAmount, setPiWalleAmount] = useState('1');
+  const [plusPayAmount, setPlusPayAmount] = useState('1');
   // const [directPayIsValid, setDirectPayIsValid] = useState(false);
 
   useEffect(() => {
@@ -68,7 +70,8 @@ export function TappayScreen({ setPopUpMessage }: any) {
         // );
         // await Tappay.jkoPayTest('jkoexample://jko.uri:8888/test');
         // await Tappay.easyWalletTest('https://google.com.tw');
-        await Tappay.piWalletTest('https://google.com.tw');
+        // await Tappay.piWalletTest('https://google.com.tw');
+        // await Tappay.plusPayTest('tpdirectexamplepluspay://tech.cherri/myaccount/detail');
       } catch (error) {
         console.log(error);
       }
@@ -274,6 +277,30 @@ export function TappayScreen({ setPopUpMessage }: any) {
         console.log({ ...error });
         setPopUpMessage({
           label: 'Pi錢包付款失敗(測試)',
+          type: 'error'
+        });
+      }
+    }
+  }
+
+  async function handlerPlusPay() {
+    try {
+      const result = await Tappay.getPlusPayPrime();
+      console.log({ ...result, plusPayAmount });
+      setPopUpMessage({
+        label: '全盈+PAY付款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      if (error.message === 'Canceled by User') {
+        setPopUpMessage({
+          label: '全盈+PAY付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log({ ...error });
+        setPopUpMessage({
+          label: '全盈+PAY付款失敗(測試)',
           type: 'error'
         });
       }
@@ -540,6 +567,27 @@ export function TappayScreen({ setPopUpMessage }: any) {
               type: 'info'
             })
           }
+        />
+
+        <View style={styles.row}>
+          <Text style={styles.label}>全盈+PAY付款金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={plusPayAmount}
+            onChange={({ nativeEvent }) => setPlusPayAmount(nativeEvent.text)}
+          />
+        </View>
+        <PlusPayBtn
+          plusPayUniversalLinks="https://google.com.tw"
+          style={styles.PlusPayBtnStyle}
+          disabledStyle={styles.PlusPayBtnDisabledStyle}
+          onPress={handlerPlusPay}
+          // disabledOnPress={() =>
+          //   setPopUpMessage({
+          //     label: '無法使用全盈+PAY，請檢查設定',
+          //     type: 'info'
+          //   })
+          // }
         />
       </ScrollView>
     </SafeAreaView>

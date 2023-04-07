@@ -51,6 +51,12 @@
 @property () RCTPromiseResolveBlock piWalletJsResolve;
 @property () RCTPromiseRejectBlock piWalletJsReject;
 
+@property (nonatomic, strong) TPDPlusPay *tpdPlusPay;
+@property () BOOL *plusPayIsReadyToPay;
+@property () NSString *plusPayUniversalLinks;
+@property () RCTPromiseResolveBlock plusPayJsResolve;
+@property () RCTPromiseRejectBlock plusPayJsReject;
+
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
 - (id)TPDCard:(NSString *)cardNumber dueMonth:(NSString *)dueMonth dueYear:(NSString *)dueYear CCV:(NSString *)CCV;
@@ -108,6 +114,16 @@
 -(void)getPiWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 -(void)piWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(void)tappayPlusPayExceptionHandler:(NSNotification *)notification;
+
+-(BOOL)isPlusPayAvailable;
+
+-(BOOL)plusPayInit:(NSString *)_plusPayUniversalLinks;
+
+-(void)getPlusPayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(void)plusPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 @end
 

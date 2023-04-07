@@ -58,6 +58,12 @@ import tech.cherri.tpdirect.callback.TPDEasyWalletResultListener;
 import tech.cherri.tpdirect.exception.TPDEasyWalletException;
 import tech.cherri.tpdirect.callback.TPDEasyWalletGetPrimeSuccessCallback;
 
+import tech.cherri.tpdirect.api.TPDPiWallet;
+import tech.cherri.tpdirect.callback.TPDPiWalletResultListener;
+import tech.cherri.tpdirect.exception.TPDPiWalletException;
+import tech.cherri.tpdirect.callback.TPDPiWalletGetPrimeSuccessCallback;
+import tech.cherri.tpdirect.api.TPDPiWalletResult;
+
 // https://portal.tappaysdk.com/document/androidnoform
 public class TappayManager {
   ReactApplicationContext reactContext;
@@ -109,6 +115,11 @@ public class TappayManager {
   String easyWalletUniversalLinks;
   boolean easyWalletIsReadyToPay;
   TPDEasyWalletActivityEvent mTPDEasyWalletActivityEvent;
+
+  TPDPiWallet tpdPiWalletPay;
+  String piWalletUniversalLinks;
+  boolean piWalletIsReadyToPay;
+  TPDPiWalletActivityEvent mTPDPiWalletActivityEvent;
 
   interface TPDCardGetPrimeCallback extends TPDCardGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
   }
@@ -190,6 +201,17 @@ public class TappayManager {
 
   class TPDEasyWalletActivityEvent extends BaseActivityEventListener implements TPDEasyWalletResultListener {
     public void onParseSuccess(TPDEasyWalletResult tpdEasyWalletResult) {
+    }
+
+    public void onParseFail(int status, String msg) {
+    }
+  }
+
+  interface TPDPiWalletGetPrimeCallback extends TPDPiWalletGetPrimeSuccessCallback, TPDGetPrimeFailureCallback {
+  }
+
+  class TPDPiWalletActivityEvent extends BaseActivityEventListener implements TPDPiWalletResultListener {
+    public void onParseSuccess(TPDPiWalletResult tpdPiWalletPayResult) {
     }
 
     public void onParseFail(int status, String msg) {
@@ -797,20 +819,20 @@ public class TappayManager {
             resultData.putString("prime", prime);
             promise.resolve(resultData);
           } catch (Exception e) {
-            promise.reject("android error getJkoPayPrime onSuccess", e);
+            promise.reject("android error getEasyWalletPrime onSuccess", e);
           }
         }
 
         @Override
         public void onFailure(int status, String msg) {
-          promise.reject("android error getJkoPayPrime onFailure",
+          promise.reject("android error getEasyWalletPrime onFailure",
               msg + ", Error Status:" + Integer.toString(status));
         }
       };
 
       tpdEasyWallet.getPrime(mTPDEasyWalletGetPrimeCallback, mTPDEasyWalletGetPrimeCallback);
     } catch (Exception e) {
-      promise.reject("android error getJkoPayPrime", e);
+      promise.reject("android error getEasyWalletPrime", e);
     }
   }
 
@@ -860,9 +882,117 @@ public class TappayManager {
 
       reactContext.addActivityEventListener(mTPDEasyWalletActivityEvent);
 
-      tpdJkoPay.redirectWithUrl(paymentUrl);
+      tpdEasyWallet.redirectWithUrl(paymentUrl);
     } catch (Exception e) {
       promise.reject("android error easyWalletRedirectWithUrl", e);
+    }
+  }
+
+  public boolean isPiWalletAvailable() {
+    return TPDPiWallet.isPiWalletAvailable(reactContext);
+  }
+
+  public boolean piWalletInit(String _piWalletUniversalLinks) {
+    if (piWalletIsReadyToPay == true && piWalletUniversalLinks == _piWalletUniversalLinks) {
+      return piWalletIsReadyToPay;
+    }
+
+    boolean _piWalletIsReadyToPay = false;
+
+    try {
+      _piWalletIsReadyToPay = isPiWalletAvailable();
+
+      if (_piWalletIsReadyToPay == true) {
+        tpdPiWalletPay = new TPDPiWallet(reactContext, _piWalletUniversalLinks);
+        piWalletUniversalLinks = _piWalletUniversalLinks;
+        piWalletIsReadyToPay = _piWalletIsReadyToPay;
+      }
+
+    } catch (TPDPiWalletException e) {
+      throw new RuntimeException(e);
+    }
+
+    return _piWalletIsReadyToPay;
+  }
+
+  public void getPiWalletPrime(Promise promise) {
+    try {
+      TPDPiWalletGetPrimeCallback mTPDPiWalletGetPrimeCallback = new TPDPiWalletGetPrimeCallback() {
+        @Override
+        public void onSuccess(String prime) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("prime", prime);
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error getPiWalletPrime onSuccess", e);
+          }
+        }
+
+        @Override
+        public void onFailure(int status, String msg) {
+          promise.reject("android error getPiWalletPrime onFailure",
+              msg + ", Error Status:" + Integer.toString(status));
+        }
+      };
+
+      tpdPiWalletPay.getPrime(mTPDPiWalletGetPrimeCallback, mTPDPiWalletGetPrimeCallback);
+    } catch (Exception e) {
+      promise.reject("android error getPiWalletPrime", e);
+    }
+  }
+
+  public void piWalletRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+
+      if (mTPDPiWalletActivityEvent != null) {
+        reactContext.removeActivityEventListener(mTPDPiWalletActivityEvent);
+      }
+
+      mTPDPiWalletActivityEvent = new TPDPiWalletActivityEvent() {
+        @Override
+        public void onNewIntent(Intent intent) {
+          super.onNewIntent(intent);
+          if (intent.getDataString() != null && intent.getDataString().contains(piWalletUniversalLinks)) {
+            tpdPiWalletPay.parseToPiWalletResult(reactContext.getApplicationContext(), intent.getData(),
+                mTPDPiWalletActivityEvent);
+          }
+        }
+
+        @Override
+        public void onParseSuccess(TPDPiWalletResult tpdPiWalletPayResult) {
+          try {
+            WritableNativeMap resultData = new WritableNativeMap();
+            resultData.putString("systemOS", "android");
+            resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putInt("status", tpdPiWalletPayResult.getStatus());
+            resultData.putString("nrecTradeId", tpdPiWalletPayResult.getRecTradeId());
+            resultData.putString("nbankTransactionId", tpdPiWalletPayResult.getBankTransactionId());
+            resultData.putString("norderNumber", tpdPiWalletPayResult.getOrderNumber());
+            promise.resolve(resultData);
+          } catch (Exception e) {
+            promise.reject("android error piWalletRedirectWithUrl onParseSuccess", e);
+          }
+          reactContext.removeActivityEventListener(mTPDPiWalletActivityEvent);
+          mTPDPiWalletActivityEvent = null;
+        }
+
+        @Override
+        public void onParseFail(int status, String msg) {
+          promise.reject("android error piWalletRedirectWithUrl onParseFail",
+              msg + ", Error Status:" + Integer.toString(status));
+          reactContext.removeActivityEventListener(mTPDPiWalletActivityEvent);
+          mTPDPiWalletActivityEvent = null;
+        }
+      };
+
+      reactContext.addActivityEventListener(mTPDPiWalletActivityEvent);
+
+      tpdPiWalletPay.redirectWithUrl(paymentUrl);
+    } catch (Exception e) {
+      promise.reject("android error piWalletRedirectWithUrl", e);
     }
   }
 

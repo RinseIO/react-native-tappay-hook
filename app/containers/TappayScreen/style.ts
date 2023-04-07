@@ -105,6 +105,16 @@ export const EasyWalleBtnDisabledStyle: StyleProp<ViewStyle> = {
   backgroundColor: '#c3c3c3'
 };
 
+export const PiWalleBtnStyle: StyleProp<ViewStyle> = {
+  ...buttonStyle,
+  backgroundColor: undefined,
+  height: 100
+};
+export const PiWalleBtnDisabledStyle: StyleProp<ViewStyle> = {
+  ...PiWalleBtnStyle,
+  backgroundColor: undefined
+};
+
 export const styles = StyleSheet.create({
   root,
   context,
@@ -125,7 +135,9 @@ export const styles = StyleSheet.create({
   JkoPayBtnStyle,
   JkoPayBtnDisabledStyle,
   EasyWalleBtnStyle,
-  EasyWalleBtnDisabledStyle
+  EasyWalleBtnDisabledStyle,
+  PiWalleBtnStyle,
+  PiWalleBtnDisabledStyle
 });
 
 export default styles;

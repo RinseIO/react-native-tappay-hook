@@ -20,26 +20,36 @@
 @property () NSString *dueYear;
 @property () NSString *CCV;
 @property () NSString *SDKVersion;
-@property () BOOL *applePayIsReadyToPay;
 @property (nonatomic, strong) TPDMerchant *tpdMerchant;
 @property (nonatomic, strong) TPDConsumer *tpdConsumer;
 @property (nonatomic, strong) TPDCart *tpdCart;
+
 @property (nonatomic, strong) TPDApplePay *tpdApplePay;
 @property () RCTPromiseResolveBlock applePayJsResolve;
 @property () RCTPromiseRejectBlock applePayJsReject;
+@property () BOOL *applePayIsReadyToPay;
+
 @property (nonatomic, strong) TPDLinePay *tpdLinePay;
 @property () NSString *linePayCallbackUri;
 @property () BOOL *linePayIsReadyToPay;
 @property () RCTPromiseResolveBlock linePayJsResolve;
 @property () RCTPromiseRejectBlock linePayJsReject;
+
 @property (nonatomic, strong) TPDJKOPay *tpdJkoPay;
 @property () BOOL *jkoPayIsReadyToPay;
 @property () NSString *jkoPayUniversalLinks;
+
 @property (nonatomic, strong) TPDEasyWallet *tpdEasyWallet;
 @property () BOOL *easyWalletIsReadyToPay;
 @property () NSString *easyWalletUniversalLinks;
 @property () RCTPromiseResolveBlock easyWalletJsResolve;
 @property () RCTPromiseRejectBlock easyWalletJsReject;
+
+@property (nonatomic, strong) TPDPiWallet *tpdPiWallet;
+@property () BOOL *piWalletIsReadyToPay;
+@property () NSString *piWalletUniversalLinks;
+@property () RCTPromiseResolveBlock piWalletJsResolve;
+@property () RCTPromiseRejectBlock piWalletJsReject;
 
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
@@ -88,6 +98,16 @@
 - (void)getEasyWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 - (void)easyWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+- (void)tappayPiWalletExceptionHandler:(NSNotification *)notification;
+
+-(BOOL)isPiWalletAvailable;
+
+-(BOOL)piWalletInit:(NSString *)_piWalletUniversalLinks;
+
+-(void)getPiWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(void)piWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 @end
 

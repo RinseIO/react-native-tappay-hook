@@ -5,3 +5,4 @@ export * from './LinePayBtn';
 export * from './SPayBtn';
 export * from './JkoPayBtn';
 export * from './EasyWalletBtn';
+export * from './PiWalletBtn';

@@ -25,7 +25,8 @@ import {
   LinePayBtn,
   SPayBtn,
   JkoPayBtn,
-  EasyWalletBtn
+  EasyWalletBtn,
+  PiWalletBtn
 } from '@tappay/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -64,9 +65,10 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'your samsung pay service id'
         // );
         // await Tappay.jkoPayTest('jkoexample://jko.uri:8888/test');
-        await Tappay.easyWalletTest('https://google.com.tw');
+        // await Tappay.easyWalletTest('https://google.com.tw');
+        await Tappay.piWalletTest('https://google.com.tw');
       } catch (error) {
-        // console.log(error);
+        console.log(error);
       }
     })();
   }, []);
@@ -491,6 +493,21 @@ export function TappayScreen({ setPopUpMessage }: any) {
           style={styles.EasyWalleBtnStyle}
           disabledStyle={styles.EasyWalleBtnDisabledStyle}
           onPress={handlerEasyWallet}
+        />
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Pi錢包付款金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={easyWalleAmount}
+            onChange={({ nativeEvent }) => setEasyWalleAmount(nativeEvent.text)}
+          />
+        </View>
+        <PiWalletBtn
+          piWalletUniversalLinks="https://google.com.tw"
+          style={styles.PiWalleBtnStyle}
+          disabledStyle={styles.PiWalleBtnDisabledStyle}
+          // onPress={handlerEasyWallet}
         />
       </ScrollView>
     </SafeAreaView>

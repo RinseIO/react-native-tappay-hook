@@ -242,3 +242,27 @@ export function useTPDEasyWallet(easyWalletUniversalLinks: string) {
 
   return [isReady, msg];
 }
+
+export function useTPDPiWallet(piWalletUniversalLinks: string) {
+  const [isReady, setIsReady] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (Tappay.initPromise?.then) {
+          await Tappay.initPromise;
+        }
+        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
+          await Tappay.piWalletInit(piWalletUniversalLinks);
+
+        setIsReady(_isReadyToPay);
+        setMsg(_msg);
+      } catch (error: any) {
+        console.log('useTPDPiWallet error', { ...error });
+      }
+    })();
+  }, [piWalletUniversalLinks]);
+
+  return [isReady, msg];
+}

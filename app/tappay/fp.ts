@@ -1,5 +1,3 @@
-import { Platform } from 'react-native';
-
 import Tappay from './TappayManager';
 
 export function tappayInitialization(
@@ -33,17 +31,11 @@ export async function getGooglePayPrime(
   totalPrice: string,
   currencyCode: string = 'TWD'
 ) {
-  if (Platform.OS !== 'android') {
-    return;
-  }
   const result = await Tappay.getGooglePayPrime(totalPrice, currencyCode);
   return result;
 }
 
 export async function getApplePayPrime(amount: string) {
-  if (Platform.OS !== 'ios') {
-    return;
-  }
   const result = await Tappay.getApplePayPrime(amount);
 
   return result;
@@ -54,17 +46,10 @@ export async function linePayHandleURL(openUri: string) {
 }
 
 export async function isLinePayAvailable() {
-  if (Tappay.initPromise === null) {
-    throw new Error('Tappay has not been initialized!');
-  }
   return await Tappay.isLinePayAvailable();
 }
 
 export async function linePayInit(linePayCallbackUri: string) {
-  if (Tappay.initPromise === null) {
-    throw new Error('Tappay has not been initialized!');
-  }
-
   const result = await Tappay.linePayInit(linePayCallbackUri);
   return result;
 }
@@ -85,13 +70,6 @@ export async function samsungPayInit(
   currencyCode: string,
   serviceId: string
 ) {
-  if (Tappay.initPromise === null) {
-    throw new Error('Tappay has not been initialized!');
-  }
-  if (Platform.OS !== 'android') {
-    return;
-  }
-
   const result = await Tappay.samsungPayInit(
     merchantName,
     merchantId,
@@ -117,11 +95,11 @@ export async function getSamsungPayPrime(
   return result;
 }
 
-export async function jkoPayInit(jkoPayUniversalLinks: string) {
-  if (Tappay.initPromise === null) {
-    throw new Error('Tappay has not been initialized!');
-  }
+export async function isJkoPayAvailable() {
+  return await Tappay.isJkoPayAvailable();
+}
 
+export async function jkoPayInit(jkoPayUniversalLinks: string) {
   const result = await Tappay.jkoPayInit(jkoPayUniversalLinks);
   return result;
 }
@@ -136,11 +114,11 @@ export async function jkoPayRedirectWithUrl(paymentUrl: string) {
   return result;
 }
 
-export async function easyWalletInit(easyWalletUniversalLinks: string) {
-  if (Tappay.initPromise === null) {
-    throw new Error('Tappay has not been initialized!');
-  }
+export async function isEasyWalletAvailable() {
+  return await Tappay.isEasyWalletAvailable();
+}
 
+export async function easyWalletInit(easyWalletUniversalLinks: string) {
   const result = await Tappay.easyWalletInit(easyWalletUniversalLinks);
   return result;
 }
@@ -152,5 +130,24 @@ export async function getEasyWalletPrime() {
 
 export async function easyWalletRedirectWithUrl(paymentUrl: string) {
   const result = await Tappay.easyWalletRedirectWithUrl(paymentUrl);
+  return result;
+}
+
+export async function isPiWalletAvailable() {
+  return await Tappay.isPiWalletAvailable();
+}
+
+export async function piWalletInit(piWalletUniversalLinks: string) {
+  const result = await Tappay.piWalletInit(piWalletUniversalLinks);
+  return result;
+}
+
+export async function getPiWalletPrime() {
+  const result = await Tappay.getPiWalletPrime();
+  return result;
+}
+
+export async function piWalletRedirectWithUrl(paymentUrl: string) {
+  const result = await Tappay.piWalletRedirectWithUrl(paymentUrl);
   return result;
 }

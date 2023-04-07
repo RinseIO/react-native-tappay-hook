@@ -186,7 +186,7 @@
 
 //When exception happened receive notification.
 - (void)tappayLinePayExceptionHandler:(NSNotification *)notification {
-  if (self.linePayJsResolve != nil) {
+  if (self.linePayJsReject != nil) {
     TPDLinePayResult * result = [TPDLinePay parseURL:notification];
     
     self.linePayJsReject(@"ios error tappayLinePayExceptionHandler", [NSString stringWithFormat: @"%ld", result.status], @{
@@ -195,6 +195,7 @@
       @"recTradeId": result.recTradeId,
       @"bankTransactionId": result.bankTransactionId,
     });
+    self.linePayJsReject = nil;
   }
 }
 
@@ -373,7 +374,7 @@
 - (void)tappayEasyWalletExceptionHandler:(NSNotification *)notification {
     TPDEasyWalletResult * result = [TPDEasyWallet parseURL:notification];
 
-    if (self.self.easyWalletJsReject != nil) {
+    if (self.easyWalletJsReject != nil) {
       self.easyWalletJsReject(@"ios error tappayEasyWalletExceptionHandler", [NSString stringWithFormat: @"%ld", result.status], @{
         @"status": [NSString stringWithFormat: @"%ld", result.status],
         @"orderNumber": result.orderNumber,
@@ -460,6 +461,103 @@
     self.easyWalletJsReject = nil;
   }
 }
+
+
+- (void)tappayPiWalletExceptionHandler:(NSNotification *)notification {
+  if (self.piWalletJsReject != nil) {
+    TPDPiWalletResult * result = [TPDPiWallet parseURL:notification];
+    
+    self.piWalletJsReject(@"ios error tappayPiWalletExceptionHandler",
+     [NSString stringWithFormat: @"%ld", result.status],
+     @{
+        @"status": [NSString stringWithFormat: @"%ld", result.status],
+        @"orderNumber": result.orderNumber,
+        @"recTradeId": result.recTradeId,
+        @"bankTransactionId": result.bankTransactionId,
+      }
+    );
+    self.piWalletJsReject = nil;
+  }
+}
+
+-(BOOL)isPiWalletAvailable {
+  return [TPDPiWallet isPiWalletAvailable];
+}
+
+-(BOOL)piWalletInit:(NSString *)_piWalletUniversalLinks {
+  if (self.piWalletIsReadyToPay == YES && self.piWalletUniversalLinks == _piWalletUniversalLinks) {
+    return self.piWalletIsReadyToPay;
+  }
+  
+  BOOL piWalletIsReadyToPay = [self isPiWalletAvailable];
+  
+  #if piWalletIsReadyToPay == YES
+    TPDPiWallet *tpdPiWallet = [TPDPiWallet setupWithReturUrl:_easyWalletUniversalLinks];
+    [TPDPiWallet addExceptionObserver:(@selector(tappayPiWalletExceptionHandler:))];
+
+    self.tpdPiWallet = tpdPiWallet;
+    self.piWalletUniversalLinks = _piWalletUniversalLinks;
+    self.piWalletIsReadyToPay = &(piWalletIsReadyToPay);
+  #endif
+
+  return piWalletIsReadyToPay;
+}
+
+-(void)getPiWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.piWalletJsReject = reject;
+    [
+      [
+        [
+          self.tpdPiWallet onSuccessCallback:^(NSString * _Nullable prime) {
+            resolve(@{
+              @"systemOS": @"ios",
+              @"SDKVersion": self.SDKVersion,
+              @"prime": prime
+            });
+            self.piWalletJsReject = nil;
+          }
+        ]
+        onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error getPiWalletPrime onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+          self.piWalletJsReject = nil;
+        }
+      ]
+      getPrime
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error getPiWalletPrime", exception.description, nil);
+    self.piWalletJsReject = nil;
+  }
+}
+
+-(void)piWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  @try {
+    self.piWalletJsReject = reject;
+    [
+      self.tpdPiWallet redirect:paymentUrl completion:^(TPDPiWalletResult * _Nonnull result) {
+        resolve(@{
+          @"status":[NSString stringWithFormat:@"%ld", result.status],
+          @"recTradeId": result.recTradeId,
+          @"bankTransactionId": result.bankTransactionId,
+          @"orderNumber":result.orderNumber
+        });
+        self.piWalletJsReject = nil;
+      }
+    ];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error piWalletRedirectWithUrl", exception.description, nil);
+    self.piWalletJsReject = nil;
+  }
+}
+
+
 
 @end
 

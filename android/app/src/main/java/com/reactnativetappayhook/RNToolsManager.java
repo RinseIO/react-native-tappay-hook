@@ -286,7 +286,7 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
     }
   }
 
-  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDEasyWallet的isEasyWalletAvailable
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDEasyWallet的isAvailable
   @ReactMethod
   public void TappayIsEasyWalletAvailable(Promise promise) {
     try {
@@ -336,6 +336,59 @@ public class RNToolsManager extends ReactContextBaseJavaModule {
       TappayManager.easyWalletRedirectWithUrl(paymentUrl, promise);
     } catch (Exception e) {
       promise.reject("android error TappayEasyWalletRedirectWithUrl", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPiWallet的isPiWalletAvailable
+  @ReactMethod
+  public void TappayIsPiWalletAvailable(Promise promise) {
+    try {
+      boolean result = TappayManager.isPiWalletAvailable();
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayIsPiWalletAvailable", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPiWallet的piWalletInit
+  @ReactMethod
+  public void TappayPiWalletInit(String piWalletUniversalLinks, Promise promise) {
+    try {
+      boolean result = TappayManager.piWalletInit(piWalletUniversalLinks);
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putBoolean("isReadyToPay", result);
+      resultData.putString("piWalletUniversalLinks", piWalletUniversalLinks);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayEasyWalletInit", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPiWallet的getPrime
+  @ReactMethod
+  public void TappayGetPiWalletPrime(Promise promise) {
+    try {
+      TappayManager.getPiWalletPrime(promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayGetPiWalletPrime", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPiWallet的redirectWithUrl，並自動完成跳轉資料的監聽
+  @ReactMethod
+  public void TappayPiWalletRedirectWithUrl(String paymentUrl, Promise promise) {
+    try {
+      TappayManager.piWalletRedirectWithUrl(paymentUrl, promise);
+    } catch (Exception e) {
+      promise.reject("android error TappayPiWalletRedirectWithUrl", e);
     }
   }
 

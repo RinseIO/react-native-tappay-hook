@@ -9,6 +9,7 @@ export class tappay {
   public samsungPayIsReady: boolean = false;
   public jkoPayIsReady: boolean = false;
   public easyWalletIsReady: boolean = false;
+  public piWalletIsReady: boolean = false;
 
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {
@@ -131,7 +132,12 @@ export class tappay {
   }
 
   public async isLinePayAvailable() {
-    return await NativeModules.RNToolsManager.TappayIsLinePayAvailable();
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const { isReadyToPay } =
+      await NativeModules.RNToolsManager.TappayIsLinePayAvailable();
+    return isReadyToPay;
   }
 
   public async linePayInit(linePayCallbackUri: string) {
@@ -174,6 +180,9 @@ export class tappay {
     if (this.initPromise === null) {
       throw new Error('Tappay has not been initialized!');
     }
+    if (Platform.OS !== 'android') {
+      return;
+    }
     const result = await NativeModules.RNToolsManager.TappaySamsungPayInit(
       merchantName,
       merchantId,
@@ -203,6 +212,15 @@ export class tappay {
       totalAmount
     );
     return result;
+  }
+
+  public async isJkoPayAvailable() {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const { isReadyToPay } =
+      await NativeModules.RNToolsManager.TappayIsJkoPayAvailable();
+    return isReadyToPay;
   }
 
   public async jkoPayInit(jkoPayUniversalLinks: string) {
@@ -238,6 +256,15 @@ export class tappay {
     return result;
   }
 
+  public async isEasyWalletAvailable() {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const { isReadyToPay } =
+      await NativeModules.RNToolsManager.TappayIsEasyWalletAvailable();
+    return isReadyToPay;
+  }
+
   public async easyWalletInit(easyWalletUniversalLinks: string) {
     if (this.initPromise === null) {
       throw new Error('Tappay has not been initialized!');
@@ -250,9 +277,6 @@ export class tappay {
   }
 
   public async getEasyWalletPrime() {
-    if (Platform.OS !== 'android') {
-      return;
-    }
     if (this.easyWalletIsReady !== true) {
       throw new Error('TappayEasyWallet is not ready!');
     }
@@ -267,6 +291,46 @@ export class tappay {
     }
     const result =
       await NativeModules.RNToolsManager.TappayEasyWalletRedirectWithUrl(
+        paymentUrl
+      );
+    return result;
+  }
+
+  public async isPiWalletAvailable() {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const { isReadyToPay } =
+      await NativeModules.RNToolsManager.TappayIsPiWalletAvailable();
+    return isReadyToPay;
+  }
+
+  public async piWalletInit(piWalletUniversalLinks: string) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+    const result = await NativeModules.RNToolsManager.TappayPiWalletInit(
+      piWalletUniversalLinks
+    );
+    console.log(result);
+    this.piWalletIsReady = result.isReadyToPay;
+    return { ...result, msg: result.msg || '' };
+  }
+
+  public async getPiWalletPrime() {
+    if (this.piWalletIsReady !== true) {
+      throw new Error('TappayPiWallet is not ready!');
+    }
+    const result = await NativeModules.RNToolsManager.TappayGetPiWalletPrime();
+    return result;
+  }
+
+  public async piWalletRedirectWithUrl(paymentUrl: string) {
+    if (this.piWalletIsReady !== true) {
+      throw new Error('TappayPiWallet is not ready!');
+    }
+    const result =
+      await NativeModules.RNToolsManager.TappayPiWalletRedirectWithUrl(
         paymentUrl
       );
     return result;
@@ -316,7 +380,7 @@ export class tappay {
         currencyCode
       );
       if (isReadyToPay === true) {
-        const result = await Tappay.getApplePayPrime('1');
+        const result = await this.getApplePayPrime('1');
         console.log(result);
       }
     } catch (error: any) {
@@ -328,7 +392,7 @@ export class tappay {
     try {
       const { isReadyToPay } = await this.linePayInit(linePayCallbackUri);
       if (isReadyToPay === true) {
-        const result = await Tappay.getLinePayPrime();
+        const result = await this.getLinePayPrime();
         console.log({ result });
       }
     } catch (error: any) {
@@ -350,7 +414,7 @@ export class tappay {
         serviceId
       );
       if (isReadyToPay === true) {
-        const result = await Tappay.getSamsungPayPrime('1', '0', '0', '1');
+        const result = await this.getSamsungPayPrime('1', '0', '0', '1');
         console.log({ result });
       }
     } catch (error: any) {
@@ -362,7 +426,7 @@ export class tappay {
     try {
       const { isReadyToPay } = await this.jkoPayInit(jkoPayUniversalLinks);
       if (isReadyToPay === true) {
-        const result = await Tappay.getJkoPayPrime();
+        const result = await this.getJkoPayPrime();
         console.log({ result });
       }
     } catch (error: any) {
@@ -372,11 +436,27 @@ export class tappay {
 
   public async easyWalletTest(easyWalletUniversalLinks: string) {
     try {
-      const { isReadyToPay } = await this.easyWalletInit(easyWalletUniversalLinks);
+      const { isReadyToPay } = await this.easyWalletInit(
+        easyWalletUniversalLinks
+      );
       if (isReadyToPay === true) {
-        const result = await Tappay.getEasyWalletPrime();
+        const result = await this.getEasyWalletPrime();
         console.log({ result });
       }
+    } catch (error: any) {
+      console.log({ ...error });
+    }
+  }
+
+  public async piWalletTest(piWalletUniversalLinks: string) {
+    try {
+      // Sandbox模式底下，isReadyToPay皆為false，故不測試最後是否能取得Prime
+      await this.piWalletInit(piWalletUniversalLinks);
+      // const { isReadyToPay } = await this.piWalletInit(piWalletUniversalLinks);
+      // if (isReadyToPay === true) {
+      //   const result = await this.getPiWalletPrime();
+      //   console.log({ result });
+      // }
     } catch (error: any) {
       console.log({ ...error });
     }

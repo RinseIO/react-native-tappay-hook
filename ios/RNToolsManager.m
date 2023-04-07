@@ -288,9 +288,6 @@ RCT_EXPORT_METHOD(TappayJkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(R
   }
 }
 
-
-
-
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDEasyWallet的isEasyWalletAvailable
 RCT_EXPORT_METHOD(TappayIsEasyWalletAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -307,13 +304,14 @@ RCT_EXPORT_METHOD(TappayIsEasyWalletAvailable:(RCTPromiseResolveBlock)resolve re
 }
 
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDEasyWallet的初始化方法
-RCT_EXPORT_METHOD(TappayEasyWalletInit:(NSString *)_easyWalletUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(TappayEasyWalletInit:(NSString *)easyWalletUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
     resolve(@{
       @"systemOS": @"ios",
       @"tappaySDKVersion": self.TappayManager.SDKVersion,
-      @"isReadyToPay": @([self.TappayManager easyWalletInit:_easyWalletUniversalLinks])
+      @"easyWalletUniversalLinks": easyWalletUniversalLinks,
+      @"isReadyToPay": @([self.TappayManager easyWalletInit:easyWalletUniversalLinks])
     });
   }
   @catch (NSException *exception) {
@@ -342,5 +340,59 @@ RCT_EXPORT_METHOD(TappayEasyWalletRedirectWithUrl:(NSString *)paymentUrl resolve
     reject(@"ios error TappayEasyWalletRedirectWithUrl", exception.description, nil);
   }
 }
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPiWallet的isPiWalletAvailable
+RCT_EXPORT_METHOD(TappayIsPiWalletAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"isReadyToPay": @([self.TappayManager isPiWalletAvailable])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayIsPiWalletAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPiWallet的初始化方法
+RCT_EXPORT_METHOD(TappayPiWalletInit:(NSString *)piWalletUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"piWalletUniversalLinks": piWalletUniversalLinks,
+      @"isReadyToPay": @([self.TappayManager piWalletInit:piWalletUniversalLinks])
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayPiWalletInit", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPiWallet取得prime方法
+RCT_EXPORT_METHOD(TappayGetPiWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager getPiWalletPrime:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayGetPiWalletPrime", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPiWallet的跳轉付款方法
+RCT_EXPORT_METHOD(TappayPiWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [self.TappayManager piWalletRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayPiWalletRedirectWithUrl", exception.description, nil);
+  }
+}
+
 
 @end

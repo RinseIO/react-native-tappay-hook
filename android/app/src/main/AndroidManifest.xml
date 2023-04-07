@@ -75,6 +75,10 @@
     <!-- required for easy-wallet-->
     <!-- for easy-wallet open -->
     <package android:name="com.easycard.wallet" />
+
+    <!-- required for pi-wallet-->
+    <!-- for pi-wallet production app openn -->
+    <package android:name="tw.com.pchome.android.pi" />
   </queries>
 
 </manifest>

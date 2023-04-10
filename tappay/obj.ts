@@ -1,18 +1,116 @@
 import { Platform, NativeModules } from 'react-native';
 
+import {
+  getProd,
+  setProd,
+  getInitPromise,
+  setInitPromise,
+  getDeviceId,
+  setDeviceId,
+  getGooglePlayIsReady,
+  setGooglePlayIsReady,
+  getApplePlayIsReady,
+  setApplePlayIsReady,
+  getLinePlayIsReady,
+  setLinePlayIsReady,
+  getSamsungPayIsReady,
+  setSamsungPayIsReady,
+  getJkoPayIsReady,
+  setJkoPayIsReady,
+  getEasyWalletIsReady,
+  setEasyWalletIsReady,
+  getPiWalletIsReady,
+  setPiWalletIsReady,
+  getPlusPayIsReady,
+  setPlusPayIsReady,
+  getAtomePayIsReady,
+  setAtomePayIsReady
+} from './status';
+
 export class tappay {
-  public prod: boolean = false;
-  public initPromise: any = null;
-  public deviceId: string = '';
-  public googlePlayIsReady: boolean = false;
-  public applePlayIsReady: boolean = false;
-  public linePlayIsReady: boolean = false;
-  public samsungPayIsReady: boolean = false;
-  public jkoPayIsReady: boolean = false;
-  public easyWalletIsReady: boolean = false;
-  public piWalletIsReady: boolean = false;
-  public plusPayIsReady: boolean = false;
-  public atomePayIsReady: boolean = false;
+  public get prod() {
+    return getProd();
+  }
+  public set prod(newProd: boolean) {
+    setProd(newProd);
+  }
+
+  public get initPromise() {
+    return getInitPromise();
+  }
+  public set initPromise(newInitPromise: any) {
+    setInitPromise(newInitPromise);
+  }
+
+  public get deviceId() {
+    return getDeviceId() || '';
+  }
+  public set deviceId(newDeviceId: string) {
+    setDeviceId(newDeviceId);
+  }
+
+  public get googlePlayIsReady() {
+    return getGooglePlayIsReady() || false;
+  }
+  public set googlePlayIsReady(newGooglePlayIsReady: boolean) {
+    setGooglePlayIsReady(newGooglePlayIsReady);
+  }
+
+  public get applePlayIsReady() {
+    return getApplePlayIsReady() || false;
+  }
+  public set applePlayIsReady(newApplePlayIsReady: boolean) {
+    setApplePlayIsReady(newApplePlayIsReady);
+  }
+
+  public get linePlayIsReady() {
+    return getLinePlayIsReady() || false;
+  }
+  public set linePlayIsReady(newLinePlayIsReady: boolean) {
+    setLinePlayIsReady(newLinePlayIsReady);
+  }
+
+  public get samsungPayIsReady() {
+    return getSamsungPayIsReady() || false;
+  }
+  public set samsungPayIsReady(newSamsungPayIsReady: boolean) {
+    setSamsungPayIsReady(newSamsungPayIsReady);
+  }
+
+  public get easyWalletIsReady() {
+    return getEasyWalletIsReady() || false;
+  }
+  public set easyWalletIsReady(newEasyWalletIsReady: boolean) {
+    setEasyWalletIsReady(newEasyWalletIsReady);
+  }
+
+  public get jkoPayIsReady() {
+    return getJkoPayIsReady() || false;
+  }
+  public set jkoPayIsReady(newJkoPayIsReady: boolean) {
+    setJkoPayIsReady(newJkoPayIsReady);
+  }
+
+  public get piWalletIsReady() {
+    return getPiWalletIsReady() || false;
+  }
+  public set piWalletIsReady(newPiWalletIsReady: boolean) {
+    setPiWalletIsReady(newPiWalletIsReady);
+  }
+
+  public get plusPayIsReady() {
+    return getPlusPayIsReady() || false;
+  }
+  public set plusPayIsReady(newPlusPayIsReady: boolean) {
+    setPlusPayIsReady(newPlusPayIsReady);
+  }
+
+  public get atomePayIsReady() {
+    return getAtomePayIsReady() || false;
+  }
+  public set atomePayIsReady(newAtomePayIsReady: boolean) {
+    setAtomePayIsReady(newAtomePayIsReady);
+  }
 
   public init(appId: number, appKey: string, prod: boolean) {
     this.initPromise = (async () => {

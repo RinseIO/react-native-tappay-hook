@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import Tappay from './TappayManager';
+import Tappay from './obj';
 
 interface directResult {
   isCardNumberValid: boolean;

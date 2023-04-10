@@ -1,66 +1,186 @@
-import Tappay from './TappayManager';
+import { Platform, NativeModules } from 'react-native';
+
+import {
+  getInitPromise,
+  setInitPromise,
+  getDeviceId,
+  setDeviceId,
+  getGooglePlayIsReady,
+  setGooglePlayIsReady,
+  getApplePlayIsReady,
+  setApplePlayIsReady,
+  getLinePlayIsReady,
+  setLinePlayIsReady,
+  getSamsungPayIsReady,
+  setSamsungPayIsReady,
+  getJkoPayIsReady,
+  setJkoPayIsReady,
+  getEasyWalletIsReady,
+  setEasyWalletIsReady,
+  getPiWalletIsReady,
+  setPiWalletIsReady,
+  getPlusPayIsReady,
+  setPlusPayIsReady,
+  getAtomePayIsReady,
+  setAtomePayIsReady
+} from './status';
 
 export function tappayInitialization(
   appId: number,
   appKey: string,
   prod: boolean
 ) {
-  if (Tappay.initPromise !== null) {
-    return Tappay.initPromise;
+  if (getInitPromise() !== null) {
+    return getInitPromise();
   }
 
-  Tappay.initPromise = (async () => {
-    await Tappay.init(appId, appKey, prod);
-    return await Tappay.getDeviceId();
-  })();
+  setInitPromise(
+    (async () => {
+      try {
+        await NativeModules.RNToolsManager.TappayInitInstance(
+          appId,
+          appKey,
+          prod
+        );
+        return await getTappayDeviceId();
+      } catch (error: any) {
+        console.log({ ...error });
+        setInitPromise(null);
+      }
+    })()
+  );
 
-  return Tappay.initPromise;
+  return getInitPromise();
 }
 
 export async function getTappayDeviceId() {
-  const _deviceId = await Tappay.getDeviceId();
-  return _deviceId;
+  const deviceId = getDeviceId();
+  if (deviceId !== '') {
+    return deviceId;
+  }
+  const _deviceId = await NativeModules.RNToolsManager.TappayGetDeviceId();
+  setDeviceId(_deviceId);
+  return getDeviceId();
 }
 
 export async function getDirectPayPrime(geoLocation: string = 'UNKNOWN') {
-  const result = await Tappay.getDirectPayPrime(geoLocation);
+  const result = await NativeModules.RNToolsManager.TappayGetDirectPayPrime(
+    geoLocation
+  );
   return result;
+}
+
+export async function googlePayInit(merchantName: string) {
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGooglePayInit(
+    merchantName
+  );
+  setGooglePlayIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function getGooglePayPrime(
   totalPrice: string,
   currencyCode: string = 'TWD'
 ) {
-  const result = await Tappay.getGooglePayPrime(totalPrice, currencyCode);
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  if (Platform.OS !== 'android') {
+    return;
+  }
+  if (getGooglePlayIsReady() !== true) {
+    throw new Error('TappayGooglePay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetGooglePayPrime(
+    totalPrice,
+    currencyCode
+  );
   return result;
 }
 
-export async function getApplePayPrime(amount: string) {
-  const result = await Tappay.getApplePayPrime(amount);
+export async function isApplePayAvailable() {
+  return await NativeModules.RNToolsManager.TappayIsApplePayAvailable();
+}
 
+export async function applePayInit(
+  merchantName: string,
+  merchantId: string,
+  countryCode: string,
+  currencyCode: string
+) {
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+
+  const result = await NativeModules.RNToolsManager.TappayAapplePayInit(
+    merchantName,
+    merchantId,
+    countryCode,
+    currencyCode
+  );
+  setApplePlayIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
+}
+
+export async function getApplePayPrime(amount: string) {
+  if (Platform.OS !== 'ios') {
+    return;
+  }
+  if (getApplePlayIsReady() !== true) {
+    throw new Error('TappayApplePay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetApplePayPrime(
+    amount
+  );
   return result;
 }
 
 export async function linePayHandleURL(openUri: string) {
-  return await Tappay.linePayHandleURL(openUri);
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+
+  return await NativeModules.RNToolsManager.TappayLinePayHandleURL(openUri);
 }
 
 export async function isLinePayAvailable() {
-  return await Tappay.isLinePayAvailable();
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const { isReadyToPay } =
+    await NativeModules.RNToolsManager.TappayIsLinePayAvailable();
+  return isReadyToPay;
 }
 
 export async function linePayInit(linePayCallbackUri: string) {
-  const result = await Tappay.linePayInit(linePayCallbackUri);
-  return result;
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+
+  const result = await NativeModules.RNToolsManager.TappayLinePayInit(
+    linePayCallbackUri
+  );
+  setLinePlayIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function linePayRedirectWithUrl(paymentUrl: string) {
-  const result = await Tappay.linePayRedirectWithUrl(paymentUrl);
+  if (getLinePlayIsReady() !== true) {
+    throw new Error('TappayLinePay is not ready!');
+  }
+  const result =
+    await NativeModules.RNToolsManager.TappayLinePayRedirectWithUrl(paymentUrl);
   return result;
 }
 
 export async function getLinePayPrime() {
-  const result = await Tappay.getLinePayPrime();
+  if (getLinePlayIsReady() !== true) {
+    throw new Error('TappayLinePay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetLinePayPrime();
   return result;
 }
 
@@ -70,14 +190,17 @@ export async function samsungPayInit(
   currencyCode: string,
   serviceId: string
 ) {
-  const result = await Tappay.samsungPayInit(
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const result = await NativeModules.RNToolsManager.TappaySamsungPayInit(
     merchantName,
     merchantId,
     currencyCode,
     serviceId
   );
-
-  return result;
+  setSamsungPayIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function getSamsungPayPrime(
@@ -86,7 +209,13 @@ export async function getSamsungPayPrime(
   tax: string,
   totalAmount: string
 ) {
-  const result = await Tappay.getSamsungPayPrime(
+  if (Platform.OS !== 'android') {
+    return;
+  }
+  if (getSamsungPayIsReady() !== true) {
+    throw new Error('TappaySamsungPay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetSamsungPayPrime(
     itemTotalAmount,
     shippingPrice,
     tax,
@@ -96,96 +225,196 @@ export async function getSamsungPayPrime(
 }
 
 export async function isJkoPayAvailable() {
-  return await Tappay.isJkoPayAvailable();
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const { isReadyToPay } =
+    await NativeModules.RNToolsManager.TappayIsJkoPayAvailable();
+  return isReadyToPay;
 }
 
 export async function jkoPayInit(jkoPayUniversalLinks: string) {
-  const result = await Tappay.jkoPayInit(jkoPayUniversalLinks);
-  return result;
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayJkoPayInit(
+    jkoPayUniversalLinks
+  );
+  setJkoPayIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function getJkoPayPrime() {
-  const result = await Tappay.getJkoPayPrime();
+  if (Platform.OS !== 'android') {
+    return;
+  }
+  if (getJkoPayIsReady() !== true) {
+    throw new Error('TappayJkoPay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetJkoPayPrime();
   return result;
 }
 
 export async function jkoPayRedirectWithUrl(paymentUrl: string) {
-  const result = await Tappay.jkoPayRedirectWithUrl(paymentUrl);
+  if (getJkoPayIsReady() !== true) {
+    throw new Error('TappayJkoPay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayJkoPayRedirectWithUrl(
+    paymentUrl
+  );
   return result;
 }
 
 export async function isEasyWalletAvailable() {
-  return await Tappay.isEasyWalletAvailable();
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const { isReadyToPay } =
+    await NativeModules.RNToolsManager.TappayIsEasyWalletAvailable();
+  return isReadyToPay;
 }
 
 export async function easyWalletInit(easyWalletUniversalLinks: string) {
-  const result = await Tappay.easyWalletInit(easyWalletUniversalLinks);
-  return result;
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayEasyWalletInit(
+    easyWalletUniversalLinks
+  );
+  setEasyWalletIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function getEasyWalletPrime() {
-  const result = await Tappay.getEasyWalletPrime();
+  if (getEasyWalletIsReady() !== true) {
+    throw new Error('TappayEasyWallet is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetEasyWalletPrime();
   return result;
 }
 
 export async function easyWalletRedirectWithUrl(paymentUrl: string) {
-  const result = await Tappay.easyWalletRedirectWithUrl(paymentUrl);
+  if (getEasyWalletIsReady() !== true) {
+    throw new Error('TappayEasyWallet is not ready!');
+  }
+  const result =
+    await NativeModules.RNToolsManager.TappayEasyWalletRedirectWithUrl(
+      paymentUrl
+    );
   return result;
 }
 
 export async function isPiWalletAvailable() {
-  return await Tappay.isPiWalletAvailable();
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const { isReadyToPay } =
+    await NativeModules.RNToolsManager.TappayIsPiWalletAvailable();
+  return isReadyToPay;
 }
 
 export async function piWalletInit(piWalletUniversalLinks: string) {
-  const result = await Tappay.piWalletInit(piWalletUniversalLinks);
-  return result;
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayPiWalletInit(
+    piWalletUniversalLinks
+  );
+  setPiWalletIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function getPiWalletPrime() {
-  const result = await Tappay.getPiWalletPrime();
+  if (getPiWalletIsReady() !== true) {
+    throw new Error('TappayPiWallet is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetPiWalletPrime();
   return result;
 }
 
 export async function piWalletRedirectWithUrl(paymentUrl: string) {
-  const result = await Tappay.piWalletRedirectWithUrl(paymentUrl);
+  if (getPiWalletIsReady() !== true) {
+    throw new Error('TappayPiWallet is not ready!');
+  }
+  const result =
+    await NativeModules.RNToolsManager.TappayPiWalletRedirectWithUrl(
+      paymentUrl
+    );
   return result;
 }
 
 export async function isPlusPayAvailable() {
-  return await Tappay.isPlusPayAvailable();
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const { isReadyToPay } =
+    await NativeModules.RNToolsManager.TappayIsPlusPayAvailable();
+  return isReadyToPay;
 }
 
 export async function plusPayInit(plusPayUniversalLinks: string) {
-  const result = await Tappay.plusPayInit(plusPayUniversalLinks);
-  return result;
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayPlusPayInit(
+    plusPayUniversalLinks
+  );
+  setPlusPayIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function getPlusPayPrime() {
-  const result = await Tappay.getPlusPayPrime();
+  if (getPlusPayIsReady() !== true) {
+    throw new Error('TappayPlusPay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetPlusPayPrime();
   return result;
 }
 
 export async function plusPayRedirectWithUrl(paymentUrl: string) {
-  const result = await Tappay.plusPayRedirectWithUrl(paymentUrl);
+  if (getPlusPayIsReady() !== true) {
+    throw new Error('TappayPlusPay is not ready!');
+  }
+  const result =
+    await NativeModules.RNToolsManager.TappayPlusPayRedirectWithUrl(paymentUrl);
   return result;
 }
 
 export async function isAtomePayAvailable() {
-  return await Tappay.isAtomePayAvailable();
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const { isReadyToPay } =
+    await NativeModules.RNToolsManager.TappayIsAtomePayAvailable();
+  return isReadyToPay;
 }
 
 export async function atomePayInit(atomePayUniversalLinks: string) {
-  const result = await Tappay.atomePayInit(atomePayUniversalLinks);
-  return result;
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayPlusPayInit(
+    atomePayUniversalLinks
+  );
+  setAtomePayIsReady(result.isReadyToPay);
+  return { ...result, msg: result.msg || '' };
 }
 
 export async function getAtomePayPrime() {
-  const result = await Tappay.getAtomePayPrime();
+  if (getAtomePayIsReady() !== true) {
+    throw new Error('TappayAtomePay is not ready!');
+  }
+  const result = await NativeModules.RNToolsManager.TappayGetAtomePayPrime();
   return result;
 }
 
 export async function atomePayRedirectWithUrl(paymentUrl: string) {
-  const result = await Tappay.atomePayRedirectWithUrl(paymentUrl);
+  if (getAtomePayIsReady() !== true) {
+    throw new Error('TappayAtomePay is not ready!');
+  }
+  const result =
+    await NativeModules.RNToolsManager.TappayAtomePayRedirectWithUrl(
+      paymentUrl
+    );
   return result;
 }

@@ -25,10 +25,10 @@ export function setInitPromise(newInitPromise: any) {
   initPromise = newInitPromise;
 }
 
-export function getDeviceId() {
+export function getStatusDeviceId() {
   return deviceId;
 }
-export function setDeviceId(newDeviceId: string) {
+export function setStatusDeviceId(newDeviceId: string) {
   deviceId = newDeviceId;
 }
 

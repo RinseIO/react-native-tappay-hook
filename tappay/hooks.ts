@@ -1,6 +1,19 @@
 import { useState, useEffect } from 'react';
 
-import Tappay from './obj';
+import {
+  setDirectPayTPDCard,
+  getDeviceId,
+  googlePayInit,
+  applePayInit,
+  linePayInit,
+  samsungPayInit,
+  jkoPayInit,
+  easyWalletInit,
+  piWalletInit,
+  plusPayInit,
+  atomePayInit
+} from './fp';
+import { getInitPromise } from './cacheStatus';
 
 interface directResult {
   isCardNumberValid: boolean;
@@ -29,13 +42,14 @@ export function useSetDirectPayTPDCard(
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise === null) {
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
           throw new Error('Tappay has not been initialized!');
         }
-        if (Tappay.initPromise.then) {
-          await Tappay.initPromise;
+        if (initPromise.then) {
+          await initPromise;
         }
-        const _validResult = await Tappay.setDirectPayTPDCard(
+        const _validResult = await setDirectPayTPDCard(
           cardNumber,
           dueMonth,
           dueYear,
@@ -65,10 +79,14 @@ export function useTPDGetDeviceId() {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
         }
-        const _deviceId = await Tappay.getDeviceId();
+        if (initPromise.then) {
+          await initPromise;
+        }
+        const _deviceId = await getDeviceId();
         setDeviceId(_deviceId);
       } catch (error: any) {
         console.log('useTPDGetDeviceId error', { ...error });
@@ -86,11 +104,15 @@ export function useTPDGooglePay(merchantName: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.googlePayInit(merchantName);
+          await googlePayInit(merchantName);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
@@ -115,11 +137,15 @@ export function useTPDApplePay(
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.applePayInit(
+          await applePayInit(
             merchantName,
             merchantId,
             countryCode,
@@ -144,11 +170,15 @@ export function useTPDLinePay(linePayCallbackUri: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.linePayInit(linePayCallbackUri);
+          await linePayInit(linePayCallbackUri);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
@@ -173,11 +203,15 @@ export function useTPDSamsungPay(
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.samsungPayInit(
+          await samsungPayInit(
             merchantName,
             merchantId,
             currencyCode,
@@ -203,11 +237,15 @@ export function useTPDJkoPay(jkoPayUniversalLinks: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.jkoPayInit(jkoPayUniversalLinks);
+          await jkoPayInit(jkoPayUniversalLinks);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
@@ -227,11 +265,15 @@ export function useTPDEasyWallet(easyWalletUniversalLinks: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.easyWalletInit(easyWalletUniversalLinks);
+          await easyWalletInit(easyWalletUniversalLinks);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
@@ -251,11 +293,15 @@ export function useTPDPiWallet(piWalletUniversalLinks: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.piWalletInit(piWalletUniversalLinks);
+          await piWalletInit(piWalletUniversalLinks);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
@@ -275,11 +321,15 @@ export function useTPDPlusPay(plusPayUniversalLinks: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.plusPayInit(plusPayUniversalLinks);
+          await plusPayInit(plusPayUniversalLinks);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
@@ -299,11 +349,15 @@ export function useTPDAtomePay(atomePayUniversalLinks: string) {
   useEffect(() => {
     (async () => {
       try {
-        if (Tappay.initPromise?.then) {
-          await Tappay.initPromise;
+        const initPromise = getInitPromise();
+        if (initPromise === null) {
+          throw new Error('Tappay has not been initialized!');
+        }
+        if (initPromise.then) {
+          await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await Tappay.atomePayInit(atomePayUniversalLinks);
+          await atomePayInit(atomePayUniversalLinks);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);

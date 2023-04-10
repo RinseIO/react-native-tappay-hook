@@ -71,15 +71,15 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'TWD'
         // );
         // await Tappay.linePayTest('linepayexample://tech.cherri');
-        await Tappay.samsungTest(
-          'TapPay Samsung Pay Demo',
-          'tech.cherri.samsungpayexample',
-          'TWD',
-          'your samsung pay service id'
-        );
+        // await Tappay.samsungTest(
+        //   'TapPay Samsung Pay Demo',
+        //   'tech.cherri.samsungpayexample',
+        //   'TWD',
+        //   'your samsung pay service id'
+        // );
         // await Tappay.jkoPayTest('jkoexample://jko.uri:8888/test');
         // await Tappay.easyWalletTest('https://google.com.tw');
-        // await Tappay.piWalletTest('https://google.com.tw');
+        await Tappay.piWalletTest('https://google.com.tw');
         // await Tappay.plusPayTest('tpdirectexamplepluspay://tech.cherri/myaccount/detail');
       } catch (error) {
         console.log(error);

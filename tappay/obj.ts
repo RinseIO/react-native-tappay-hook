@@ -5,8 +5,8 @@ import {
   setProd,
   getInitPromise,
   setInitPromise,
-  getDeviceId,
-  setDeviceId,
+  getStatusDeviceId,
+  setStatusDeviceId,
   getGooglePlayIsReady,
   setGooglePlayIsReady,
   getApplePlayIsReady,
@@ -25,90 +25,90 @@ import {
   setPlusPayIsReady,
   getAtomePayIsReady,
   setAtomePayIsReady
-} from './status';
+} from './cacheStatus';
 
 export class tappay {
   public get prod() {
     return getProd();
   }
-  public set prod(newProd: boolean) {
+  private set prod(newProd: boolean) {
     setProd(newProd);
   }
 
   public get initPromise() {
     return getInitPromise();
   }
-  public set initPromise(newInitPromise: any) {
+  private set initPromise(newInitPromise: any) {
     setInitPromise(newInitPromise);
   }
 
   public get deviceId() {
-    return getDeviceId() || '';
+    return getStatusDeviceId() || '';
   }
-  public set deviceId(newDeviceId: string) {
-    setDeviceId(newDeviceId);
+  private set deviceId(newDeviceId: string) {
+    setStatusDeviceId(newDeviceId);
   }
 
   public get googlePlayIsReady() {
     return getGooglePlayIsReady() || false;
   }
-  public set googlePlayIsReady(newGooglePlayIsReady: boolean) {
+  private set googlePlayIsReady(newGooglePlayIsReady: boolean) {
     setGooglePlayIsReady(newGooglePlayIsReady);
   }
 
   public get applePlayIsReady() {
     return getApplePlayIsReady() || false;
   }
-  public set applePlayIsReady(newApplePlayIsReady: boolean) {
+  private set applePlayIsReady(newApplePlayIsReady: boolean) {
     setApplePlayIsReady(newApplePlayIsReady);
   }
 
   public get linePlayIsReady() {
     return getLinePlayIsReady() || false;
   }
-  public set linePlayIsReady(newLinePlayIsReady: boolean) {
+  private set linePlayIsReady(newLinePlayIsReady: boolean) {
     setLinePlayIsReady(newLinePlayIsReady);
   }
 
   public get samsungPayIsReady() {
     return getSamsungPayIsReady() || false;
   }
-  public set samsungPayIsReady(newSamsungPayIsReady: boolean) {
+  private set samsungPayIsReady(newSamsungPayIsReady: boolean) {
     setSamsungPayIsReady(newSamsungPayIsReady);
   }
 
   public get easyWalletIsReady() {
     return getEasyWalletIsReady() || false;
   }
-  public set easyWalletIsReady(newEasyWalletIsReady: boolean) {
+  private set easyWalletIsReady(newEasyWalletIsReady: boolean) {
     setEasyWalletIsReady(newEasyWalletIsReady);
   }
 
   public get jkoPayIsReady() {
     return getJkoPayIsReady() || false;
   }
-  public set jkoPayIsReady(newJkoPayIsReady: boolean) {
+  private set jkoPayIsReady(newJkoPayIsReady: boolean) {
     setJkoPayIsReady(newJkoPayIsReady);
   }
 
   public get piWalletIsReady() {
     return getPiWalletIsReady() || false;
   }
-  public set piWalletIsReady(newPiWalletIsReady: boolean) {
+  private set piWalletIsReady(newPiWalletIsReady: boolean) {
     setPiWalletIsReady(newPiWalletIsReady);
   }
 
   public get plusPayIsReady() {
     return getPlusPayIsReady() || false;
   }
-  public set plusPayIsReady(newPlusPayIsReady: boolean) {
+  private set plusPayIsReady(newPlusPayIsReady: boolean) {
     setPlusPayIsReady(newPlusPayIsReady);
   }
 
   public get atomePayIsReady() {
     return getAtomePayIsReady() || false;
   }
-  public set atomePayIsReady(newAtomePayIsReady: boolean) {
+  private set atomePayIsReady(newAtomePayIsReady: boolean) {
     setAtomePayIsReady(newAtomePayIsReady);
   }
 

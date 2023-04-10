@@ -1,10 +1,11 @@
 import { Platform, NativeModules } from 'react-native';
 
 import {
+  setProd,
   getInitPromise,
   setInitPromise,
-  getDeviceId,
-  setDeviceId,
+  getStatusDeviceId,
+  setStatusDeviceId,
   getGooglePlayIsReady,
   setGooglePlayIsReady,
   getApplePlayIsReady,
@@ -23,7 +24,7 @@ import {
   setPlusPayIsReady,
   getAtomePayIsReady,
   setAtomePayIsReady
-} from './status';
+} from './cacheStatus';
 
 export function tappayInitialization(
   appId: number,
@@ -42,7 +43,8 @@ export function tappayInitialization(
           appKey,
           prod
         );
-        return await getTappayDeviceId();
+        setProd(prod);
+        return await getDeviceId();
       } catch (error: any) {
         console.log({ ...error });
         setInitPromise(null);
@@ -53,14 +55,30 @@ export function tappayInitialization(
   return getInitPromise();
 }
 
-export async function getTappayDeviceId() {
-  const deviceId = getDeviceId();
+export async function getDeviceId() {
+  const deviceId = getStatusDeviceId();
   if (deviceId !== '') {
     return deviceId;
   }
   const _deviceId = await NativeModules.RNToolsManager.TappayGetDeviceId();
-  setDeviceId(_deviceId);
-  return getDeviceId();
+  setStatusDeviceId(_deviceId);
+  return getStatusDeviceId();
+}
+
+export async function setDirectPayTPDCard(
+  cardNumber: string,
+  dueMonth: string,
+  dueYear: string,
+  CCV: string
+) {
+  const validationResult = await NativeModules.RNToolsManager.TappaySetTPDCard(
+    cardNumber,
+    dueMonth,
+    dueYear,
+    CCV
+  );
+
+  return validationResult;
 }
 
 export async function getDirectPayPrime(geoLocation: string = 'UNKNOWN') {

@@ -13,17 +13,7 @@
 @synthesize bridge = _bridge;
 
 RCT_EXPORT_MODULE(RNToolsManager);
-//  宣告給ReactNative使用，取得app版本號
-RCT_EXPORT_METHOD(getAppVersion:(RCTPromiseResolveBlock)resolve  rejecter:(RCTPromiseRejectBlock)reject)
-{
-  @try {
-    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];// 取得目前版本號
-    resolve(version);
-  }
-  @catch (NSException *exception) {
-    reject(@"ios error getAppVersion", exception.description, nil);
-  }
-}
+
 //  宣告給ReactNative使用，TappaySDK的initInstance
 RCT_EXPORT_METHOD(TappayInitInstance:(nonnull NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {

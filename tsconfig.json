@@ -1,58 +1,53 @@
-// prettier-ignore
 {
-  "extends": "@tsconfig/react-native/tsconfig.json", /* Recommended React Native TSConfig base */
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@tappay": [
-        "./tappay/index"
+      "react-native-tappay-hook/*": [
+        "./src/*"
       ],
-      "@tappay/fp": [
-        "./tappay/fp"
-      ],
-      "@tappay/hooks": [
-        "./tappay/hooks"
-      ],
-      "@tappay/TappayManager": [
-        "./tappay/TappayManager"
-      ],
-      "@tappay/components": [
-        "./tappay/components/index"
-      ],
-      "@tappay/components/*": [
-        "./tappay/components/*"
-      ],
-      "@tappay/images": [
-        "./tappay/images/index"
-      ],
-      "@tappay/images/*": [
-        "./tappay/images/index"
+      "react-native-tappay-hook": [
+        "./src/index"
       ],
       "@/*": [
-        "./app"
+        "./example/*"
       ],
       "@components": [
-        "./app/components/index"
+        "./example/app/components/index"
       ],
       "@components/*": [
-        "./app/components/*"
+        "./example/app/components/*"
       ],
       "@containers": [
-        "./app/containers/index"
+        "./example/app/containers/index"
       ],
       "@containers/*": [
-        "./app/containers/*"
+        "./example/app/containers/*"
       ],
       "@hooks/*": [
-        "./app/hooks/*"
+        "./example/app/hooks/*"
       ],
     },
-    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
     "lib": [
-      "es2021"
+      "esnext"
     ],
-    /* Completeness */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext"
   },
   "typeRoots": [
     "./types"

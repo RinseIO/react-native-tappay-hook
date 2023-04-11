@@ -58,10 +58,10 @@
 @property () RCTPromiseRejectBlock plusPayJsReject;
 
 @property (nonatomic, strong) TPDAtome *tpdAtome;
-@property () BOOL *atomePayIsReadyToPay;
-@property () NSString *atomePayUniversalLinks;
-@property () RCTPromiseResolveBlock atomePayJsResolve;
-@property () RCTPromiseRejectBlock atomePayJsReject;
+@property () BOOL *atomeIsReadyToPay;
+@property () NSString *atomeUniversalLinks;
+@property () RCTPromiseResolveBlock atomeJsResolve;
+@property () RCTPromiseRejectBlock atomeJsReject;
 
 - (void)initInstance:(NSNumber *)APP_ID APP_KEY:(NSString *)APP_KEY prod:(BOOL)prod;
 
@@ -101,6 +101,8 @@
 
 - (void)jkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
+-(BOOL)jkoPayHandleUniversalLink:(NSString *)url;
+
 - (void)tappayEasyWalletExceptionHandler:(NSNotification *)notification;
 
 - (BOOL)isEasyWalletAvailable;
@@ -110,6 +112,8 @@
 - (void)getEasyWalletPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 - (void)easyWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(BOOL)easyWalletHandleUniversalLink:(NSString *)url;
 
 - (void)tappayPiWalletExceptionHandler:(NSNotification *)notification;
 
@@ -121,6 +125,8 @@
 
 -(void)piWalletRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
+-(BOOL)piWalletHandleUniversalLink:(NSString *)url;
+
 -(void)tappayPlusPayExceptionHandler:(NSNotification *)notification;
 
 -(BOOL)isPlusPayAvailable;
@@ -131,15 +137,19 @@
 
 -(void)plusPayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
+-(BOOL)plusPayHandleUniversalLink:(NSString *)url;
+
 -(void)tappayAtomeExceptionHandler:(NSNotification *)notification;
 
--(BOOL)isAtomePayAvailable;
+-(BOOL)isAtomeAvailable;
 
--(BOOL)atomePayInit:(NSString *)_atomePayUniversalLinks;
+-(BOOL)atomeInit:(NSString *)_atomeUniversalLinks;
 
--(void)getAtomePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+-(void)getAtomePrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
--(void)atomePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+-(void)atomeRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
+-(BOOL)atomeHandleUniversalLink:(NSString *)url;
 
 @end
 

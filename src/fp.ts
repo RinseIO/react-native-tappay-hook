@@ -22,8 +22,8 @@ import {
   setPiWalletIsReady,
   getPlusPayIsReady,
   setPlusPayIsReady,
-  getAtomePayIsReady,
-  setAtomePayIsReady
+  getAtomeIsReady,
+  setAtomeIsReady
 } from './cacheStatus';
 
 export function tappayInitialization(
@@ -37,18 +37,16 @@ export function tappayInitialization(
 
   setInitPromise(
     (async () => {
+      setStatusDeviceId('');
       try {
-        await NativeModules.TappayHook.TappayInitInstance(
-          appId,
-          appKey,
-          prod
-        );
+        await NativeModules.TappayHook.TappayInitInstance(appId, appKey, prod);
         setProd(prod);
         return await getDeviceId();
       } catch (error: any) {
         console.log({ ...error });
         setInitPromise(null);
       }
+      return '';
     })()
   );
 
@@ -77,8 +75,12 @@ export async function setDirectPayTPDCard(
     dueYear,
     CCV
   );
+  const { isCardNumberValid, isExpiryDateValid, isCCVValid } = validationResult;
 
-  return validationResult;
+  return {
+    ...validationResult,
+    isValid: isCardNumberValid && isExpiryDateValid && isCCVValid
+  };
 }
 
 export async function getDirectPayPrime(geoLocation: string = 'UNKNOWN') {
@@ -120,6 +122,9 @@ export async function getGooglePayPrime(
 }
 
 export async function isApplePayAvailable() {
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
   return await NativeModules.TappayHook.TappayIsApplePayAvailable();
 }
 
@@ -150,9 +155,7 @@ export async function getApplePayPrime(amount: string) {
   if (getApplePlayIsReady() !== true) {
     throw new Error('TappayApplePay is not ready!');
   }
-  const result = await NativeModules.TappayHook.TappayGetApplePayPrime(
-    amount
-  );
+  const result = await NativeModules.TappayHook.TappayGetApplePayPrime(amount);
   return result;
 }
 
@@ -168,9 +171,8 @@ export async function isLinePayAvailable() {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
-  const { isReadyToPay } =
-    await NativeModules.TappayHook.TappayIsLinePayAvailable();
-  return isReadyToPay;
+  const result = await NativeModules.TappayHook.TappayIsLinePayAvailable();
+  return result;
 }
 
 export async function linePayInit(linePayCallbackUri: string) {
@@ -185,20 +187,21 @@ export async function linePayInit(linePayCallbackUri: string) {
   return { ...result, msg: result.msg || '' };
 }
 
-export async function linePayRedirectWithUrl(paymentUrl: string) {
-  if (getLinePlayIsReady() !== true) {
-    throw new Error('TappayLinePay is not ready!');
-  }
-  const result =
-    await NativeModules.TappayHook.TappayLinePayRedirectWithUrl(paymentUrl);
-  return result;
-}
-
 export async function getLinePayPrime() {
   if (getLinePlayIsReady() !== true) {
     throw new Error('TappayLinePay is not ready!');
   }
   const result = await NativeModules.TappayHook.TappayGetLinePayPrime();
+  return result;
+}
+
+export async function linePayRedirectWithUrl(paymentUrl: string) {
+  if (getLinePlayIsReady() !== true) {
+    throw new Error('TappayLinePay is not ready!');
+  }
+  const result = await NativeModules.TappayHook.TappayLinePayRedirectWithUrl(
+    paymentUrl
+  );
   return result;
 }
 
@@ -246,9 +249,8 @@ export async function isJkoPayAvailable() {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
-  const { isReadyToPay } =
-    await NativeModules.TappayHook.TappayIsJkoPayAvailable();
-  return isReadyToPay;
+  const result = await NativeModules.TappayHook.TappayIsJkoPayAvailable();
+  return result;
 }
 
 export async function jkoPayInit(jkoPayUniversalLinks: string) {
@@ -283,13 +285,21 @@ export async function jkoPayRedirectWithUrl(paymentUrl: string) {
   return result;
 }
 
+export async function jkoPayHandleUniversalLink(url: string) {
+  if (getJkoPayIsReady() !== true) {
+    throw new Error('TappayJkoPay is not ready!');
+  }
+  const result =
+    await NativeModules.TappayHook.TappayJkoPayHandleUniversalLink(url);
+  return result;
+}
+
 export async function isEasyWalletAvailable() {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
-  const { isReadyToPay } =
-    await NativeModules.TappayHook.TappayIsEasyWalletAvailable();
-  return isReadyToPay;
+  const result = await NativeModules.TappayHook.TappayIsEasyWalletAvailable();
+  return result;
 }
 
 export async function easyWalletInit(easyWalletUniversalLinks: string) {
@@ -315,9 +325,19 @@ export async function easyWalletRedirectWithUrl(paymentUrl: string) {
   if (getEasyWalletIsReady() !== true) {
     throw new Error('TappayEasyWallet is not ready!');
   }
+  const result = await NativeModules.TappayHook.TappayEasyWalletRedirectWithUrl(
+    paymentUrl
+  );
+  return result;
+}
+
+export async function easyWalletHandleUniversalLink(url: string) {
+  if (getEasyWalletIsReady() !== true) {
+    throw new Error('TappayEasyWallet is not ready!');
+  }
   const result =
-    await NativeModules.TappayHook.TappayEasyWalletRedirectWithUrl(
-      paymentUrl
+    await NativeModules.TappayHook.TappayEasyWalletHandleUniversalLink(
+      url
     );
   return result;
 }
@@ -326,9 +346,8 @@ export async function isPiWalletAvailable() {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
-  const { isReadyToPay } =
-    await NativeModules.TappayHook.TappayIsPiWalletAvailable();
-  return isReadyToPay;
+  const result = await NativeModules.TappayHook.TappayIsPiWalletAvailable();
+  return result;
 }
 
 export async function piWalletInit(piWalletUniversalLinks: string) {
@@ -354,10 +373,18 @@ export async function piWalletRedirectWithUrl(paymentUrl: string) {
   if (getPiWalletIsReady() !== true) {
     throw new Error('TappayPiWallet is not ready!');
   }
+  const result = await NativeModules.TappayHook.TappayPiWalletRedirectWithUrl(
+    paymentUrl
+  );
+  return result;
+}
+
+export async function piWalletHandleUniversalLink(url: string) {
+  if (getPiWalletIsReady() !== true) {
+    throw new Error('TappayPiWallet is not ready!');
+  }
   const result =
-    await NativeModules.TappayHook.TappayPiWalletRedirectWithUrl(
-      paymentUrl
-    );
+    await NativeModules.TappayHook.TappayPiWalletHandleUniversalLink(url);
   return result;
 }
 
@@ -365,9 +392,8 @@ export async function isPlusPayAvailable() {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
-  const { isReadyToPay } =
-    await NativeModules.TappayHook.TappayIsPlusPayAvailable();
-  return isReadyToPay;
+  const result = await NativeModules.TappayHook.TappayIsPlusPayAvailable();
+  return result;
 }
 
 export async function plusPayInit(plusPayUniversalLinks: string) {
@@ -393,46 +419,63 @@ export async function plusPayRedirectWithUrl(paymentUrl: string) {
   if (getPlusPayIsReady() !== true) {
     throw new Error('TappayPlusPay is not ready!');
   }
-  const result =
-    await NativeModules.TappayHook.TappayPlusPayRedirectWithUrl(paymentUrl);
+  const result = await NativeModules.TappayHook.TappayPlusPayRedirectWithUrl(
+    paymentUrl
+  );
   return result;
 }
 
-export async function isAtomePayAvailable() {
+export async function plusPayhandleUniversalLink(url: string) {
+  if (getPlusPayIsReady() !== true) {
+    throw new Error('TappayPlusPay is not ready!');
+  }
+  const result =
+    await NativeModules.TappayHook.TappayPlusPayHandleUniversalLink(url);
+  return result;
+}
+
+export async function isAtomeAvailable() {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
-  const { isReadyToPay } =
-    await NativeModules.TappayHook.TappayIsAtomePayAvailable();
-  return isReadyToPay;
+  const result = await NativeModules.TappayHook.TappayIsAtomeAvailable();
+  return result;
 }
 
-export async function atomePayInit(atomePayUniversalLinks: string) {
+export async function atomeInit(atomeUniversalLinks: string) {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
   const result = await NativeModules.TappayHook.TappayPlusPayInit(
-    atomePayUniversalLinks
+    atomeUniversalLinks
   );
-  setAtomePayIsReady(result.isReadyToPay);
+  setAtomeIsReady(result.isReadyToPay);
   return { ...result, msg: result.msg || '' };
 }
 
-export async function getAtomePayPrime() {
-  if (getAtomePayIsReady() !== true) {
-    throw new Error('TappayAtomePay is not ready!');
+export async function getAtomePrime() {
+  if (getAtomeIsReady() !== true) {
+    throw new Error('TappayAtome is not ready!');
   }
-  const result = await NativeModules.TappayHook.TappayGetAtomePayPrime();
+  const result = await NativeModules.TappayHook.TappayGetAtomePrime();
   return result;
 }
 
-export async function atomePayRedirectWithUrl(paymentUrl: string) {
-  if (getAtomePayIsReady() !== true) {
-    throw new Error('TappayAtomePay is not ready!');
+export async function atomeRedirectWithUrl(paymentUrl: string) {
+  if (getAtomeIsReady() !== true) {
+    throw new Error('TappayAtome is not ready!');
+  }
+  const result = await NativeModules.TappayHook.TappayAtomeRedirectWithUrl(
+    paymentUrl
+  );
+  return result;
+}
+
+export async function atomehandleUniversalLink(url: string) {
+  if (getAtomeIsReady() !== true) {
+    throw new Error('TappayAtome is not ready!');
   }
   const result =
-    await NativeModules.TappayHook.TappayAtomePayRedirectWithUrl(
-      paymentUrl
-    );
+    await NativeModules.TappayHook.TappayAtomeHandleUniversalLink(url);
   return result;
 }

@@ -11,7 +11,7 @@ import {
   easyWalletInit,
   piWalletInit,
   plusPayInit,
-  atomePayInit
+  atomeInit
 } from './fp';
 import { getInitPromise } from './cacheStatus';
 
@@ -55,15 +55,20 @@ export function useSetDirectPayTPDCard(
           dueYear,
           ccv
         );
-        const { isCardNumberValid, isExpiryDateValid, isCCVValid, cardType } =
-          _validResult;
+        const {
+          isCardNumberValid,
+          isExpiryDateValid,
+          isCCVValid,
+          cardType,
+          isValid
+        } = _validResult;
 
         setValidResult({
           isCardNumberValid,
           isExpiryDateValid,
           isCCVValid,
           cardType,
-          isValid: isCardNumberValid && isExpiryDateValid && isCCVValid
+          isValid
         });
       } catch (error: any) {
         console.log('useSetDirectPayTPDCard error', { ...error });
@@ -342,7 +347,7 @@ export function useTPDPlusPay(plusPayUniversalLinks: string) {
   return [isReady, msg];
 }
 
-export function useTPDAtomePay(atomePayUniversalLinks: string) {
+export function useTPDAtome(atomeUniversalLinks: string) {
   const [isReady, setIsReady] = useState(false);
   const [msg, setMsg] = useState('');
 
@@ -357,15 +362,15 @@ export function useTPDAtomePay(atomePayUniversalLinks: string) {
           await initPromise;
         }
         const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await atomePayInit(atomePayUniversalLinks);
+          await atomeInit(atomeUniversalLinks);
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
       } catch (error: any) {
-        console.log('useTPDAtomePay error', { ...error });
+        console.log('useTPDAtome error', { ...error });
       }
     })();
-  }, [atomePayUniversalLinks]);
+  }, [atomeUniversalLinks]);
 
   return [isReady, msg];
 }

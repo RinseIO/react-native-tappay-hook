@@ -12,9 +12,9 @@ export {
   getEasyWalletIsReady,
   getPiWalletIsReady,
   getPlusPayIsReady,
-  getAtomePayIsReady
+  getAtomeIsReady
 } from './cacheStatus';
-export * from './obj';
+export * from './oop';
 export * from './hooks';
 export * from './fp';
 export * from './components';

@@ -28,8 +28,8 @@ RCT_EXPORT_METHOD(TappaySetTPDCard:(NSString *)cardNumber dueMonth:(NSString *)d
     NSString *cardType = [self.TappayManager cardTypeToString:result.cardType];
 
     resolve(@{
-      @"tappaySDKVersion": self.TappayManager.SDKVersion,
       @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
       @"cardNumber":cardNumber,
       @"dueMonth":dueMonth,
       @"dueYear":dueYear,
@@ -121,23 +121,6 @@ RCT_EXPORT_METHOD(TappayGetApplePayPrime:(NSString *)amount resolver:(RCTPromise
   }
 }
 
-// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的handleURL方法
-RCT_EXPORT_METHOD(TappayLinePayHandleURL:(NSString *)openUri resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
-{
-  @try {
-    bool success = [self.TappayManager linePayHandleURL:openUri];
-    resolve(@{
-      @"systemOS": @"ios",
-      @"tappaySDKVersion": self.TappayManager.SDKVersion,
-      @"openUri": openUri,
-      @"success": @(success)
-    });
-  }
-  @catch (NSException *exception) {
-    reject(@"ios error TappayIsLinePayAvailable", exception.description, nil);
-  }
-}
-
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的isLinePayAvailable方法
 RCT_EXPORT_METHOD(TappayIsLinePayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -151,6 +134,23 @@ RCT_EXPORT_METHOD(TappayIsLinePayAvailable:(RCTPromiseResolveBlock)resolve rejec
   }
   @catch (NSException *exception) {
     reject(@"ios error TappayIsLinePayAvailable", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDlinePay的handleURL方法
+RCT_EXPORT_METHOD(TappayLinePayHandleURL:(NSString *)openUri resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool success = [self.TappayManager linePayHandleURL:openUri];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"openUri": openUri,
+      @"success": @(success)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayLinePayHandleURL", exception.description, nil);
   }
 }
 
@@ -267,6 +267,23 @@ RCT_EXPORT_METHOD(TappayJkoPayRedirectWithUrl:(NSString *)paymentUrl resolver:(R
   }
 }
 
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDJkoPay的handleJKOUniversalLink
+RCT_EXPORT_METHOD(TappayJkoPayHandleUniversalLink:(NSString *)url resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool success = [self.TappayManager jkoPayHandleUniversalLink:url];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"url": url,
+      @"success": @(success)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayJkoPayHandleEasyWalletUniversalLink", exception.description, nil);
+  }
+}
+
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDEasyWallet的isEasyWalletAvailable
 RCT_EXPORT_METHOD(TappayIsEasyWalletAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -317,6 +334,23 @@ RCT_EXPORT_METHOD(TappayEasyWalletRedirectWithUrl:(NSString *)paymentUrl resolve
   }
   @catch (NSException *exception) {
     reject(@"ios error TappayEasyWalletRedirectWithUrl", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDJkoPay的handleEasyWalletUniversalLink
+RCT_EXPORT_METHOD(TappayEasyWalletHandleUniversalLink:(NSString *)url resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool success = [self.TappayManager easyWalletHandleUniversalLink:url];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"url": url,
+      @"success": @(success)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayEasyWalletHandleUniversalLink", exception.description, nil);
   }
 }
 
@@ -373,6 +407,23 @@ RCT_EXPORT_METHOD(TappayPiWalletRedirectWithUrl:(NSString *)paymentUrl resolver:
   }
 }
 
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPiWallet的handleUniversalLink
+RCT_EXPORT_METHOD(TappayPiWalletHandleUniversalLink:(NSString *)url resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool success = [self.TappayManager piWalletHandleUniversalLink:url];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"url": url,
+      @"success": @(success)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayPiWalletHandleUniversalLink", exception.description, nil);
+  }
+}
+
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的isPlusPayAvailable
 RCT_EXPORT_METHOD(TappayIsPlusPayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -426,56 +477,90 @@ RCT_EXPORT_METHOD(TappayPlusPayRedirectWithUrl:(NSString *)paymentUrl resolver:(
   }
 }
 
-// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的isAtomePayAvailable
-RCT_EXPORT_METHOD(TappayIsAtomePayAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的handleUniversalLink
+RCT_EXPORT_METHOD(TappayPlusPayHandleUniversalLink:(NSString *)url resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool success = [self.TappayManager plusPayHandleUniversalLink:url];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"url": url,
+      @"success": @(success)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayPiWalletHandleUniversalLink", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的isAtomeAvailable
+RCT_EXPORT_METHOD(TappayIsAtomeAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
     resolve(@{
       @"systemOS": @"ios",
       @"tappaySDKVersion": self.TappayManager.SDKVersion,
-      @"isReadyToPay": @([self.TappayManager isAtomePayAvailable])
+      @"isReadyToPay": @([self.TappayManager isAtomeAvailable])
     });
   }
   @catch (NSException *exception) {
-    reject(@"ios error TappayIsAtomePayAvailable", exception.description, nil);
+    reject(@"ios error TappayIsAtomeAvailable", exception.description, nil);
   }
 }
 
 // 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的初始化方法
-RCT_EXPORT_METHOD(TappayAtomePayInit:(NSString *)atomePayUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(TappayAtomeInit:(NSString *)atomeUniversalLinks resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
     resolve(@{
       @"systemOS": @"ios",
       @"tappaySDKVersion": self.TappayManager.SDKVersion,
-      @"atomePayUniversalLinks": atomePayUniversalLinks,
-      @"isReadyToPay": @([self.TappayManager atomePayInit:atomePayUniversalLinks])
+      @"atomeUniversalLinks": atomeUniversalLinks,
+      @"isReadyToPay": @([self.TappayManager atomeInit:atomeUniversalLinks])
     });
   }
   @catch (NSException *exception) {
-    reject(@"ios error TappayAtomePayInit", exception.description, nil);
+    reject(@"ios error TappayAtomeInit", exception.description, nil);
   }
 }
 
-// 宣告給ReactNative使用的function名稱，對TappaySDK TPDAtomePay取得prime方法
-RCT_EXPORT_METHOD(TappayGetAtomePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDAtome取得prime方法
+RCT_EXPORT_METHOD(TappayGetAtomePrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    [self.TappayManager getAtomePayPrime:resolve rejecter:reject];
+    [self.TappayManager getAtomePrime:resolve rejecter:reject];
   }
   @catch (NSException *exception) {
-    reject(@"ios error TappayGetAtomePayPrime", exception.description, nil);
+    reject(@"ios error TappayGetAtomePrime", exception.description, nil);
   }
 }
 
-// 宣告給ReactNative使用的function名稱，對TappaySDK TPDAtomePay的跳轉付款方法
-RCT_EXPORT_METHOD(TappayAtomePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDAtome的跳轉付款方法
+RCT_EXPORT_METHOD(TappayAtomeRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    [self.TappayManager atomePayRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
+    [self.TappayManager atomeRedirectWithUrl:paymentUrl resolver:resolve rejecter:reject];
   }
   @catch (NSException *exception) {
-    reject(@"ios error TappayAtomePayRedirectWithUrl", exception.description, nil);
+    reject(@"ios error TappayAtomeRedirectWithUrl", exception.description, nil);
+  }
+}
+
+// 宣告給ReactNative使用的function名稱，對TappaySDK TPDPlusPay的handleUniversalLink
+RCT_EXPORT_METHOD(TappayAtomeHandleUniversalLink:(NSString *)url resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    bool success = [self.TappayManager atomeHandleUniversalLink:url];
+    resolve(@{
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.TappayManager.SDKVersion,
+      @"url": url,
+      @"success": @(success)
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error TappayAtomeHandleUniversalLink", exception.description, nil);
   }
 }
 

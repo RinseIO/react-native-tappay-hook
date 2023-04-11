@@ -25,6 +25,8 @@ import piWalletDisabledBtnIcon from './pi_wallet_disabled_btn.png';
 
 import plusPayBtnIcon from './plus_pay_btn.png';
 
+import atomePayBtnIcon from './atome_btn.png';
+
 export {
   cardUnknownIcon,
   cardAmexIcon,
@@ -43,5 +45,6 @@ export {
   easyWalletBtnIcon,
   piWalletBtnIcon,
   piWalletDisabledBtnIcon,
-  plusPayBtnIcon
+  plusPayBtnIcon,
+  atomePayBtnIcon
 };

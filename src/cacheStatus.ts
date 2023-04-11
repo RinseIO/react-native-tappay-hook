@@ -9,7 +9,7 @@ let jkoPayIsReady: boolean = false;
 let easyWalletIsReady: boolean = false;
 let piWalletIsReady: boolean = false;
 let plusPayIsReady: boolean = false;
-let atomePayIsReady: boolean = false;
+let atomeIsReady: boolean = false;
 
 export function getProd() {
   return prod;
@@ -88,9 +88,9 @@ export function setPlusPayIsReady(newPlusPayIsReady: boolean) {
   plusPayIsReady = newPlusPayIsReady;
 }
 
-export function getAtomePayIsReady() {
-  return atomePayIsReady;
+export function getAtomeIsReady() {
+  return atomeIsReady;
 }
-export function setAtomePayIsReady(newAtomePayIsReady: boolean) {
-  atomePayIsReady = newAtomePayIsReady;
+export function setAtomeIsReady(newAtomeIsReady: boolean) {
+  atomeIsReady = newAtomeIsReady;
 }

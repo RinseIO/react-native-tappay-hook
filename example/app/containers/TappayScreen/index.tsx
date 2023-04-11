@@ -22,7 +22,7 @@ import {
   getEasyWalletPrime,
   getPiWalletPrime,
   getPlusPayPrime,
-  getAtomePayPrime
+  getAtomePrime
 } from 'react-native-tappay-hook/fp';
 
 import { useSetDirectPayTPDCard } from 'react-native-tappay-hook/hooks';
@@ -37,7 +37,7 @@ import {
   EasyWalletBtn,
   PiWalletBtn,
   PlusPayBtn,
-  AtomePayBtn
+  AtomeBtn
 } from 'react-native-tappay-hook/components';
 
 export function TappayScreen({ setPopUpMessage }: any) {
@@ -57,7 +57,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   const [easyWalleAmount, setEasyWalleAmount] = useState('1');
   const [piWalleAmount, setPiWalleAmount] = useState('1');
   const [plusPayAmount, setPlusPayAmount] = useState('1');
-  const [atomePayAmount, setAtomePayAmount] = useState('1');
+  const [atomeAmount, setAtomeAmount] = useState('1');
 
   useEffect(() => {
     (async () => {
@@ -308,10 +308,10 @@ export function TappayScreen({ setPopUpMessage }: any) {
     }
   }
 
-  async function handlerAtomePay() {
+  async function handlerAtome() {
     try {
-      const result = await getAtomePayPrime();
-      console.log({ ...result, atomePayAmount });
+      const result = await getAtomePrime();
+      console.log({ ...result, atomeAmount });
       setPopUpMessage({
         label: 'Atome付款成功(測試)',
         type: 'success'
@@ -561,15 +561,15 @@ export function TappayScreen({ setPopUpMessage }: any) {
           <Text style={styles.label}>Atome 付款金額:</Text>
           <TextInput
             style={styles.inputBox}
-            value={atomePayAmount}
-            onChange={({ nativeEvent }) => setAtomePayAmount(nativeEvent.text)}
+            value={atomeAmount}
+            onChange={({ nativeEvent }) => setAtomeAmount(nativeEvent.text)}
           />
         </View>
-        <AtomePayBtn
-          atomePayUniversalLinks="https://google.com.tw"
-          style={styles.AtomePayBtnStyle}
-          disabledStyle={styles.AtomePayBtnDisabledStyle}
-          onPress={handlerAtomePay}
+        <AtomeBtn
+          atomeUniversalLinks="https://google.com.tw"
+          style={styles.AtomeBtnStyle}
+          disabledStyle={styles.AtomeBtnDisabledStyle}
+          onPress={handlerAtome}
           // disabledOnPress={() =>
           //   setPopUpMessage({
           //     label: '無法使用Atome，請檢查設定',

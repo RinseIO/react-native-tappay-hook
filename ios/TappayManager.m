@@ -147,7 +147,9 @@
     // TPDApplePay *tpdApplePay = [TPDApplePay setupWthMerchant:self.tpdMerchant withConsumer:self.tpdConsumer withCart:nil withDelegate:_TPDApplePayDelegate];
 
     resolve(@{
-      @"isReadyToPay": @([self isApplePayAvailable]),
+      @"systemOS": @"ios",
+      @"tappaySDKVersion": self.SDKVersion,
+      @"isReadyToPay": @([self isApplePayAvailable])
     });
   }
   @catch (NSException *exception) {
@@ -228,40 +230,6 @@
   return linePayIsReadyToPay;
 }
 
--(void)linePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-  self.linePayJsReject = reject;
-  [
-    [
-      [self.tpdLinePay onSuccessCallback:^(NSString * _Nullable prime) {
-          UIViewController *rootViewcontroller= [UIApplication sharedApplication].keyWindow.rootViewController;
-
-          [self.tpdLinePay redirect:paymentUrl withViewController:rootViewcontroller completion:^(TPDLinePayResult * _Nonnull result) {
-
-            resolve(@{
-              @"status": [NSString stringWithFormat: @"%ld", result.status],
-              @"orderNumber": result.orderNumber,
-              @"recTradeId": result.recTradeId,
-              @"bankTransactionId": result.bankTransactionId
-            });
-            self.linePayJsReject = nil;
-
-          }];
-        }
-      ]
-      onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
-          reject(
-            @"ios error linePayRedirectWithUrl onFailureCallback",
-            [NSString stringWithFormat: @"%ld", status],
-            [NSError errorWithDomain:message code:status userInfo:nil]
-          );
-          self.linePayJsReject = nil;
-      }
-    ]
-    getPrime
-  ];
-
-}
-
 -(void)getLinePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   self.linePayJsReject = reject;
   [
@@ -286,6 +254,44 @@
     ]
     getPrime
   ];
+}
+
+-(void)linePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  self.linePayJsReject = reject;
+  [
+    [
+      [self.tpdLinePay onSuccessCallback:^(NSString * _Nullable prime) {
+          UIViewController *rootViewcontroller= [UIApplication sharedApplication].keyWindow.rootViewController;
+
+          [self.tpdLinePay redirect:paymentUrl withViewController:rootViewcontroller completion:^(TPDLinePayResult * _Nonnull result) {
+
+            resolve(@{
+              @"systemOS": @"ios",
+              @"tappaySDKVersion": self.SDKVersion,
+              @"prime": prime,
+              @"paymentUrl": paymentUrl,
+              @"status": [NSString stringWithFormat: @"%ld", result.status],
+              @"orderNumber": result.orderNumber,
+              @"recTradeId": result.recTradeId,
+              @"bankTransactionId": result.bankTransactionId
+            });
+            self.linePayJsReject = nil;
+
+          }];
+        }
+      ]
+      onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
+          reject(
+            @"ios error linePayRedirectWithUrl onFailureCallback",
+            [NSString stringWithFormat: @"%ld", status],
+            [NSError errorWithDomain:message code:status userInfo:nil]
+          );
+          self.linePayJsReject = nil;
+      }
+    ]
+    getPrime
+  ];
+
 }
 
 - (void)tappayJKOPayExceptionHandler:(NSNotification *)notification {
@@ -335,7 +341,7 @@
           self.tpdJkoPay onSuccessCallback:^(NSString * _Nullable prime) {
             resolve(@{
               @"systemOS": @"ios",
-              @"SDKVersion": self.SDKVersion,
+              @"tappaySDKVersion": self.SDKVersion,
               @"prime": prime
             });
           }
@@ -361,6 +367,9 @@
     [
       self.tpdJkoPay redirect:paymentUrl completion:^(TPDJKOPayResult * _Nonnull result) {
         resolve(@{
+          @"systemOS": @"ios",
+          @"tappaySDKVersion": self.SDKVersion,
+          @"paymentUrl": paymentUrl,
           @"status":[NSString stringWithFormat:@"%ld", result.status],
           @"recTradeId": result.recTradeId,
           @"bankTransactionId": result.bankTransactionId,
@@ -372,6 +381,9 @@
   @catch (NSException *exception) {
     reject(@"ios error jkoPayRedirectWithUrl", exception.description, nil);
   }
+}
+-(BOOL)jkoPayHandleUniversalLink:(NSString *)url {
+  return [TPDJKOPay handleJKOUniversalLink:url];
 }
 
 - (void)tappayEasyWalletExceptionHandler:(NSNotification *)notification {
@@ -420,7 +432,7 @@
           self.tpdEasyWallet onSuccessCallback:^(NSString * _Nullable prime) {
             resolve(@{
               @"systemOS": @"ios",
-              @"SDKVersion": self.SDKVersion,
+              @"tappaySDKVersion": self.SDKVersion,
               @"prime": prime
             });
             self.easyWalletJsReject = nil;
@@ -450,6 +462,9 @@
     [
       self.tpdEasyWallet redirect:paymentUrl completion:^(TPDEasyWalletResult * _Nonnull result) {
         resolve(@{
+          @"systemOS": @"ios",
+          @"tappaySDKVersion": self.SDKVersion,
+          @"paymentUrl": paymentUrl,
           @"status":[NSString stringWithFormat:@"%ld", result.status],
           @"recTradeId": result.recTradeId,
           @"bankTransactionId": result.bankTransactionId,
@@ -463,6 +478,10 @@
     reject(@"ios error easyWalletRedirectWithUrl", exception.description, nil);
     self.easyWalletJsReject = nil;
   }
+}
+
+-(BOOL)easyWalletHandleUniversalLink:(NSString *)url {
+  return [TPDEasyWallet handleEasyWalletUniversalLink:url];
 }
 
 - (void)tappayPiWalletExceptionHandler:(NSNotification *)notification {
@@ -514,7 +533,7 @@
           self.tpdPiWallet onSuccessCallback:^(NSString * _Nullable prime) {
             resolve(@{
               @"systemOS": @"ios",
-              @"SDKVersion": self.SDKVersion,
+              @"tappaySDKVersion": self.SDKVersion,
               @"prime": prime
             });
             self.piWalletJsReject = nil;
@@ -544,6 +563,9 @@
     [
       self.tpdPiWallet redirect:paymentUrl completion:^(TPDPiWalletResult * _Nonnull result) {
         resolve(@{
+          @"systemOS": @"ios",
+          @"tappaySDKVersion": self.SDKVersion,
+          @"paymentUrl": paymentUrl,
           @"status":[NSString stringWithFormat:@"%ld", result.status],
           @"recTradeId": result.recTradeId,
           @"bankTransactionId": result.bankTransactionId,
@@ -557,6 +579,10 @@
     reject(@"ios error piWalletRedirectWithUrl", exception.description, nil);
     self.piWalletJsReject = nil;
   }
+}
+
+-(BOOL)piWalletHandleUniversalLink:(NSString *)url {
+  return [TPDPiWallet handlePiWalletUniversalLink:url];
 }
 
 -(void)tappayPlusPayExceptionHandler:(NSNotification *)notification {
@@ -608,7 +634,7 @@
           self.tpdPlusPay onSuccessCallback:^(NSString * _Nullable prime) {
             resolve(@{
               @"systemOS": @"ios",
-              @"SDKVersion": self.SDKVersion,
+              @"tappaySDKVersion": self.SDKVersion,
               @"prime": prime
             });
             self.plusPayJsReject = nil;
@@ -638,6 +664,8 @@
     [
       self.tpdPlusPay redirect:paymentUrl completion:^(TPDPlusPayResult * _Nonnull result) {
         resolve(@{
+          @"systemOS": @"ios",
+          @"tappaySDKVersion": self.SDKVersion,
           @"status":[NSString stringWithFormat:@"%ld", result.status],
           @"recTradeId": result.recTradeId,
           @"bankTransactionId": result.bankTransactionId,
@@ -653,16 +681,15 @@
   }
 }
 
-
-
-
-
+-(BOOL)plusPayHandleUniversalLink:(NSString *)url {
+  return [TPDPlusPay handlePlusPayUniversalLink:url];
+}
 
 -(void)tappayAtomeExceptionHandler:(NSNotification *)notification {
-  if (self.atomePayJsReject != nil) {
+  if (self.atomeJsReject != nil) {
     TPDAtomeResult * result = [TPDAtome parseURL:notification];
     
-    self.atomePayJsReject(@"ios error tappayAtomeExceptionHandler",
+    self.atomeJsReject(@"ios error tappayAtomeExceptionHandler",
      [NSString stringWithFormat: @"%ld", result.status],
      @{
         @"status": [NSString stringWithFormat: @"%ld", result.status],
@@ -671,85 +698,92 @@
         @"bankTransactionId": result.bankTransactionId,
       }
     );
-    self.atomePayJsReject = nil;
+    self.atomeJsReject = nil;
   }
 }
 
--(BOOL)isAtomePayAvailable {
+-(BOOL)isAtomeAvailable {
   return [TPDAtome isAtomeAvailable];
 }
 
--(BOOL)atomePayInit:(NSString *)_atomePayUniversalLinks {
-  if (self.atomePayIsReadyToPay == YES && self.atomePayUniversalLinks == _atomePayUniversalLinks) {
-    return self.atomePayIsReadyToPay;
+-(BOOL)atomeInit:(NSString *)_atomeUniversalLinks {
+  if (self.atomeIsReadyToPay == YES && self.atomeUniversalLinks == _atomeUniversalLinks) {
+    return self.atomeIsReadyToPay;
   }
   
-  BOOL atomePayIsReadyToPay = [self isAtomePayAvailable];
+  BOOL atomeIsReadyToPay = [self isAtomeAvailable];
   
-  #if atomePayIsReadyToPay == YES
-    TPDAtome *tpdAtome = [TPDAtome setupWithReturnUrl:_atomePayUniversalLinks];
+  #if atomeIsReadyToPay == YES
+    TPDAtome *tpdAtome = [TPDAtome setupWithReturnUrl:_atomeUniversalLinks];
     [TPDAtome addExceptionObserver:(@selector(tappayAtomeExceptionHandler:))];
 
     self.tpdAtome = tpdAtome;
-    self.atomePayUniversalLinks = _atomePayUniversalLinks;
-    self.atomePayIsReadyToPay = &(atomePayIsReadyToPay);
+    self.atomeUniversalLinks = _atomeUniversalLinks;
+    self.atomeIsReadyToPay = &(atomeIsReadyToPay);
   #endif
 
-  return atomePayIsReadyToPay;
+  return atomeIsReadyToPay;
 }
 
--(void)getAtomePayPrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+-(void)getAtomePrime:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
-    self.atomePayJsReject = reject;
+    self.atomeJsReject = reject;
     [
       [
         [
           self.tpdAtome onSuccessCallback:^(NSString * _Nullable prime) {
             resolve(@{
               @"systemOS": @"ios",
-              @"SDKVersion": self.SDKVersion,
+              @"tappaySDKVersion": self.SDKVersion,
               @"prime": prime
             });
-            self.atomePayJsReject = nil;
+            self.atomeJsReject = nil;
           }
         ]
         onFailureCallback:^(NSInteger status, NSString * _Nonnull message) {
           reject(
-            @"ios error getAtomePayPrime onFailureCallback",
+            @"ios error getAtomePrime onFailureCallback",
             [NSString stringWithFormat: @"%ld", status],
             [NSError errorWithDomain:message code:status userInfo:nil]
           );
-          self.atomePayJsReject = nil;
+          self.atomeJsReject = nil;
         }
       ]
       getPrime
     ];
   }
   @catch (NSException *exception) {
-    reject(@"ios error getAtomePayPrime", exception.description, nil);
-    self.atomePayJsReject = nil;
+    reject(@"ios error getAtomePrime", exception.description, nil);
+    self.atomeJsReject = nil;
   }
 }
 
--(void)atomePayRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+-(void)atomeRedirectWithUrl:(NSString *)paymentUrl resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
-    self.atomePayJsReject = reject;
+    self.atomeJsReject = reject;
     [
       self.tpdAtome redirect:paymentUrl completion:^(TPDAtomeResult * _Nonnull result) {
         resolve(@{
+          @"systemOS": @"ios",
+          @"tappaySDKVersion": self.SDKVersion,
+          @"paymentUrl": paymentUrl,
           @"status":[NSString stringWithFormat:@"%ld", result.status],
           @"recTradeId": result.recTradeId,
           @"bankTransactionId": result.bankTransactionId,
           @"orderNumber":result.orderNumber
         });
-        self.atomePayJsReject = nil;
+        self.atomeJsReject = nil;
       }
     ];
   }
   @catch (NSException *exception) {
-    reject(@"ios error atomePayRedirectWithUrl", exception.description, nil);
-    self.atomePayJsReject = nil;
+    reject(@"ios error atomeRedirectWithUrl", exception.description, nil);
+    self.atomeJsReject = nil;
   }
+}
+
+-(BOOL)atomeHandleUniversalLink:(NSString *)url {
+  return [TPDAtome handleAtomeUniversalLink:url];
 }
 
 @end
@@ -898,9 +932,9 @@
 
     if(self.applePayJsResolve !=nil ) {
       self.applePayJsResolve(@{
-        @"prime": prime,
         @"systemOS": @"ios",
-        @"SDKVersion": self.SDKVersion,
+        @"tappaySDKVersion": self.SDKVersion,
+        @"prime": prime,
         @"expiryMillis": [NSString stringWithFormat: @"%ld", expiryMillis],
         @"merchantReferenceInfo": merchantReferenceInfo,
         @"cart": applePay.cart,

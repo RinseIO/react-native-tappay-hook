@@ -1,11 +1,11 @@
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-import { useTPDAtomePay } from '../hooks';
+import { useTPDAtome } from '../hooks';
 
-import atomePayBtnIcon from '../images/atome_pay_btn.png';
+import atomeBtnIcon from '../images/atome_btn.png';
 
 interface Props {
-  atomePayUniversalLinks: string;
+  atomeUniversalLinks: string;
   disabledOnPress?: Function;
   imagesProps?: {
     [key: string]: any;
@@ -29,22 +29,22 @@ const styles = StyleSheet.create({
   }
 });
 
-export function AtomePayBtn(props: Props) {
+export function AtomeBtn(props: Props) {
   const {
-    atomePayUniversalLinks,
+    atomeUniversalLinks,
     disabledOnPress,
     imagesProps = {},
     ...ortherProps
   } = props;
-  const [atomePayIsReady] = useTPDAtomePay(atomePayUniversalLinks);
+  const [atomeIsReady] = useTPDAtome(atomeUniversalLinks);
 
   const buttonStyle: any = [styles.button];
   const iconStyle: any = [styles.icon];
   let activeOpacity;
-  let disabled = atomePayIsReady === false;
+  let disabled = atomeIsReady === false;
   let onPress = ortherProps.onPress;
 
-  if (atomePayIsReady === false) {
+  if (atomeIsReady === false) {
     buttonStyle.push(styles.buttonDisable);
 
     if (typeof ortherProps.disabledStyle === 'object') {
@@ -62,7 +62,7 @@ export function AtomePayBtn(props: Props) {
     }
   }
 
-  if (typeof disabledOnPress === 'function' && atomePayIsReady === false) {
+  if (typeof disabledOnPress === 'function' && atomeIsReady === false) {
     activeOpacity = 1;
     onPress = disabledOnPress;
     disabled = false;
@@ -80,7 +80,7 @@ export function AtomePayBtn(props: Props) {
         {...imagesProps}
         style={iconStyle}
         resizeMode="contain"
-        source={atomePayBtnIcon}
+        source={atomeBtnIcon}
       />
     </TouchableOpacity>
   );

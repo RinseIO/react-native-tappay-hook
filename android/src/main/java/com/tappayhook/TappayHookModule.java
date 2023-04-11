@@ -117,6 +117,8 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
       Promise promise) {
     try {
       WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
       resultData.putBoolean("isReadyToPay", false);
 
       promise.resolve(resultData);
@@ -130,6 +132,8 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
   public void TappayIsApplePayAvailable(Promise promise) {
     try {
       WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
       resultData.putBoolean("isReadyToPay", false);
 
       promise.resolve(resultData);
@@ -285,6 +289,22 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
     }
   }
 
+  // 宣告給ReactNative使用，對應ios版的TappayJkoPayHandleUniversalLink方法
+  @ReactMethod
+  public void TappayJkoPayHandleUniversalLink(String url, Promise promise) {
+    try {
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putString("url", url);
+      resultData.putBoolean("success", false);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayJkoPayHandleUniversalLink", e);
+    }
+  }
+
   // 宣告給ReactNative使用的function名稱，TappaySDK的TPDEasyWallet的isAvailable
   @ReactMethod
   public void TappayIsEasyWalletAvailable(Promise promise) {
@@ -335,6 +355,22 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
       TappayManager.easyWalletRedirectWithUrl(paymentUrl, promise);
     } catch (Exception e) {
       promise.reject("android error TappayEasyWalletRedirectWithUrl", e);
+    }
+  }
+
+  // 宣告給ReactNative使用，對應ios版的TappayEasyWalletHandleUniversalLink方法
+  @ReactMethod
+  public void TappayEasyWalletHandleUniversalLink(String url, Promise promise) {
+    try {
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putString("url", url);
+      resultData.putBoolean("success", false);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayEasyWalletHandleUniversalLink", e);
     }
   }
 
@@ -391,6 +427,22 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
     }
   }
 
+  // 宣告給ReactNative使用，對應ios版的TappayPiWalletHandleUniversalLink方法
+  @ReactMethod
+  public void TappayPiWalletHandleUniversalLink(String url, Promise promise) {
+    try {
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putString("url", url);
+      resultData.putBoolean("success", false);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayPiWalletHandleUniversalLink", e);
+    }
+  }
+
   // 宣告給ReactNative使用的function名稱，TappaySDK的TPDPlusPay的isPlusPayAvailable
   @ReactMethod
   public void TappayIsPlusPayAvailable(Promise promise) {
@@ -444,11 +496,27 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
     }
   }
 
-  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的isAtomePayAppAvailable
+  // 宣告給ReactNative使用，對應ios版的TappayPlusPayHandleUniversalLink方法
   @ReactMethod
-  public void TappayIsAtomePayAvailable(Promise promise) {
+  public void TappayPlusPayHandleUniversalLink(String url, Promise promise) {
     try {
-      boolean result = TappayManager.isAtomePayAvailable();
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putString("url", url);
+      resultData.putBoolean("success", false);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayPlusPayHandleUniversalLink", e);
+    }
+  }
+
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtome的isAtomeAppAvailable
+  @ReactMethod
+  public void TappayIsAtomeAvailable(Promise promise) {
+    try {
+      boolean result = TappayManager.isAtomeAvailable();
       WritableNativeMap resultData = new WritableNativeMap();
       resultData.putString("systemOS", "android");
       resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
@@ -456,44 +524,60 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
 
       promise.resolve(resultData);
     } catch (Exception e) {
-      promise.reject("android error TappayIsAtomePayAvailable", e);
+      promise.reject("android error TappayIsAtomeAvailable", e);
     }
   }
 
-  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的atomePayInit
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtome的atomeInit
   @ReactMethod
-  public void TappayAtomePayInit(String atomePayUniversalLinks, Promise promise) {
+  public void TappayAtomeInit(String atomeUniversalLinks, Promise promise) {
     try {
-      boolean result = TappayManager.atomePayInit(atomePayUniversalLinks);
+      boolean result = TappayManager.atomeInit(atomeUniversalLinks);
       WritableNativeMap resultData = new WritableNativeMap();
       resultData.putString("systemOS", "android");
       resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
       resultData.putBoolean("isReadyToPay", result);
-      resultData.putString("atomePayUniversalLinks", atomePayUniversalLinks);
+      resultData.putString("atomeUniversalLinks", atomeUniversalLinks);
 
       promise.resolve(resultData);
     } catch (Exception e) {
-      promise.reject("android error TappayAtomePayInit", e);
+      promise.reject("android error TappayAtomeInit", e);
     }
   }
 
-  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的getPrime
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtome的getPrime
   @ReactMethod
-  public void TappayGetAtomePayPrime(Promise promise) {
+  public void TappayGetAtomePrime(Promise promise) {
     try {
-      TappayManager.getAtomePayPrime(promise);
+      TappayManager.getAtomePrime(promise);
     } catch (Exception e) {
-      promise.reject("android error TappayGetAtomePayPrime", e);
+      promise.reject("android error TappayGetAtomePrime", e);
     }
   }
 
-  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtomePay的redirectWithUrl，並自動完成跳轉資料的監聽
+  // 宣告給ReactNative使用的function名稱，TappaySDK的TPDAtome的redirectWithUrl，並自動完成跳轉資料的監聽
   @ReactMethod
-  public void TappayAtomePayRedirectWithUrl(String paymentUrl, Promise promise) {
+  public void TappayAtomeRedirectWithUrl(String paymentUrl, Promise promise) {
     try {
-      TappayManager.atomePayRedirectWithUrl(paymentUrl, promise);
+      TappayManager.atomeRedirectWithUrl(paymentUrl, promise);
     } catch (Exception e) {
-      promise.reject("android error TappayAtomePayRedirectWithUrl", e);
+      promise.reject("android error TappayAtomeRedirectWithUrl", e);
+    }
+  }
+
+  // 宣告給ReactNative使用，對應ios版的TappayAtomeHandleUniversalLink方法
+  @ReactMethod
+  public void TappayAtomeHandleUniversalLink(String url, Promise promise) {
+    try {
+      WritableNativeMap resultData = new WritableNativeMap();
+      resultData.putString("systemOS", "android");
+      resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
+      resultData.putString("url", url);
+      resultData.putBoolean("success", false);
+
+      promise.resolve(resultData);
+    } catch (Exception e) {
+      promise.reject("android error TappayAtomeHandleUniversalLink", e);
     }
   }
 }

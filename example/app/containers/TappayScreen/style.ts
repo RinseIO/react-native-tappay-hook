@@ -125,13 +125,13 @@ export const PlusPayBtnDisabledStyle: StyleProp<ViewStyle> = {
   backgroundColor: '#c3c3c3'
 };
 
-export const AtomePayBtnStyle: StyleProp<ViewStyle> = {
+export const AtomeBtnStyle: StyleProp<ViewStyle> = {
   ...buttonStyle,
   backgroundColor: '#e7f85a',
   height: 50
 };
-export const AtomePayBtnDisabledStyle: StyleProp<ViewStyle> = {
-  ...AtomePayBtnStyle,
+export const AtomeBtnDisabledStyle: StyleProp<ViewStyle> = {
+  ...AtomeBtnStyle,
   backgroundColor: '#c3c3c3'
 };
 
@@ -160,8 +160,8 @@ export const styles = StyleSheet.create({
   PiWalleBtnDisabledStyle,
   PlusPayBtnStyle,
   PlusPayBtnDisabledStyle,
-  AtomePayBtnStyle,
-  AtomePayBtnDisabledStyle
+  AtomeBtnStyle,
+  AtomeBtnDisabledStyle
 });
 
 export default styles;

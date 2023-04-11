@@ -1,15 +1,23 @@
-
 #ifdef RCT_NEW_ARCH_ENABLED
-#import "RNTappayHookSpec.h"
 
-@interface TappayHook : NSObject <NativeTappayHookSpec>
+  #import "RNTappayHookSpec.h"
+  #import "TappayManager.h"
+
+  @interface TappayHook : NSObject <NativeTappayHookSpec>
+
+    @property () TappayManager *TappayManager;
+
+  @end
+
 #else
-#import <React/RCTBridgeModule.h>
 
-@interface TappayHook : NSObject <RCTBridgeModule>
+  #import <React/RCTBridgeModule.h>
+  #import "TappayManager.h"
+
+  @interface TappayHook : NSObject <RCTBridgeModule>
+
+    @property () TappayManager *TappayManager;
+
+  @end
+
 #endif
-
-#import "TappayManager.h"
-@property () TappayManager *TappayManager;
-
-@end

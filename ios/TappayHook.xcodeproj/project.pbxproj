@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		43424EC129E40EAC00EA27F2 /* TappayHook.h in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5881CC2AC0600A0062D /* TappayHook.h */; };
-		43424EC229E40EAC00EA27F2 /* TappayHook.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* TappayHook.mm */; };
-		43424EC329E40EAC00EA27F2 /* TappayManager.h in Sources */ = {isa = PBXBuildFile; fileRef = 433009BB29E3C2D6006F3B11 /* TappayManager.h */; };
-		43424EC429E40EAC00EA27F2 /* TappayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 433009BA29E3C2D5006F3B11 /* TappayManager.m */; };
 		43424EC629E40EF300EA27F2 /* TPDirect.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43361A4B29E3F8DA0044038A /* TPDirect.xcframework */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
@@ -132,10 +128,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43424EC129E40EAC00EA27F2 /* TappayHook.h in Sources */,
-				43424EC229E40EAC00EA27F2 /* TappayHook.mm in Sources */,
-				43424EC329E40EAC00EA27F2 /* TappayManager.h in Sources */,
-				43424EC429E40EAC00EA27F2 /* TappayManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -316,6 +316,7 @@ public class TappayManager {
           resultData.putString("systemOS", "android");
           resultData.putString("tappaySDKVersion", SDKVersion);
           resultData.putString("prime", prime);
+          resultData.putString("geoLocation", geoLocation);
 
           WritableNativeMap _cardInfo = new WritableNativeMap();
           _cardInfo.putString("bincode", cardInfo.getBincode());
@@ -1131,6 +1132,7 @@ public class TappayManager {
             WritableNativeMap resultData = new WritableNativeMap();
             resultData.putString("systemOS", "android");
             resultData.putString("tappaySDKVersion", SDKVersion);
+            resultData.putString("paymentUrl", paymentUrl);
             resultData.putInt("status", result.getStatus());
             resultData.putString("nrecTradeId", result.getRecTradeId());
             resultData.putString("nbankTransactionId", result.getBankTransactionId());

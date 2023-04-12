@@ -43,6 +43,7 @@ export function tappayInitialization(
         setProd(prod);
         return await getDeviceId();
       } catch (error: any) {
+        console.error(error);
         console.log({ ...error });
         setInitPromise(null);
       }
@@ -98,7 +99,7 @@ export async function googlePayInit(merchantName: string) {
     merchantName
   );
   setGooglePlayIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getGooglePayPrime(
@@ -265,9 +266,6 @@ export async function jkoPayInit(jkoPayUniversalLinks: string) {
 }
 
 export async function getJkoPayPrime() {
-  if (Platform.OS !== 'android') {
-    return;
-  }
   if (getJkoPayIsReady() !== true) {
     throw new Error('TappayJkoPay is not ready!');
   }
@@ -289,8 +287,9 @@ export async function jkoPayHandleUniversalLink(url: string) {
   if (getJkoPayIsReady() !== true) {
     throw new Error('TappayJkoPay is not ready!');
   }
-  const result =
-    await NativeModules.TappayHook.TappayJkoPayHandleUniversalLink(url);
+  const result = await NativeModules.TappayHook.TappayJkoPayHandleUniversalLink(
+    url
+  );
   return result;
 }
 
@@ -336,9 +335,7 @@ export async function easyWalletHandleUniversalLink(url: string) {
     throw new Error('TappayEasyWallet is not ready!');
   }
   const result =
-    await NativeModules.TappayHook.TappayEasyWalletHandleUniversalLink(
-      url
-    );
+    await NativeModules.TappayHook.TappayEasyWalletHandleUniversalLink(url);
   return result;
 }
 
@@ -446,7 +443,7 @@ export async function atomeInit(atomeUniversalLinks: string) {
   if (getInitPromise() === null) {
     throw new Error('Tappay has not been initialized!');
   }
-  const result = await NativeModules.TappayHook.TappayPlusPayInit(
+  const result = await NativeModules.TappayHook.TappayAtomeInit(
     atomeUniversalLinks
   );
   setAtomeIsReady(result.isReadyToPay);
@@ -475,7 +472,8 @@ export async function atomehandleUniversalLink(url: string) {
   if (getAtomeIsReady() !== true) {
     throw new Error('TappayAtome is not ready!');
   }
-  const result =
-    await NativeModules.TappayHook.TappayAtomeHandleUniversalLink(url);
+  const result = await NativeModules.TappayHook.TappayAtomeHandleUniversalLink(
+    url
+  );
   return result;
 }

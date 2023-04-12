@@ -72,6 +72,7 @@ export function useSetDirectPayTPDCard(
         });
       } catch (error: any) {
         console.log('useSetDirectPayTPDCard error', { ...error });
+        console.log(error);
       }
     })();
   }, [cardNumber, dueMonth, dueYear, ccv]);

@@ -540,6 +540,7 @@ interface result {
   systemOS: string;
   tappaySDKVersion: string;
   isReadyToPay: boolean;
+  jkoPayUniversalLinks: string;
 }
 import { jkoPayInit } from 'react-native-tappay-hook';
 

@@ -3,3 +3,6 @@ node_modules
 .eslintrc.js
 *.config.js
 **/e2e/*
+
+coverage
+coverage/*

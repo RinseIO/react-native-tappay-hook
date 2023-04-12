@@ -44,6 +44,7 @@
           @"systemOS": @"ios",
           @"tappaySDKVersion": self.SDKVersion,
           @"prime": prime,
+          @"geoLocation": geoLocation,
           @"cardInfo": @{
             @"bincode": cardInfo.bincode,
             @"lastfour": cardInfo.lastFour,

@@ -49,6 +49,10 @@
     "strict": true,
     "target": "esnext"
   },
+  "exclude": [
+    "node_modules",
+    "coverage"
+  ],
   "typeRoots": [
     "./types"
   ]

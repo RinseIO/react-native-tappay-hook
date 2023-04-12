@@ -160,7 +160,7 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
 
       promise.resolve(resultData);
     } catch (Exception e) {
-      promise.reject("android error TappayIsLinePayAvailable", e);
+      promise.reject("android error TappayLinePayHandleURL", e);
     }
   }
 
@@ -262,6 +262,7 @@ public class TappayHookModule extends ReactContextBaseJavaModule {
       resultData.putString("systemOS", "android");
       resultData.putString("tappaySDKVersion", TappayManager.SDKVersion);
       resultData.putBoolean("isReadyToPay", result);
+      resultData.putString("jkoPayUniversalLinks", jkoPayUniversalLinks);
 
       promise.resolve(resultData);
     } catch (Exception e) {

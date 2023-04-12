@@ -34,6 +34,7 @@ jobs:
 
       - name: Run unit tests
         run: yarn test --maxWorkers=2 --coverage
+        # run: yarn test
 
   build:
     runs-on: ubuntu-latest

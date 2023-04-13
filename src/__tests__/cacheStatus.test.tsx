@@ -2,6 +2,8 @@ import * as cacheStatus from '../cacheStatus';
 
 describe('cacheStatus test', () => {
   beforeEach(() => {
+    cacheStatus.setAppId(-1);
+    cacheStatus.setAppKey('');
     cacheStatus.setProd(false);
     cacheStatus.setInitPromise(null);
     cacheStatus.setStatusDeviceId('');
@@ -14,6 +16,22 @@ describe('cacheStatus test', () => {
     cacheStatus.setPiWalletIsReady(false);
     cacheStatus.setPlusPayIsReady(false);
     cacheStatus.setAtomeIsReady(false);
+  });
+  test('getAppId() test', () => {
+    expect(cacheStatus.getAppId()).toBe(-1);
+  });
+
+  test('setAppId() test', () => {
+    cacheStatus.setAppId(100);
+    expect(cacheStatus.getAppId()).toBe(100);
+  });
+  test('getAppKey() test', () => {
+    expect(cacheStatus.getAppKey()).toBe('');
+  });
+
+  test('setAppKey() test', () => {
+    cacheStatus.setAppKey('true');
+    expect(cacheStatus.getAppKey()).toBe('true');
   });
   test('getProd() test', () => {
     expect(cacheStatus.getProd()).toBe(false);

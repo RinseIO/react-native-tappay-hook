@@ -43,12 +43,10 @@ export function useSetDirectPayTPDCard(
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
+        await initPromise;
         const _validResult = await setDirectPayTPDCard(
           cardNumber,
           dueMonth,
@@ -86,16 +84,15 @@ export function useTPDGetDeviceId() {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
+        await initPromise;
         const _deviceId = await getDeviceId();
         setDeviceId(_deviceId);
       } catch (error: any) {
         console.log('useTPDGetDeviceId error', { ...error });
+        console.log(error);
       }
     })();
   }, []);
@@ -111,19 +108,19 @@ export function useTPDGooglePay(merchantName: string) {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await googlePayInit(merchantName);
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay, msg: _msg } = await googlePayInit(
+          merchantName
+        );
 
         setIsReady(_isReadyToPay);
         setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDGooglePay error', { ...error });
+        console.log(error);
       }
     })();
   }, []);
@@ -138,63 +135,57 @@ export function useTPDApplePay(
   currencyCode: string
 ) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await applePayInit(
-            merchantName,
-            merchantId,
-            countryCode,
-            currencyCode
-          );
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await applePayInit(
+          merchantName,
+          merchantId,
+          countryCode,
+          currencyCode
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDApplePay error', { ...error });
+        console.log(error);
       }
     })();
   }, []);
 
-  return [isReady, msg];
+  return [isReady];
 }
 
 export function useTPDLinePay(linePayCallbackUri: string) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await linePayInit(linePayCallbackUri);
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await linePayInit(
+          linePayCallbackUri
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDLinePay error', { ...error });
+        console.log(error);
       }
     })();
   }, [linePayCallbackUri]);
 
-  return [isReady, msg];
+  return [isReady];
 }
 
 export function useTPDSamsungPay(
@@ -204,174 +195,159 @@ export function useTPDSamsungPay(
   serviceId: string
 ) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await samsungPayInit(
-            merchantName,
-            merchantId,
-            currencyCode,
-            serviceId
-          );
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await samsungPayInit(
+          merchantName,
+          merchantId,
+          currencyCode,
+          serviceId
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
-        console.log(error);
         console.log('useTPDSamsungPay error', { ...error });
+        console.log(error);
       }
     })();
   }, [merchantName, merchantId, currencyCode, serviceId]);
 
-  return [isReady, msg];
+  return [isReady];
 }
 
 export function useTPDJkoPay(jkoPayUniversalLinks: string) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await jkoPayInit(jkoPayUniversalLinks);
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await jkoPayInit(
+          jkoPayUniversalLinks
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDJkoPay error', { ...error });
+        console.log(error);
       }
     })();
   }, [jkoPayUniversalLinks]);
 
-  return [isReady, msg];
+  return [isReady];
 }
 
 export function useTPDEasyWallet(easyWalletUniversalLinks: string) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await easyWalletInit(easyWalletUniversalLinks);
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await easyWalletInit(
+          easyWalletUniversalLinks
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDEasyWallet error', { ...error });
+        console.log(error);
       }
     })();
   }, [easyWalletUniversalLinks]);
 
-  return [isReady, msg];
+  return [isReady];
 }
 
 export function useTPDPiWallet(piWalletUniversalLinks: string) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await piWalletInit(piWalletUniversalLinks);
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await piWalletInit(
+          piWalletUniversalLinks
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDPiWallet error', { ...error });
+        console.log(error);
       }
     })();
   }, [piWalletUniversalLinks]);
 
-  return [isReady, msg];
+  return [isReady];
 }
 
 export function useTPDPlusPay(plusPayUniversalLinks: string) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await plusPayInit(plusPayUniversalLinks);
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await plusPayInit(
+          plusPayUniversalLinks
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDPlusPay error', { ...error });
+        console.log(error);
       }
     })();
   }, [plusPayUniversalLinks]);
 
-  return [isReady, msg];
+  return [isReady];
 }
 
 export function useTPDAtome(atomeUniversalLinks: string) {
   const [isReady, setIsReady] = useState(false);
-  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const initPromise = getInitPromise();
-        if (initPromise === null) {
+        if (typeof initPromise?.then !== 'function') {
           throw new Error('Tappay has not been initialized!');
         }
-        if (initPromise.then) {
-          await initPromise;
-        }
-        const { isReadyToPay: _isReadyToPay, msg: _msg = '' } =
-          await atomeInit(atomeUniversalLinks);
+        await initPromise;
+        const { isReadyToPay: _isReadyToPay } = await atomeInit(
+          atomeUniversalLinks
+        );
 
         setIsReady(_isReadyToPay);
-        setMsg(_msg);
       } catch (error: any) {
         console.log('useTPDAtome error', { ...error });
+        console.log(error);
       }
     })();
   }, [atomeUniversalLinks]);
 
-  return [isReady, msg];
+  return [isReady];
 }

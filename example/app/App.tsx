@@ -7,6 +7,7 @@ import { TappayScreen } from '@containers';
 import { tappayInitialization } from 'react-native-tappay-hook';
 
 import PopUpMessage from '@components/PopUpMessage';
+import Loading from '@components/Loading';
 
 tappayInitialization(
   128088,
@@ -17,6 +18,7 @@ tappayInitialization(
 function App(): JSX.Element {
   const [messageText, setMessageText] = useState('');
   const [messageType, setMessageType] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -41,12 +43,13 @@ function App(): JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <TappayScreen setPopUpMessage={setPopUpMessage} />
+      <TappayScreen setPopUpMessage={setPopUpMessage} setLoading={setLoading} />
       <PopUpMessage
         messageText={messageText}
         type={messageType}
         messageTextReset={messageTextReset}
       />
+      <Loading loading={loading} />
     </SafeAreaView>
   );
 }

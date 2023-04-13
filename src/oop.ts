@@ -1,6 +1,10 @@
 import { Platform, NativeModules } from 'react-native';
 
 import {
+  getAppId,
+  setAppId,
+  getAppKey,
+  setAppKey,
   getProd,
   setProd,
   getInitPromise,
@@ -28,6 +32,18 @@ import {
 } from './cacheStatus';
 
 export class tappay {
+  public get appId() {
+    return getAppId();
+  }
+  private set appId(newAppId: number) {
+    setAppId(newAppId);
+  }
+  public get appKey() {
+    return getAppKey();
+  }
+  private set appKey(newAppKey: string) {
+    setAppKey(newAppKey);
+  }
   public get prod() {
     return getProd();
   }
@@ -43,7 +59,7 @@ export class tappay {
   }
 
   public get deviceId() {
-    return getStatusDeviceId() || '';
+    return getStatusDeviceId();
   }
   private set deviceId(newDeviceId: string) {
     setStatusDeviceId(newDeviceId);
@@ -113,13 +129,28 @@ export class tappay {
   }
 
   public init(appId: number, appKey: string, prod: boolean) {
+    if (appId === this.appId && appKey === this.appKey && prod === this.prod) {
+      return this.initPromise;
+    }
     this.initPromise = (async () => {
       this.deviceId = '';
       try {
         await NativeModules.TappayHook.TappayInitInstance(appId, appKey, prod);
+        this.appId = appId;
+        this.appKey = appKey;
         this.prod = prod;
+        this.googlePlayIsReady = false;
+        this.applePlayIsReady = false;
+        this.linePlayIsReady = false;
+        this.samsungPayIsReady = false;
+        this.jkoPayIsReady = false;
+        this.easyWalletIsReady = false;
+        this.piWalletIsReady = false;
+        this.plusPayIsReady = false;
+        this.atomeIsReady = false;
         return await this.getDeviceId();
       } catch (error: any) {
+        console.error(error);
         console.log({ ...error });
         this.initPromise = null;
       }
@@ -129,6 +160,9 @@ export class tappay {
   }
 
   public async getDeviceId() {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
     if (this.deviceId !== '') {
       return this.deviceId;
     }
@@ -143,6 +177,9 @@ export class tappay {
     dueYear: string,
     CCV: string
   ) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
     const validationResult = await NativeModules.TappayHook.TappaySetTPDCard(
       cardNumber,
       dueMonth,
@@ -160,6 +197,9 @@ export class tappay {
   }
 
   public async getDirectPayPrime(geoLocation: string = 'UNKNOWN') {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
     const result = await NativeModules.TappayHook.TappayGetDirectPayPrime(
       geoLocation
     );
@@ -174,10 +214,13 @@ export class tappay {
       merchantName
     );
     this.googlePlayIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
-  public async getGooglePayPrime(totalPrice: string, currencyCode: string) {
+  public async getGooglePayPrime(
+    totalPrice: string,
+    currencyCode: string = 'TWD'
+  ) {
     if (Platform.OS !== 'android') {
       return;
     }
@@ -215,10 +258,13 @@ export class tappay {
       currencyCode
     );
     this.applePlayIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getApplePayPrime(amount: string) {
+    if (this.initPromise === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
     if (Platform.OS !== 'ios') {
       return;
     }
@@ -232,6 +278,10 @@ export class tappay {
   }
 
   public async linePayHandleURL(openUri: string) {
+    if (getInitPromise() === null) {
+      throw new Error('Tappay has not been initialized!');
+    }
+
     return await NativeModules.TappayHook.TappayLinePayHandleURL(openUri);
   }
 
@@ -252,7 +302,7 @@ export class tappay {
       linePayCallbackUri
     );
     this.linePlayIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getLinePayPrime() {
@@ -289,7 +339,7 @@ export class tappay {
       serviceId
     );
     this.samsungPayIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getSamsungPayPrime(
@@ -329,13 +379,10 @@ export class tappay {
       jkoPayUniversalLinks
     );
     this.jkoPayIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getJkoPayPrime() {
-    if (Platform.OS !== 'android') {
-      return;
-    }
     if (this.jkoPayIsReady !== true) {
       throw new Error('TappayJkoPay is not ready!');
     }
@@ -378,7 +425,7 @@ export class tappay {
       easyWalletUniversalLinks
     );
     this.easyWalletIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getEasyWalletPrime() {
@@ -405,9 +452,7 @@ export class tappay {
       throw new Error('TappayEasyWallet is not ready!');
     }
     const result =
-      await NativeModules.TappayHook.TappayEasyWalletHandleUniversalLink(
-        url
-      );
+      await NativeModules.TappayHook.TappayEasyWalletHandleUniversalLink(url);
     return result;
   }
 
@@ -427,7 +472,7 @@ export class tappay {
       piWalletUniversalLinks
     );
     this.piWalletIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getPiWalletPrime() {
@@ -473,7 +518,7 @@ export class tappay {
       plusPayUniversalLinks
     );
     this.plusPayIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getPlusPayPrime() {
@@ -515,11 +560,11 @@ export class tappay {
     if (this.initPromise === null) {
       throw new Error('Tappay has not been initialized!');
     }
-    const result = await NativeModules.TappayHook.TappayPlusPayInit(
+    const result = await NativeModules.TappayHook.TappayAtomeInit(
       atomeUniversalLinks
     );
     this.atomeIsReady = result.isReadyToPay;
-    return { ...result, msg: result.msg || '' };
+    return result;
   }
 
   public async getAtomePrime() {
@@ -625,7 +670,7 @@ export class tappay {
     }
   }
 
-  public async samsungTest(
+  public async samsungPayTest(
     merchantName: string,
     merchantId: string,
     currencyCode: string,

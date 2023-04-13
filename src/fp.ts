@@ -1,6 +1,11 @@
 import { Platform, NativeModules } from 'react-native';
 
 import {
+  getAppId,
+  setAppId,
+  getAppKey,
+  setAppKey,
+  getProd,
   setProd,
   getInitPromise,
   setInitPromise,
@@ -31,16 +36,26 @@ export function tappayInitialization(
   appKey: string,
   prod: boolean
 ) {
-  if (getInitPromise() !== null) {
+  if (appId === getAppId() && appKey === getAppKey() && prod === getProd()) {
     return getInitPromise();
   }
-
   setInitPromise(
     (async () => {
       setStatusDeviceId('');
       try {
         await NativeModules.TappayHook.TappayInitInstance(appId, appKey, prod);
+        setAppId(appId);
+        setAppKey(appKey);
         setProd(prod);
+        setGooglePlayIsReady(false);
+        setApplePlayIsReady(false);
+        setLinePlayIsReady(false);
+        setSamsungPayIsReady(false);
+        setJkoPayIsReady(false);
+        setEasyWalletIsReady(false);
+        setPiWalletIsReady(false);
+        setPlusPayIsReady(false);
+        setAtomeIsReady(false);
         return await getDeviceId();
       } catch (error: any) {
         console.error(error);
@@ -55,6 +70,9 @@ export function tappayInitialization(
 }
 
 export async function getDeviceId() {
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
   const deviceId = getStatusDeviceId();
   if (deviceId !== '') {
     return deviceId;
@@ -70,6 +88,9 @@ export async function setDirectPayTPDCard(
   dueYear: string,
   CCV: string
 ) {
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
   const validationResult = await NativeModules.TappayHook.TappaySetTPDCard(
     cardNumber,
     dueMonth,
@@ -85,6 +106,9 @@ export async function setDirectPayTPDCard(
 }
 
 export async function getDirectPayPrime(geoLocation: string = 'UNKNOWN') {
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
   const result = await NativeModules.TappayHook.TappayGetDirectPayPrime(
     geoLocation
   );
@@ -146,10 +170,13 @@ export async function applePayInit(
     currencyCode
   );
   setApplePlayIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getApplePayPrime(amount: string) {
+  if (getInitPromise() === null) {
+    throw new Error('Tappay has not been initialized!');
+  }
   if (Platform.OS !== 'ios') {
     return;
   }
@@ -185,7 +212,7 @@ export async function linePayInit(linePayCallbackUri: string) {
     linePayCallbackUri
   );
   setLinePlayIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getLinePayPrime() {
@@ -222,7 +249,7 @@ export async function samsungPayInit(
     serviceId
   );
   setSamsungPayIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getSamsungPayPrime(
@@ -262,7 +289,7 @@ export async function jkoPayInit(jkoPayUniversalLinks: string) {
     jkoPayUniversalLinks
   );
   setJkoPayIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getJkoPayPrime() {
@@ -309,7 +336,7 @@ export async function easyWalletInit(easyWalletUniversalLinks: string) {
     easyWalletUniversalLinks
   );
   setEasyWalletIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getEasyWalletPrime() {
@@ -355,7 +382,7 @@ export async function piWalletInit(piWalletUniversalLinks: string) {
     piWalletUniversalLinks
   );
   setPiWalletIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getPiWalletPrime() {
@@ -401,7 +428,7 @@ export async function plusPayInit(plusPayUniversalLinks: string) {
     plusPayUniversalLinks
   );
   setPlusPayIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getPlusPayPrime() {
@@ -447,7 +474,7 @@ export async function atomeInit(atomeUniversalLinks: string) {
     atomeUniversalLinks
   );
   setAtomeIsReady(result.isReadyToPay);
-  return { ...result, msg: result.msg || '' };
+  return result;
 }
 
 export async function getAtomePrime() {

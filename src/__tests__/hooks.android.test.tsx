@@ -1,20 +1,39 @@
 import { renderHook, waitFor } from '@testing-library/react';
 
 import * as hooks from '../hooks';
+import { tappayInitialization } from '../fp';
 
 jest.mock('react-native');
 
-describe('hooks test(throw)', () => {
+describe('hooks test(android)', () => {
+  const systemOS = 'android';
+  beforeEach(() => {
+    require('react-native')._setSystemOS(systemOS);
+    require('react-native')._setInitInstanceSuccess(true);
+    require('react-native')._setGooglePlayIsReady(true);
+    require('react-native')._setApplePlayIsReady(false);
+    require('react-native')._setLinePlayIsReady(true);
+    require('react-native')._setSamsungPayIsReady(true);
+    require('react-native')._setJkoPayIsReady(true);
+    require('react-native')._setEasyWalletIsReady(true);
+    require('react-native')._setPiWalletIsReady(true);
+    require('react-native')._setPlusPayIsReady(true);
+    require('react-native')._setAtomeIsReady(true);
+    require('react-native')._setIsCardNumberValid(true);
+    require('react-native')._setIsExpiryDateValid(true);
+    require('react-native')._setIsCCVValid(true);
+    require('react-native')._setCardType('Unknown');
+    tappayInitialization(128088, 'app_key', false);
+  });
+
   test('useSetDirectPayTPDCard() test', async () => {
-    const { result }: any = renderHook(() =>
-      hooks.useSetDirectPayTPDCard('3549134477691421', '07', '25', '465')
-    );
+    const { result }: any = renderHook(() => hooks.useSetDirectPayTPDCard());
     await waitFor(() =>
       expect(result.current).toMatchObject({
-        isCardNumberValid: false,
-        isExpiryDateValid: false,
-        isCCVValid: false,
-        isValid: false
+        isCardNumberValid: true,
+        isExpiryDateValid: true,
+        isCCVValid: true,
+        isValid: true
       })
     );
   });
@@ -29,7 +48,7 @@ describe('hooks test(throw)', () => {
       hooks.useTPDGooglePay('TEST MERCHANT NAME')
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false, '']))
+      expect(result.current).toEqual(expect.arrayContaining([true, 'mockMsg']))
     );
   });
 
@@ -52,7 +71,7 @@ describe('hooks test(throw)', () => {
       hooks.useTPDLinePay('linepayexample://tech.cherri')
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false]))
+      expect(result.current).toEqual(expect.arrayContaining([true]))
     );
   });
 
@@ -66,7 +85,7 @@ describe('hooks test(throw)', () => {
       )
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false]))
+      expect(result.current).toEqual(expect.arrayContaining([true]))
     );
   });
 
@@ -75,7 +94,7 @@ describe('hooks test(throw)', () => {
       hooks.useTPDJkoPay('jkoexample://jko.uri:8888/test')
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false]))
+      expect(result.current).toEqual(expect.arrayContaining([true]))
     );
   });
 
@@ -84,7 +103,7 @@ describe('hooks test(throw)', () => {
       hooks.useTPDEasyWallet('https://google.com.tw')
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false]))
+      expect(result.current).toEqual(expect.arrayContaining([true]))
     );
   });
 
@@ -93,7 +112,7 @@ describe('hooks test(throw)', () => {
       hooks.useTPDPiWallet('https://google.com.tw')
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false]))
+      expect(result.current).toEqual(expect.arrayContaining([true]))
     );
   });
 
@@ -104,7 +123,7 @@ describe('hooks test(throw)', () => {
       )
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false]))
+      expect(result.current).toEqual(expect.arrayContaining([true]))
     );
   });
 
@@ -113,7 +132,7 @@ describe('hooks test(throw)', () => {
       hooks.useTPDAtome('https://google.com.tw')
     );
     await waitFor(() =>
-      expect(result.current).toEqual(expect.arrayContaining([false]))
+      expect(result.current).toEqual(expect.arrayContaining([true]))
     );
   });
 });

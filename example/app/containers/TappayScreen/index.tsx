@@ -40,7 +40,7 @@ import {
   AtomeBtn
 } from 'react-native-tappay-hook/components';
 
-export function TappayScreen({ setPopUpMessage }: any) {
+export function TappayScreen({ setPopUpMessage, setLoading }: any) {
   const [cardNumber, setCardNumber] = useState('3549134477691421');
   const [dueMonth, setDueMonth] = useState('07');
   const [dueYear, setDueYear] = useState('25');
@@ -71,7 +71,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
         //   'TWD'
         // );
         // await Tappay.linePayTest('linepayexample://tech.cherri');
-        // await Tappay.samsungTest(
+        // await Tappay.samsungPayTest(
         //   'TapPay Samsung Pay Demo',
         //   'tech.cherri.samsungpayexample',
         //   'TWD',
@@ -95,6 +95,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
   );
 
   async function handlerDirectPay() {
+    setLoading(true);
     try {
       const result = await getDirectPayPrime();
       console.log(result);
@@ -109,9 +110,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         type: 'error'
       });
     }
+    setLoading(false);
   }
 
   async function handlerGooglePay() {
+    setLoading(true);
     try {
       const result = await getGooglePayPrime(googlePayAmount, 'TWD');
       console.log(result);
@@ -133,9 +136,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerApplePay() {
+    setLoading(true);
     try {
       const result = await getApplePayPrime(appleAmount);
       console.log(result);
@@ -157,9 +162,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerLinePay() {
+    setLoading(true);
     try {
       const result = await getLinePayPrime();
       console.log({ ...result, linePayAmount });
@@ -181,9 +188,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerSamsungPay() {
+    setLoading(true);
     try {
       const result = await getSamsungPayPrime(
         samsungPayItemTotalAmount,
@@ -210,9 +219,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerJkoPay() {
+    setLoading(true);
     try {
       const result = await getJkoPayPrime();
       console.log({ ...result, jkoPayAmount });
@@ -234,9 +245,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerEasyWallet() {
+    setLoading(true);
     try {
       const result = await getEasyWalletPrime();
       console.log({ ...result, easyWalleAmount });
@@ -258,9 +271,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerPiWallet() {
+    setLoading(true);
     try {
       const result = await getPiWalletPrime();
       console.log({ ...result, piWalleAmount });
@@ -282,9 +297,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerPlusPay() {
+    setLoading(true);
     try {
       const result = await getPlusPayPrime();
       console.log({ ...result, plusPayAmount });
@@ -306,9 +323,11 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
 
   async function handlerAtome() {
+    setLoading(true);
     try {
       const result = await getAtomePrime();
       console.log({ ...result, atomeAmount });
@@ -330,6 +349,7 @@ export function TappayScreen({ setPopUpMessage }: any) {
         });
       }
     }
+    setLoading(false);
   }
   return (
     <SafeAreaView style={styles.root}>

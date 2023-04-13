@@ -1,3 +1,5 @@
+let appId: number = -1;
+let appKey: string = '';
 let prod: boolean = false;
 let initPromise: any = null;
 let deviceId: string = '';
@@ -11,6 +13,18 @@ let piWalletIsReady: boolean = false;
 let plusPayIsReady: boolean = false;
 let atomeIsReady: boolean = false;
 
+export function getAppId() {
+  return appId;
+}
+export function setAppId(newAppId: number) {
+  appId = newAppId;
+}
+export function getAppKey() {
+  return appKey;
+}
+export function setAppKey(newAppKey: string) {
+  appKey = newAppKey;
+}
 export function getProd() {
   return prod;
 }

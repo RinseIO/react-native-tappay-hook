@@ -1,4 +1,10 @@
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ViewStyle,
+  ImageStyle
+} from 'react-native';
 
 import { useTPDPiWallet } from '../hooks';
 
@@ -8,7 +14,9 @@ import piWalletDisabledBtnIcon from '../images/pi_wallet_disabled_btn.png';
 interface Props {
   piWalletUniversalLinks: string;
   disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
   imagesProps?: {
+    disabledStyle?: ImageStyle;
     [key: string]: any;
   };
   [key: string]: any;

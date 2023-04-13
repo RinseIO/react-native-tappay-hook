@@ -1,4 +1,10 @@
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ViewStyle,
+  ImageStyle
+} from 'react-native';
 
 import { useTPDSamsungPay } from '../hooks';
 
@@ -10,7 +16,9 @@ interface Props {
   currencyCode: string;
   serviceId: string;
   disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
   imagesProps?: {
+    disabledStyle?: ImageStyle;
     [key: string]: any;
   };
   [key: string]: any;
@@ -54,7 +62,6 @@ export function SPayBtn(props: Props) {
   let activeOpacity;
   let disabled = samsungPayIsReady === false;
   let onPress = ortherProps.onPress;
-
 
   if (samsungPayIsReady === false) {
     buttonStyle.push(styles.buttonDisable);

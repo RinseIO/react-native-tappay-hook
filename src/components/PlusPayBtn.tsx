@@ -1,4 +1,10 @@
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ViewStyle,
+  ImageStyle
+} from 'react-native';
 
 import { useTPDPlusPay } from '../hooks';
 
@@ -7,7 +13,9 @@ import plusPayBtnIcon from '../images/plus_pay_btn.png';
 interface Props {
   plusPayUniversalLinks: string;
   disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
   imagesProps?: {
+    disabledStyle?: ImageStyle;
     [key: string]: any;
   };
   [key: string]: any;

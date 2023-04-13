@@ -50,7 +50,7 @@ import { Tappay } from 'react-native-tappay-hook';
 import { Tappay } from 'react-native-tappay-hook/oop';
 ```
 
-## React Hook
+### React Hook
 
 ```ts 
 import { useSetDirectPayTPDCard } from 'react-native-tappay-hook';
@@ -58,13 +58,15 @@ import { useSetDirectPayTPDCard } from 'react-native-tappay-hook';
 import { useSetDirectPayTPDCard } from 'react-native-tappay-hook/hooks';
 ```
 
-## React Components
+### React Components
 
 ```tsx 
 import { DirectPayCardIcon } from 'react-native-tappay-hook';
 // or 
 import { DirectPayCardIcon } from 'react-native-tappay-hook/Components';
 ```
+
+## TapPay SDK
 
 ### tappayInitialization
 
@@ -182,11 +184,59 @@ const result:result = await Tappay.getDirectPayPrime();
 
 ```
 
+### useSetDirectPayTPDCard
+
+```tsx
+interface result {
+  isCardNumberValid: boolean;
+  isExpiryDateValid: boolean;
+  isCCVValid: boolean;
+  cardType: string;
+  isValid: boolean;
+}
+
+import { useSetDirectPayTPDCard } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const result:result = useSetDirectPayTPDCard('3549134477691421', '07', '25', '465');
+
+  return <Text>{JSON.stringify(result)}</Text>;
+}
+
+```
+
+### useTPDGetDeviceId
+
+```tsx
+
+import { useTPDGetDeviceId } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const deviceId:string = useTPDGetDeviceId();
+
+  return <Text>deviceId：{deviceId}</Text>;
+}
+
+```
+
+### DirectPayCardIcon
+
+```tsx
+
+import { DirectPayCardIcon } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  return <DirectPayCardIcon cardNumber='3549134477691421' />; // JCB icon
+}
+
+```
+
 ## Google Pay
 ### googlePayInit
 
 ```ts 
-const merchantName = 'TEST MERCHANT NAME'; // your merchantName
+const merchantName = 'your merchant name'; // your merchantName
 
 interface result {
   systemOS: string;
@@ -210,7 +260,7 @@ const result:result =  await Tappay.googlePayInit(merchantName);
 ### getGooglePayPrime
 
 ```ts 
-const merchantName = 'TEST MERCHANT NAME'; // your merchantName
+const merchantName = 'your merchant name'; // your merchantName
 
 interface result {
   systemOS: string;
@@ -246,6 +296,60 @@ const result:result =  await Tappay.getGooglePayPrime(merchantName);
 
 ```
 
+### useTPDGooglePay
+
+```tsx
+
+import { useTPDGooglePay } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady, msg] = useTPDGooglePay('your merchant name');
+
+  return <View>
+    <Text>isReady:{isReady}</Text>
+    <Text>msg:{msg}</Text>
+  </View>;
+}
+
+```
+
+### GPayBtn
+
+```tsx
+
+interface GPayBtnProps {
+  merchantName: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { GPayBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerGooglePay(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <GPayBtn
+   merchantName='your merchant name'
+   onPress={handlerGooglePay}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#fff' }}
+   disabledStyle={{ backgroundColor: '#b3b3b3' }}
+  />;
+}
+
+```
+
 ## Apple Pay
 ### isApplePayAvailable
 
@@ -271,8 +375,8 @@ const result:result =  await Tappay.isApplePayAvailable();
 ### applePayInit
 
 ```ts 
-const merchantName: string = 'TEST MERCHANT NAME';
-const merchantId: string = 'TEST MERCHANT ID';
+const merchantName: string = 'your merchant name';
+const merchantId: string = 'your merchant id';
 const countryCode: string = 'TW';
 const currencyCode: string = 'TWD';
 
@@ -321,6 +425,63 @@ const result:result = await getApplePayPrime(amount);
 import { Tappay } from 'react-native-tappay-hook';
 
 const result:result =  await Tappay.getApplePayPrime(amount);
+
+```
+
+### useTPDApplePay
+
+```tsx
+
+import { useTPDApplePay } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDApplePay('your merchant name', 'your merchant id', 'TW', 'TWD');
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### ApplePayBtn
+
+```tsx
+
+interface ApplePayBtnProps {
+  merchantName: string;
+  merchantId: string;
+  countryCode: string;
+  currencyCode: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { ApplePayBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerApplePay(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <ApplePayBtn
+   merchantName='your merchant name'
+   merchantId="your merchant id"
+   countryCode="TW"
+   currencyCode="TWD"
+   onPress={handlerApplePay}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#fff' }}
+   disabledStyle={{ backgroundColor: '#b3b3b3' }}
+  />;
+}
 
 ```
 
@@ -443,6 +604,57 @@ const result:result =  await Tappay.linePayRedirectWithUrl(paymentUrl);
 
 ```
 
+### useTPDLinePay
+
+```tsx
+
+import { useTPDLinePay } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDLinePay('linepayexample://tech.cherri');
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### LinePayBtn
+
+```tsx
+
+interface LinePayBtnProps {
+  linePayCallbackUri: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { LinePayBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerLinePay(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <LinePayBtn
+   linePayCallbackUri='linepayexample://tech.cherri'
+   onPress={handlerLinePay}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#00be3b' }}
+   disabledStyle={{ backgroundColor: '#c3c3c3' }}
+  />;
+}
+
+```
+
 ## Samsung Pay
 ### samsungPayInit
 
@@ -508,6 +720,68 @@ const result:result = await getSamsungPayPrime(itemTotalAmount, shippingPrice, t
 import { Tappay } from 'react-native-tappay-hook';
 
 const result:result =  await Tappay.getSamsungPayPrime(itemTotalAmount, shippingPrice, tax, totalAmount);
+
+```
+
+### useTPDSamsungPay
+
+```tsx
+
+import { useTPDSamsungPay } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDSamsungPay(
+    'TapPay Samsung Pay Demo',
+    'tech.cherri.samsungpayexample',
+    'TWD',
+    'your samsung pay service id'
+  );
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### SPayBtn
+
+```tsx
+
+interface SPayBtnProps {
+  merchantName: string;
+  merchantId: string;
+  currencyCode: string;
+  serviceId: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { SPayBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerSamsungPay(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <SPayBtn
+   merchantName="TapPay Samsung Pay Demo"
+   erchantId="tech.cherri.samsungpayexample"
+   currencyCode="TWD"
+   serviceId="your samsung pay service id"
+   onPress={handlerSamsungPay}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#fff' }}
+   disabledStyle={{ backgroundColor: '#c3c3c3' }}
+  />;
+}
 
 ```
 
@@ -621,6 +895,57 @@ const result:result = await jkoPayHandleUniversalLink(url);
 import { Tappay } from 'react-native-tappay-hook';
 
 const result:result =  await Tappay.jkoPayHandleUniversalLink(url);
+
+```
+
+### useTPDJkoPay
+
+```tsx
+
+import { useTPDJkoPay } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDSamsungPay('jkoexample://jko.uri:8888/test');
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### JkoPayBtn
+
+```tsx
+
+interface JkoPayBtnProps {
+  jkoPayUniversalLinks: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { JkoPayBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerJkoPay(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <JkoPayBtn
+   jkoPayUniversalLinks="jkoexample://jko.uri:8888/test"
+   onPress={handlerJkoPay}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#fff' }}
+   disabledStyle={{ backgroundColor: '#c3c3c3' }}
+  />;
+}
 
 ```
 
@@ -741,6 +1066,57 @@ const result:result =  await Tappay.easyWalletHandleUniversalLink(url);
 
 ```
 
+### useTPDEasyWallet
+
+```tsx
+
+import { useTPDEasyWallet } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDEasyWallet('https://google.com.tw');
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### EasyWalletBtn
+
+```tsx
+
+interface EasyWalletBtnProps {
+  easyWalletUniversalLinks: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { EasyWalletBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerEasyWallet(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <EasyWalletBtn
+   easyWalletUniversalLinks="https://google.com.tw"
+   onPress={handlerEasyWallet}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#fff' }}
+   disabledStyle={{ backgroundColor: '#c3c3c3' }}
+  />;
+}
+
+```
+
 ## Pi Wallet
 ### isPiWalletAvailable
 
@@ -845,6 +1221,57 @@ const result:result = await piWalletHandleUniversalLink(url);
 import { Tappay } from 'react-native-tappay-hook';
 
 const result:result =  await Tappay.piWalletHandleUniversalLink(url);
+
+```
+
+### useTPDPiWallet
+
+```tsx
+
+import { useTPDPiWallet } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDPiWallet('https://google.com.tw');
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### PiWalletBtn
+
+```tsx
+
+interface PiWalletBtnProps {
+  piWalletUniversalLinks: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { PiWalletBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerPiWallet(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <PiWalletBtn
+   piWalletUniversalLinks="https://google.com.tw"
+   onPress={handlerPiWallet}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#1da7fc' }}
+   disabledStyle={{ backgroundColor: '#000' }}
+  />;
+}
 
 ```
 
@@ -956,6 +1383,57 @@ const result:result = await plusPayhandleUniversalLink(url);
 import { Tappay } from 'react-native-tappay-hook';
 
 const result:result =  await Tappay.plusPayhandleUniversalLink(url);
+
+```
+
+### useTPDPlusPay
+
+```tsx
+
+import { useTPDPlusPay } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDPlusPay('tpdirectexamplepluspay://tech.cherri/myaccount/detail');
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### PlusPayBtn
+
+```tsx
+
+interface PlusPayBtnProps {
+  plusPayUniversalLinks: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { PlusPayBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerPlusPay(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <PlusPayBtn
+   piWalletUniversalLinks="https://google.com.tw"
+   onPress={handlerPlusPay}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#fff' }}
+   disabledStyle={{ backgroundColor: '#c3c3c3' }}
+  />;
+}
 
 ```
 
@@ -1071,6 +1549,57 @@ const result:result = await atomehandleUniversalLink(url);
 import { Tappay } from 'react-native-tappay-hook';
 
 const result:result =  await Tappay.atomehandleUniversalLink(url);
+
+```
+
+### useTPDAtome
+
+```tsx
+
+import { useTPDAtome } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+  const [isReady] = useTPDAtome('https://google.com.tw');
+
+  return <Text>isReady:{isReady}</Text>;
+}
+
+```
+
+### AtomeBtn
+
+```tsx
+
+interface AtomeBtnProps {
+  atomeUniversalLinks: string;
+  disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
+  imagesProps?: {
+    disabledStyle?: ImageStyle;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+import { AtomeBtn } from 'react-native-tappay-hook';
+
+function AnyComponent(){
+
+  function handlerAtome(){
+    /* ... */
+  }
+  function onDisabled(){
+    /* ... */
+  }
+
+  return <AtomeBtn
+   atomeUniversalLinks="https://google.com.tw"
+   onPress={handlerAtome}
+   disabledOnPress={onDisabled}
+   style={{ backgroundColor: '#e7f85a' }}
+   disabledStyle={{ backgroundColor: '#c3c3c3' }}
+  />;
+}
 
 ```
 

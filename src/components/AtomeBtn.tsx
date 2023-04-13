@@ -1,4 +1,10 @@
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ViewStyle,
+  ImageStyle
+} from 'react-native';
 
 import { useTPDAtome } from '../hooks';
 
@@ -7,7 +13,9 @@ import atomeBtnIcon from '../images/atome_btn.png';
 interface Props {
   atomeUniversalLinks: string;
   disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
   imagesProps?: {
+    disabledStyle?: ImageStyle;
     [key: string]: any;
   };
   [key: string]: any;

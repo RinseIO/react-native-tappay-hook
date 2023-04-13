@@ -1,4 +1,10 @@
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ViewStyle,
+  ImageStyle
+} from 'react-native';
 
 import { useTPDJkoPay } from '../hooks';
 
@@ -7,7 +13,9 @@ import JkoPayBtnIcon from '../images/JKOPAY_btn.png';
 interface Props {
   jkoPayUniversalLinks: string;
   disabledOnPress?: Function;
+  disabledStyle?: ViewStyle;
   imagesProps?: {
+    disabledStyle?: ImageStyle;
     [key: string]: any;
   };
   [key: string]: any;

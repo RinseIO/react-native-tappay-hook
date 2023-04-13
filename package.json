@@ -35,12 +35,14 @@
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
-    "postinstall": "unzip -o src/TPDirect.xcframework.zip -d ios"
+    "postinstall": "unzip -o ios/TPDirect.xcframework.zip -d ios"
   },
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "tappay",
+    "hook"
   ],
   "repository": "https://github.com/archer102125220/react-native-tappay-hook",
   "author": "Parker Chan <archer102125220.2015@gmail.com> (https://github.com/archer102125220)",

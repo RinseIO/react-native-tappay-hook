@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "11.0" }
+  s.platforms    = { :ios => "12.4" }
   s.source       = { :git => "https://github.com/archer102125220/react-native-tappay-hook.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm}"
@@ -19,5 +19,20 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.vendored_frameworks = "ios/TPDirect.xcframework"
 
-  s.dependency "React"
+  s.dependency "React-Core"
+
+  # Don't install the dependencies when we run `pod install` in the old architecture.
+  if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
+    s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
+    s.pod_target_xcconfig    = {
+        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\"",
+        "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+        "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
+    }
+    s.dependency "React-Codegen"
+    s.dependency "RCT-Folly"
+    s.dependency "RCTRequired"
+    s.dependency "RCTTypeSafety"
+    s.dependency "ReactCommon/turbomodule/core"
+  end
 end

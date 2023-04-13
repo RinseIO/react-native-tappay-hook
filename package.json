@@ -35,7 +35,7 @@
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
-    "postinstall": "unzip -o TPDirect.xcframework.zip -d ios"
+    "postinstall": "unzip -o src/TPDirect.xcframework.zip -d ios"
   },
   "keywords": [
     "react-native",

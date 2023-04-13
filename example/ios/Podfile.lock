@@ -329,7 +329,7 @@ PODS:
   - React-jsinspector (0.71.6)
   - React-logger (0.71.6):
     - glog
-  - react-native-tappay-hook (0.1.0):
+  - react-native-tappay-hook (0.1.2):
     - React-Core
   - React-perflogger (0.71.6)
   - React-RCTActionSheet (0.71.6):
@@ -606,7 +606,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 7894956638ff3e00819dd3f9f6f4a84da38f2409
   React-jsinspector: d5ce2ef3eb8fd30c28389d0bc577918c70821bd6
   React-logger: 9332c3e7b4ef007a0211c0a9868253aac3e1da82
-  react-native-tappay-hook: 13dea4234a28fcad67fe91013e2d0d355f2ebb8b
+  react-native-tappay-hook: 2aa3bdd55df8bac5be30fa981706394777118f8f
   React-perflogger: 43392072a5b867a504e2b4857606f8fc5a403d7f
   React-RCTActionSheet: c7b67c125bebeda9fb19fc7b200d85cb9d6899c4
   React-RCTAnimation: c2de79906f607986633a7114bee44854e4c7e2f5
@@ -624,6 +624,6 @@ SPEC CHECKSUMS:
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: db0ea3c6b0ec4b8094a8a3105343077cc1bf7f5b
+PODFILE CHECKSUM: 3ae029b3b7ceaae55332e7fda6a8ae07f325db30
 
 COCOAPODS: 1.12.0

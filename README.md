@@ -38,32 +38,24 @@ dependencies {
 
 ```ts 
 import { tappayInitialization } from 'react-native-tappay-hook';
-// or 
-import { tappayInitialization } from 'react-native-tappay-hook/fp';
 ```
 
 ### Object-oriented programming(OOP)
 
 ```ts 
 import { Tappay } from 'react-native-tappay-hook';
-// or 
-import { Tappay } from 'react-native-tappay-hook/oop';
 ```
 
 ### React Hook
 
 ```ts 
 import { useSetDirectPayTPDCard } from 'react-native-tappay-hook';
-// or 
-import { useSetDirectPayTPDCard } from 'react-native-tappay-hook/hooks';
 ```
 
 ### React Components
 
 ```tsx 
 import { DirectPayCardIcon } from 'react-native-tappay-hook';
-// or 
-import { DirectPayCardIcon } from 'react-native-tappay-hook/components';
 ```
 
 ## TapPay SDK

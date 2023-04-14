@@ -5,6 +5,19 @@
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
+  "exports": {
+    ".": "./src/index",
+    "./oop": "./src/oop/index",
+    "./oop/*": "./src/oop/*",
+    "./fp": "./src/fp/index",
+    "./fp/*": "./src/fp/*",
+    "./hooks": "./src/hooks/index",
+    "./hooks/*": "./src/hooks/*",
+    "./components": "./src/components/index",
+    "./components/*": "./src/components/*",
+    "./images": "./src/images/index",
+    "./images/*": "./src/images/*"
+  },
   "react-native": "src/index",
   "source": "src",
   "files": [

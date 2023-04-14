@@ -93,3 +93,5 @@ export function LinePayBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default LinePayBtn;

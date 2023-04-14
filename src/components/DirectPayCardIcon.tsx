@@ -35,6 +35,8 @@ export function DirectPayCardIcon(props: any) {
   );
 }
 
+export default DirectPayCardIcon;
+
 // Visa
 // 4679270817026199
 // 08

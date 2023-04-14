@@ -20,19 +20,12 @@
       "node": "./lib/commonjs/oop/index",
       "default": "./lib/commonjs/oop/index"
     },
-    "./oop/constructor": {
-      "require": "./lib/commonjs/oop/constructor",
-      "import": "./lib/module/oop/constructor",
-      "types": "./lib/typescript/oop/constructor.d.ts",
-      "node": "./lib/commonjs/oop/constructor",
-      "default": "./lib/commonjs/oop/constructor"
-    },
-    "./oop/instance": {
-      "require": "./lib/commonjs/oop/instance",
-      "import": "./lib/module/oop/instance",
-      "types": "./lib/typescript/oop/instance.d.d.ts",
-      "node": "./lib/commonjs/oop/instance",
-      "default": "./lib/commonjs/oop/instance"
+    "./oop/*": {
+      "require": "./lib/commonjs/oop/*",
+      "import": "./lib/module/oop/*",
+      "types": "./lib/typescript/oop/*.d.ts",
+      "node": "./lib/commonjs/oop/*",
+      "default": "./lib/commonjs/oop/*"
     },
     "./fp": {
       "require": "./lib/commonjs/fp/index",
@@ -41,285 +34,12 @@
       "node": "./lib/commonjs/fp/index",
       "default": "./lib/commonjs/fp/index"
     },
-    "./fp/tappayInitialization": {
-      "require": "./lib/commonjs/fp/tappayInitialization",
-      "import": "./lib/module/fp/tappayInitialization",
-      "types": "./lib/typescript/fp/tappayInitialization.d.ts",
-      "node": "./lib/commonjs/fp/tappayInitialization",
-      "default": "./lib/commonjs/fp/tappayInitialization"
-    },
-    "./fp/getDeviceId": {
-      "require": "./lib/commonjs/fp/getDeviceId",
-      "import": "./lib/module/fp/getDeviceId",
-      "types": "./lib/typescript/fp/getDeviceId.d.ts",
-      "node": "./lib/commonjs/fp/getDeviceId",
-      "default": "./lib/commonjs/fp/getDeviceId"
-    },
-    "./fp/setDirectPayTPDCard": {
-      "require": "./lib/commonjs/fp/setDirectPayTPDCard",
-      "import": "./lib/module/fp/setDirectPayTPDCard",
-      "types": "./lib/typescript/fp/setDirectPayTPDCard.d.ts",
-      "node": "./lib/commonjs/fp/setDirectPayTPDCard",
-      "default": "./lib/commonjs/fp/setDirectPayTPDCard"
-    },
-    "./fp/getDirectPayPrime": {
-      "require": "./lib/commonjs/fp/getDirectPayPrime",
-      "import": "./lib/module/fp/getDirectPayPrime",
-      "types": "./lib/typescript/fp/getDirectPayPrime.d.ts",
-      "node": "./lib/commonjs/fp/getDirectPayPrime",
-      "default": "./lib/commonjs/fp/getDirectPayPrime"
-    },
-    "./fp/googlePayInit": {
-      "require": "./lib/commonjs/fp/googlePayInit",
-      "import": "./lib/module/fp/googlePayInit",
-      "types": "./lib/typescript/fp/googlePayInit.d.ts",
-      "node": "./lib/commonjs/fp/googlePayInit",
-      "default": "./lib/commonjs/fp/googlePayInit"
-    },
-    "./fp/getGooglePayPrime": {
-      "require": "./lib/commonjs/fp/getGooglePayPrime",
-      "import": "./lib/module/fp/getGooglePayPrime",
-      "types": "./lib/typescript/fp/getGooglePayPrime.d.ts",
-      "node": "./lib/commonjs/fp/getGooglePayPrime",
-      "default": "./lib/commonjs/fp/getGooglePayPrime"
-    },
-    "./fp/isApplePayAvailable": {
-      "require": "./lib/commonjs/fp/isApplePayAvailable",
-      "import": "./lib/module/fp/isApplePayAvailable",
-      "types": "./lib/typescript/fp/isApplePayAvailable.d.ts",
-      "node": "./lib/commonjs/fp/isApplePayAvailable",
-      "default": "./lib/commonjs/fp/isApplePayAvailable"
-    },
-    "./fp/applePayInit": {
-      "require": "./lib/commonjs/fp/applePayInit",
-      "import": "./lib/module/fp/applePayInit",
-      "types": "./lib/typescript/fp/applePayInit.d.ts",
-      "node": "./lib/commonjs/fp/applePayInit",
-      "default": "./lib/commonjs/fp/applePayInit"
-    },
-    "./fp/getApplePayPrime": {
-      "require": "./lib/commonjs/fp/getApplePayPrime",
-      "import": "./lib/module/fp/getApplePayPrime",
-      "types": "./lib/typescript/fp/getApplePayPrime.d.ts",
-      "node": "./lib/commonjs/fp/getApplePayPrime",
-      "default": "./lib/commonjs/fp/getApplePayPrime"
-    },
-    "./fp/linePayHandleURL": {
-      "require": "./lib/commonjs/fp/linePayHandleURL",
-      "import": "./lib/module/fp/linePayHandleURL",
-      "types": "./lib/typescript/fp/linePayHandleURL.d.ts",
-      "node": "./lib/commonjs/fp/linePayHandleURL",
-      "default": "./lib/commonjs/fp/linePayHandleURL"
-    },
-    "./fp/isLinePayAvailable": {
-      "require": "./lib/commonjs/fp/isLinePayAvailable",
-      "import": "./lib/module/fp/isLinePayAvailable",
-      "types": "./lib/typescript/fp/isLinePayAvailable.d.ts",
-      "node": "./lib/commonjs/fp/isLinePayAvailable",
-      "default": "./lib/commonjs/fp/isLinePayAvailable"
-    },
-    "./fp/linePayInit": {
-      "require": "./lib/commonjs/fp/linePayInit",
-      "import": "./lib/module/fp/linePayInit",
-      "types": "./lib/typescript/fp/linePayInit.d.ts",
-      "node": "./lib/commonjs/fp/linePayInit",
-      "default": "./lib/commonjs/fp/linePayInit"
-    },
-    "./fp/getLinePayPrime": {
-      "require": "./lib/commonjs/fp/getLinePayPrime",
-      "import": "./lib/module/fp/getLinePayPrime",
-      "types": "./lib/typescript/fp/getLinePayPrime.d.ts",
-      "node": "./lib/commonjs/fp/getLinePayPrime",
-      "default": "./lib/commonjs/fp/getLinePayPrime"
-    },
-    "./fp/linePayRedirectWithUrl": {
-      "require": "./lib/commonjs/fp/linePayRedirectWithUrl",
-      "import": "./lib/module/fp/linePayRedirectWithUrl",
-      "types": "./lib/typescript/fp/linePayRedirectWithUrl.d.ts",
-      "node": "./lib/commonjs/fp/linePayRedirectWithUrl",
-      "default": "./lib/commonjs/fp/linePayRedirectWithUrl"
-    },
-    "./fp/samsungPayInit": {
-      "require": "./lib/commonjs/fp/samsungPayInit",
-      "import": "./lib/module/fp/samsungPayInit",
-      "types": "./lib/typescript/fp/samsungPayInit.d.ts",
-      "node": "./lib/commonjs/fp/samsungPayInit",
-      "default": "./lib/commonjs/fp/samsungPayInit"
-    },
-    "./fp/getSamsungPayPrime": {
-      "require": "./lib/commonjs/fp/getSamsungPayPrime",
-      "import": "./lib/module/fp/getSamsungPayPrime",
-      "types": "./lib/typescript/fp/getSamsungPayPrime.d.ts",
-      "node": "./lib/commonjs/fp/getSamsungPayPrime",
-      "default": "./lib/commonjs/fp/getSamsungPayPrime"
-    },
-    "./fp/isJkoPayAvailable": {
-      "require": "./lib/commonjs/fp/isJkoPayAvailable",
-      "import": "./lib/module/fp/isJkoPayAvailable",
-      "types": "./lib/typescript/fp/isJkoPayAvailable.d.ts",
-      "node": "./lib/commonjs/fp/isJkoPayAvailable",
-      "default": "./lib/commonjs/fp/isJkoPayAvailable"
-    },
-    "./fp/jkoPayInit": {
-      "require": "./lib/commonjs/fp/jkoPayInit",
-      "import": "./lib/module/fp/jkoPayInit",
-      "types": "./lib/typescript/fp/jkoPayInit.d.ts",
-      "node": "./lib/commonjs/fp/jkoPayInit",
-      "default": "./lib/commonjs/fp/jkoPayInit"
-    },
-    "./fp/getJkoPayPrime": {
-      "require": "./lib/commonjs/fp/getJkoPayPrime",
-      "import": "./lib/module/fp/getJkoPayPrime",
-      "types": "./lib/typescript/fp/getJkoPayPrime.d.ts",
-      "node": "./lib/commonjs/fp/getJkoPayPrime",
-      "default": "./lib/commonjs/fp/getJkoPayPrime"
-    },
-    "./fp/jkoPayRedirectWithUrl": {
-      "require": "./lib/commonjs/fp/jkoPayRedirectWithUrl",
-      "import": "./lib/module/fp/jkoPayRedirectWithUrl",
-      "types": "./lib/typescript/fp/jkoPayRedirectWithUrl.d.ts",
-      "node": "./lib/commonjs/fp/jkoPayRedirectWithUrl",
-      "default": "./lib/commonjs/fp/jkoPayRedirectWithUrl"
-    },
-    "./fp/jkoPayHandleUniversalLink": {
-      "require": "./lib/commonjs/fp/jkoPayHandleUniversalLink",
-      "import": "./lib/module/fp/jkoPayHandleUniversalLink",
-      "types": "./lib/typescript/fp/jkoPayHandleUniversalLink.d.ts",
-      "node": "./lib/commonjs/fp/jkoPayHandleUniversalLink",
-      "default": "./lib/commonjs/fp/jkoPayHandleUniversalLink"
-    },
-    "./fp/isEasyWalletAvailable": {
-      "require": "./lib/commonjs/fp/isEasyWalletAvailable",
-      "import": "./lib/module/fp/isEasyWalletAvailable",
-      "types": "./lib/typescript/fp/isEasyWalletAvailable.d.ts",
-      "node": "./lib/commonjs/fp/isEasyWalletAvailable",
-      "default": "./lib/commonjs/fp/isEasyWalletAvailable"
-    },
-    "./fp/easyWalletInit": {
-      "require": "./lib/commonjs/fp/easyWalletInit",
-      "import": "./lib/module/fp/easyWalletInit",
-      "types": "./lib/typescript/fp/easyWalletInit.d.ts",
-      "node": "./lib/commonjs/fp/easyWalletInit",
-      "default": "./lib/commonjs/fp/easyWalletInit"
-    },
-    "./fp/getEasyWalletPrime": {
-      "require": "./lib/commonjs/fp/getEasyWalletPrime",
-      "import": "./lib/module/fp/getEasyWalletPrime",
-      "types": "./lib/typescript/fp/getEasyWalletPrime.d.ts",
-      "node": "./lib/commonjs/fp/getEasyWalletPrime",
-      "default": "./lib/commonjs/fp/getEasyWalletPrime"
-    },
-    "./fp/easyWalletRedirectWithUrl": {
-      "require": "./lib/commonjs/fp/easyWalletRedirectWithUrl",
-      "import": "./lib/module/fp/easyWalletRedirectWithUrl",
-      "types": "./lib/typescript/fp/easyWalletRedirectWithUrl.d.ts",
-      "node": "./lib/commonjs/fp/easyWalletRedirectWithUrl",
-      "default": "./lib/commonjs/fp/easyWalletRedirectWithUrl"
-    },
-    "./fp/easyWalletHandleUniversalLink": {
-      "require": "./lib/commonjs/fp/easyWalletHandleUniversalLink",
-      "import": "./lib/module/fp/easyWalletHandleUniversalLink",
-      "types": "./lib/typescript/fp/easyWalletHandleUniversalLink.d.ts",
-      "node": "./lib/commonjs/fp/easyWalletHandleUniversalLink",
-      "default": "./lib/commonjs/fp/easyWalletHandleUniversalLink"
-    },
-    "./fp/isPiWalletAvailable": {
-      "require": "./lib/commonjs/fp/isPiWalletAvailable",
-      "import": "./lib/module/fp/isPiWalletAvailable",
-      "types": "./lib/typescript/fp/isPiWalletAvailable.d.ts",
-      "node": "./lib/commonjs/fp/isPiWalletAvailable",
-      "default": "./lib/commonjs/fp/isPiWalletAvailable"
-    },
-    "./fp/piWalletInit": {
-      "require": "./lib/commonjs/fp/piWalletInit",
-      "import": "./lib/module/fp/piWalletInit",
-      "types": "./lib/typescript/fp/piWalletInit.d.ts",
-      "node": "./lib/commonjs/fp/piWalletInit",
-      "default": "./lib/commonjs/fp/piWalletInit"
-    },
-    "./fp/getPiWalletPrime": {
-      "require": "./lib/commonjs/fp/getPiWalletPrime",
-      "import": "./lib/module/fp/getPiWalletPrime",
-      "types": "./lib/typescript/fp/getPiWalletPrime.d.ts",
-      "node": "./lib/commonjs/fp/getPiWalletPrime",
-      "default": "./lib/commonjs/fp/getPiWalletPrime"
-    },
-    "./fp/piWalletRedirectWithUrl": {
-      "require": "./lib/commonjs/fp/piWalletRedirectWithUrl",
-      "import": "./lib/module/fp/piWalletRedirectWithUrl",
-      "types": "./lib/typescript/fp/piWalletRedirectWithUrl.d.ts",
-      "node": "./lib/commonjs/fp/piWalletRedirectWithUrl",
-      "default": "./lib/commonjs/fp/piWalletRedirectWithUrl"
-    },
-    "./fp/piWalletHandleUniversalLink": {
-      "require": "./lib/commonjs/fp/piWalletHandleUniversalLink",
-      "import": "./lib/module/fp/piWalletHandleUniversalLink",
-      "types": "./lib/typescript/fp/piWalletHandleUniversalLink.d.ts",
-      "node": "./lib/commonjs/fp/piWalletHandleUniversalLink",
-      "default": "./lib/commonjs/fp/piWalletHandleUniversalLink"
-    },
-    "./fp/isPlusPayAvailable": {
-      "require": "./lib/commonjs/fp/isPlusPayAvailable",
-      "import": "./lib/module/fp/isPlusPayAvailable",
-      "types": "./lib/typescript/fp/isPlusPayAvailable.d.ts",
-      "node": "./lib/commonjs/fp/isPlusPayAvailable",
-      "default": "./lib/commonjs/fp/isPlusPayAvailable"
-    },
-    "./fp/plusPayInit": {
-      "require": "./lib/commonjs/fp/plusPayInit",
-      "import": "./lib/module/fp/plusPayInit",
-      "types": "./lib/typescript/fp/plusPayInit.d.ts",
-      "node": "./lib/commonjs/fp/plusPayInit",
-      "default": "./lib/commonjs/fp/plusPayInit"
-    },
-    "./fp/getPlusPayPrime": {
-      "require": "./lib/commonjs/fp/getPlusPayPrime",
-      "import": "./lib/module/fp/getPlusPayPrime",
-      "types": "./lib/typescript/fp/getPlusPayPrime.d.ts",
-      "node": "./lib/commonjs/fp/getPlusPayPrime",
-      "default": "./lib/commonjs/fp/getPlusPayPrime"
-    },
-    "./fp/plusPayRedirectWithUrl": {
-      "require": "./lib/commonjs/fp/plusPayRedirectWithUrl",
-      "import": "./lib/module/fp/plusPayRedirectWithUrl",
-      "types": "./lib/typescript/fp/plusPayRedirectWithUrl.d.ts",
-      "node": "./lib/commonjs/fp/plusPayRedirectWithUrl",
-      "default": "./lib/commonjs/fp/plusPayRedirectWithUrl"
-    },
-    "./fp/plusPayhandleUniversalLink": {
-      "require": "./lib/commonjs/fp/plusPayhandleUniversalLink",
-      "import": "./lib/module/fp/plusPayhandleUniversalLink",
-      "types": "./lib/typescript/fp/plusPayhandleUniversalLink.d.ts",
-      "node": "./lib/commonjs/fp/plusPayhandleUniversalLink",
-      "default": "./lib/commonjs/fp/plusPayhandleUniversalLink"
-    },
-    "./fp/isAtomeAvailable": {
-      "require": "./lib/commonjs/fp/isAtomeAvailable",
-      "import": "./lib/module/fp/isAtomeAvailable",
-      "types": "./lib/typescript/fp/isAtomeAvailable.d.ts",
-      "node": "./lib/commonjs/fp/isAtomeAvailable",
-      "default": "./lib/commonjs/fp/isAtomeAvailable"
-    },
-    "./fp/getAtomePrime": {
-      "require": "./lib/commonjs/fp/getAtomePrime",
-      "import": "./lib/module/fp/getAtomePrime",
-      "types": "./lib/typescript/fp/getAtomePrime.d.ts",
-      "node": "./lib/commonjs/fp/getAtomePrime",
-      "default": "./lib/commonjs/fp/getAtomePrime"
-    },
-    "./fp/atomeRedirectWithUrl": {
-      "require": "./lib/commonjs/fp/atomeRedirectWithUrl",
-      "import": "./lib/module/fp/atomeRedirectWithUrl",
-      "types": "./lib/typescript/fp/atomeRedirectWithUrl.d.ts",
-      "node": "./lib/commonjs/fp/atomeRedirectWithUrl",
-      "default": "./lib/commonjs/fp/atomeRedirectWithUrl"
-    },
-    "./fp/atomehandleUniversalLink": {
-      "require": "./lib/commonjs/fp/atomehandleUniversalLink",
-      "import": "./lib/module/fp/atomehandleUniversalLink",
-      "types": "./lib/typescript/fp/atomehandleUniversalLink.d.ts",
-      "node": "./lib/commonjs/fp/atomehandleUniversalLink",
-      "default": "./lib/commonjs/fp/atomehandleUniversalLink"
+    "./fp/*": {
+      "require": "./lib/commonjs/fp/*",
+      "import": "./lib/module/fp/*",
+      "types": "./lib/typescript/fp/*.d.ts",
+      "node": "./lib/commonjs/fp/*",
+      "default": "./lib/commonjs/fp/*"
     },
     "./hooks": {
       "require": "./lib/commonjs/hooks/index",
@@ -328,82 +48,12 @@
       "node": "./lib/commonjs/hooks/index",
       "default": "./lib/commonjs/hooks/index"
     },
-    "./hooks/useSetDirectPayTPDCard": {
-      "require": "./lib/commonjs/hooks/useSetDirectPayTPDCard",
-      "import": "./lib/module/hooks/useSetDirectPayTPDCard",
-      "types": "./lib/typescript/hooks/useSetDirectPayTPDCard.d.ts",
-      "node": "./lib/commonjs/hooks/useSetDirectPayTPDCard",
-      "default": "./lib/commonjs/hooks/useSetDirectPayTPDCard"
-    },
-    "./hooks/useTPDGetDeviceId": {
-      "require": "./lib/commonjs/hooks/useTPDGetDeviceId",
-      "import": "./lib/module/hooks/useTPDGetDeviceId",
-      "types": "./lib/typescript/hooks/useTPDGetDeviceId.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDGetDeviceId",
-      "default": "./lib/commonjs/hooks/useTPDGetDeviceId"
-    },
-    "./hooks/useTPDGooglePay": {
-      "require": "./lib/commonjs/hooks/useTPDGooglePay",
-      "import": "./lib/module/hooks/useTPDGooglePay",
-      "types": "./lib/typescript/hooks/useTPDGooglePay.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDGooglePay",
-      "default": "./lib/commonjs/hooks/useTPDGooglePay"
-    },
-    "./hooks/useTPDApplePay": {
-      "require": "./lib/commonjs/hooks/useTPDApplePay",
-      "import": "./lib/module/hooks/useTPDApplePay",
-      "types": "./lib/typescript/hooks/useTPDApplePay.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDApplePay",
-      "default": "./lib/commonjs/hooks/useTPDApplePay"
-    },
-    "./hooks/useTPDLinePay": {
-      "require": "./lib/commonjs/hooks/useTPDLinePay",
-      "import": "./lib/module/hooks/useTPDLinePay",
-      "types": "./lib/typescript/hooks/useTPDLinePay.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDLinePay",
-      "default": "./lib/commonjs/hooks/useTPDLinePay"
-    },
-    "./hooks/useTPDSamsungPay": {
-      "require": "./lib/commonjs/hooks/useTPDSamsungPay",
-      "import": "./lib/module/hooks/useTPDSamsungPay",
-      "types": "./lib/typescript/hooks/useTPDSamsungPay.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDSamsungPay",
-      "default": "./lib/commonjs/hooks/useTPDSamsungPay"
-    },
-    "./hooks/useTPDJkoPay": {
-      "require": "./lib/commonjs/hooks/useTPDJkoPay",
-      "import": "./lib/module/hooks/useTPDJkoPay",
-      "types": "./lib/typescript/hooks/useTPDJkoPay.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDJkoPay",
-      "default": "./lib/commonjs/hooks/useTPDJkoPay"
-    },
-    "./hooks/useTPDEasyWallet": {
-      "require": "./lib/commonjs/hooks/useTPDEasyWallet",
-      "import": "./lib/module/hooks/useTPDEasyWallet",
-      "types": "./lib/typescript/hooks/useTPDEasyWallet.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDEasyWallet",
-      "default": "./lib/commonjs/hooks/useTPDEasyWallet"
-    },
-    "./hooks/useTPDPiWallet": {
-      "require": "./lib/commonjs/hooks/useTPDPiWallet",
-      "import": "./lib/module/hooks/useTPDPiWallet",
-      "types": "./lib/typescript/hooks/useTPDPiWallet.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDPiWallet",
-      "default": "./lib/commonjs/hooks/useTPDPiWallet"
-    },
-    "./hooks/useTPDPlusPay": {
-      "require": "./lib/commonjs/hooks/useTPDPlusPay",
-      "import": "./lib/module/hooks/useTPDPlusPay",
-      "types": "./lib/typescript/hooks/useTPDPlusPay.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDPlusPay",
-      "default": "./lib/commonjs/hooks/useTPDPlusPay"
-    },
-    "./hooks/useTPDAtome": {
-      "require": "./lib/commonjs/hooks/useTPDAtome",
-      "import": "./lib/module/hooks/useTPDAtome",
-      "types": "./lib/typescript/hooks/useTPDAtome.d.ts",
-      "node": "./lib/commonjs/hooks/useTPDAtome",
-      "default": "./lib/commonjs/hooks/useTPDAtome"
+    "./hooks/*": {
+      "require": "./lib/commonjs/hooks/*",
+      "import": "./lib/module/hooks/*",
+      "types": "./lib/typescript/hooks/*.d.ts",
+      "node": "./lib/commonjs/hooks/*",
+      "default": "./lib/commonjs/hooks/*"
     },
     "./components": {
       "require": "./lib/commonjs/components/index",
@@ -412,75 +62,12 @@
       "node": "./lib/commonjs/components/index",
       "default": "./lib/commonjs/components/index"
     },
-    "./components/DirectPayCardIcon": {
-      "require": "./lib/commonjs/components/DirectPayCardIcon",
-      "import": "./lib/module/components/DirectPayCardIcon",
-      "types": "./lib/typescript/components/DirectPayCardIcon.d.ts",
-      "node": "./lib/commonjs/components/DirectPayCardIcon",
-      "default": "./lib/commonjs/components/DirectPayCardIcon"
-    },
-    "./components/GPayBtn": {
-      "require": "./lib/commonjs/components/GPayBtn",
-      "import": "./lib/module/components/GPayBtn",
-      "types": "./lib/typescript/components/GPayBtn.d.ts",
-      "node": "./lib/commonjs/components/GPayBtn",
-      "default": "./lib/commonjs/components/GPayBtn"
-    },
-    "./components/ApplePayBtn": {
-      "require": "./lib/commonjs/components/ApplePayBtn",
-      "import": "./lib/module/components/ApplePayBtn",
-      "types": "./lib/typescript/components/ApplePayBtn.d.ts",
-      "node": "./lib/commonjs/components/ApplePayBtn",
-      "default": "./lib/commonjs/components/ApplePayBtn"
-    },
-    "./components/LinePayBtn": {
-      "require": "./lib/commonjs/components/LinePayBtn",
-      "import": "./lib/module/components/LinePayBtn",
-      "types": "./lib/typescript/components/LinePayBtn.d.ts",
-      "node": "./lib/commonjs/components/LinePayBtn",
-      "default": "./lib/commonjs/components/LinePayBtn"
-    },
-    "./components/SPayBtn": {
-      "require": "./lib/commonjs/components/SPayBtn",
-      "import": "./lib/module/components/SPayBtn",
-      "types": "./lib/typescript/components/SPayBtn.d.ts",
-      "node": "./lib/commonjs/components/SPayBtn",
-      "default": "./lib/commonjs/components/SPayBtn"
-    },
-    "./components/JkoPayBtn": {
-      "require": "./lib/commonjs/components/JkoPayBtn",
-      "import": "./lib/module/components/JkoPayBtn",
-      "types": "./lib/typescript/components/JkoPayBtn.d.ts",
-      "node": "./lib/commonjs/components/JkoPayBtn",
-      "default": "./lib/commonjs/components/JkoPayBtn"
-    },
-    "./components/EasyWalletBtn": {
-      "require": "./lib/commonjs/components/EasyWalletBtn",
-      "import": "./lib/module/components/EasyWalletBtn",
-      "types": "./lib/typescript/components/EasyWalletBtn.d.ts",
-      "node": "./lib/commonjs/components/EasyWalletBtn",
-      "default": "./lib/commonjs/components/EasyWalletBtn"
-    },
-    "./components/PiWalletBtn": {
-      "require": "./lib/commonjs/components/PiWalletBtn",
-      "import": "./lib/module/components/PiWalletBtn",
-      "types": "./lib/typescript/components/PiWalletBtn.d.ts",
-      "node": "./lib/commonjs/components/PiWalletBtn",
-      "default": "./lib/commonjs/components/PiWalletBtn"
-    },
-    "./components/PlusPayBtn": {
-      "require": "./lib/commonjs/components/PlusPayBtn",
-      "import": "./lib/module/components/PlusPayBtn",
-      "types": "./lib/typescript/components/PlusPayBtn.d.ts",
-      "node": "./lib/commonjs/components/PlusPayBtn",
-      "default": "./lib/commonjs/components/PlusPayBtn"
-    },
-    "./components/AtomeBtn": {
-      "require": "./lib/commonjs/components/AtomeBtn",
-      "import": "./lib/module/components/AtomeBtn",
-      "types": "./lib/typescript/components/AtomeBtn.d.ts",
-      "node": "./lib/commonjs/components/AtomeBtn",
-      "default": "./lib/commonjs/components/AtomeBtn"
+    "./components/*": {
+      "require": "./lib/commonjs/components/*",
+      "import": "./lib/module/components/*",
+      "types": "./lib/typescript/components/*.d.ts",
+      "node": "./lib/commonjs/components/*",
+      "default": "./lib/commonjs/components/*"
     },
     "./images": {
       "require": "./lib/commonjs/images/index",
@@ -489,138 +76,12 @@
       "node": "./lib/commonjs/images/index",
       "default": "./lib/commonjs/images/index"
     },
-    "./images/card_unknown.png": {
-      "require": "./lib/commonjs/images/card_unknown.png",
-      "import": "./lib/module/images/card_unknown.png",
-      "types": "./lib/module/images/card_unknown.png",
-      "node": "./lib/commonjs/images/card_unknown.png",
-      "default": "./lib/commonjs/images/card_unknown.png"
-    },
-    "./images/card_amex.png": {
-      "require": "./lib/commonjs/images/card_amex.png",
-      "import": "./lib/module/images/card_amex.png",
-      "types": "./lib/module/images/card_amex.png",
-      "node": "./lib/commonjs/images/card_amex.png",
-      "default": "./lib/commonjs/images/card_amex.png"
-    },
-    "./images/card_mastercard.png": {
-      "require": "./lib/commonjs/images/card_mastercard.png",
-      "import": "./lib/module/images/card_mastercard.png",
-      "types": "./lib/module/images/card_mastercard.png",
-      "node": "./lib/commonjs/images/card_mastercard.png",
-      "default": "./lib/commonjs/images/card_mastercard.png"
-    },
-    "./images/card_union_pay.png": {
-      "require": "./lib/commonjs/images/card_union_pay.png",
-      "import": "./lib/module/images/card_union_pay.png",
-      "types": "./lib/module/images/card_union_pay.png",
-      "node": "./lib/commonjs/images/card_union_pay.png",
-      "default": "./lib/commonjs/images/card_union_pay.png"
-    },
-    "./images/card_visa.png": {
-      "require": "./lib/commonjs/images/card_visa.png",
-      "import": "./lib/module/images/card_visa.png",
-      "types": "./lib/module/images/card_visa.png",
-      "node": "./lib/commonjs/images/card_visa.png",
-      "default": "./lib/commonjs/images/card_visa.png"
-    },
-    "./images/card_jcb.png": {
-      "require": "./lib/commonjs/images/card_jcb.png",
-      "import": "./lib/module/images/card_jcb.png",
-      "types": "./lib/module/images/card_jcb.png",
-      "node": "./lib/commonjs/images/card_jcb.png",
-      "default": "./lib/commonjs/images/card_jcb.png"
-    },
-    "./images/apple_pay_btn.png": {
-      "require": "./lib/commonjs/images/apple_pay_btn.png",
-      "import": "./lib/module/images/apple_pay_btn.png",
-      "types": "./lib/module/images/apple_pay_btn.png",
-      "node": "./lib/commonjs/images/apple_pay_btn.png",
-      "default": "./lib/commonjs/images/apple_pay_btn.png"
-    },
-    "./images/apple_pay_disabled_btn.png": {
-      "require": "./lib/commonjs/images/apple_pay_disabled_btn.png",
-      "import": "./lib/module/images/apple_pay_disabled_btn.png",
-      "types": "./lib/module/images/apple_pay_disabled_btn.png",
-      "node": "./lib/commonjs/images/apple_pay_disabled_btn.png",
-      "default": "./lib/commonjs/images/apple_pay_disabled_btn.png"
-    },
-    "./images/gpay_btn.png": {
-      "require": "./lib/commonjs/images/gpay_btn.png",
-      "import": "./lib/module/images/gpay_btn.png",
-      "types": "./lib/module/images/gpay_btn.png",
-      "node": "./lib/commonjs/images/gpay_btn.png",
-      "default": "./lib/commonjs/images/gpay_btn.png"
-    },
-    "./images/gpay_disabled_btn.png": {
-      "require": "./lib/commonjs/images/gpay_disabled_btn.png",
-      "import": "./lib/module/images/gpay_disabled_btn.png",
-      "types": "./lib/module/images/gpay_disabled_btn.png",
-      "node": "./lib/commonjs/images/gpay_disabled_btn.png",
-      "default": "./lib/commonjs/images/gpay_disabled_btn.png"
-    },
-    "./images/JKOPAY_btn.png": {
-      "require": "./lib/commonjs/images/JKOPAY_btn.png",
-      "import": "./lib/module/images/JKOPAY_btn.png",
-      "types": "./lib/module/images/JKOPAY_btn.png",
-      "node": "./lib/commonjs/images/JKOPAY_btn.png",
-      "default": "./lib/commonjs/images/JKOPAY_btn.png"
-    },
-    "./images/LINE_Pay_h.png": {
-      "require": "./lib/commonjs/images/LINE_Pay_h.png",
-      "import": "./lib/module/images/LINE_Pay_h.png",
-      "types": "./lib/module/images/LINE_Pay_h.png",
-      "node": "./lib/commonjs/images/LINE_Pay_h.png",
-      "default": "./lib/commonjs/images/LINE_Pay_h.png"
-    },
-    "./images/LINE_Pay_v.png": {
-      "require": "./lib/commonjs/images/LINE_Pay_v.png",
-      "import": "./lib/module/images/LINE_Pay_v.png",
-      "types": "./lib/module/images/LINE_Pay_v.png",
-      "node": "./lib/commonjs/images/LINE_Pay_v.png",
-      "default": "./lib/commonjs/images/LINE_Pay_v.png"
-    },
-    "./images/spay_btn.png": {
-      "require": "./lib/commonjs/images/spay_btn.png",
-      "import": "./lib/module/images/spay_btn.png",
-      "types": "./lib/module/images/spay_btn.png",
-      "node": "./lib/commonjs/images/spay_btn.png",
-      "default": "./lib/commonjs/images/spay_btn.png"
-    },
-    "./images/Easy_Wallet_btn.png": {
-      "require": "./lib/commonjs/images/Easy_Wallet_btn.png",
-      "import": "./lib/module/images/Easy_Wallet_btn.png",
-      "types": "./lib/module/images/Easy_Wallet_btn.png",
-      "node": "./lib/commonjs/images/Easy_Wallet_btn.png",
-      "default": "./lib/commonjs/images/Easy_Wallet_btn.png"
-    },
-    "./images/pi_wallet_btn.png": {
-      "require": "./lib/commonjs/images/pi_wallet_btn.png",
-      "import": "./lib/module/images/pi_wallet_btn.png",
-      "types": "./lib/module/images/pi_wallet_btn.png",
-      "node": "./lib/commonjs/images/pi_wallet_btn.png",
-      "default": "./lib/commonjs/images/pi_wallet_btn.png"
-    },
-    "./images/pi_wallet_disabled_btn.png": {
-      "require": "./lib/commonjs/images/pi_wallet_disabled_btn.png",
-      "import": "./lib/module/images/pi_wallet_disabled_btn.png",
-      "types": "./lib/module/images/pi_wallet_disabled_btn.png",
-      "node": "./lib/commonjs/images/pi_wallet_disabled_btn.png",
-      "default": "./lib/commonjs/images/pi_wallet_disabled_btn.png"
-    },
-    "./images/plus_pay_btn.png": {
-      "require": "./lib/commonjs/images/plus_pay_btn.png",
-      "import": "./lib/module/images/plus_pay_btn.png",
-      "types": "./lib/module/images/plus_pay_btn.png",
-      "node": "./lib/commonjs/images/plus_pay_btn.png",
-      "default": "./lib/commonjs/images/plus_pay_btn.png"
-    },
-    "./images/atome_btn.png": {
-      "require": "./lib/commonjs/images/atome_btn.png",
-      "import": "./lib/module/images/atome_btn.png",
-      "types": "./lib/module/images/atome_btn.png",
-      "node": "./lib/commonjs/images/atome_btn.png",
-      "default": "./lib/commonjs/images/atome_btn.png"
+    "./images/*.png": {
+      "require": "./lib/commonjs/images/*.png",
+      "import": "./lib/module/images/*.png",
+      "types": "./lib/module/images/*.png",
+      "node": "./lib/commonjs/images/*.png",
+      "default": "./lib/commonjs/images/*.png"
     }
   },
   "react-native": "src/index",

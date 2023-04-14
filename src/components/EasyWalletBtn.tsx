@@ -93,3 +93,5 @@ export function EasyWalletBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default EasyWalletBtn;

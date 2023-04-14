@@ -93,3 +93,5 @@ export function PlusPayBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default PlusPayBtn;

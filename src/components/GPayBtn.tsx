@@ -94,3 +94,5 @@ export function GPayBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default GPayBtn;

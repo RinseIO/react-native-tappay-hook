@@ -104,3 +104,5 @@ export function SPayBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default SPayBtn;

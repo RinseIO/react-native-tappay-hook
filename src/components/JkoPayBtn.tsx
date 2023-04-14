@@ -93,3 +93,5 @@ export function JkoPayBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default JkoPayBtn;

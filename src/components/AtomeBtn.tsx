@@ -93,3 +93,5 @@ export function AtomeBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default AtomeBtn;

@@ -96,3 +96,5 @@ export function PiWalletBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default PiWalletBtn;

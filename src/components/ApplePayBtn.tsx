@@ -107,3 +107,5 @@ export function ApplePayBtn(props: Props) {
     </TouchableOpacity>
   );
 }
+
+export default ApplePayBtn;

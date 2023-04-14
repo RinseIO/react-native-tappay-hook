@@ -29,7 +29,7 @@ import {
   setPlusPayIsReady,
   getAtomeIsReady,
   setAtomeIsReady
-} from './cacheStatus';
+} from '../cacheStatus';
 
 export class tappay {
   public get appId() {

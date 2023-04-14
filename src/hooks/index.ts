@@ -12,8 +12,8 @@ import {
   piWalletInit,
   plusPayInit,
   atomeInit
-} from './fp';
-import { getInitPromise } from './cacheStatus';
+} from '../fp';
+import { getInitPromise } from '../cacheStatus';
 
 interface directResult {
   isCardNumberValid: boolean;

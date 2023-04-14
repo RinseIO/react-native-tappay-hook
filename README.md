@@ -63,7 +63,7 @@ import { useSetDirectPayTPDCard } from 'react-native-tappay-hook/hooks';
 ```tsx 
 import { DirectPayCardIcon } from 'react-native-tappay-hook';
 // or 
-import { DirectPayCardIcon } from 'react-native-tappay-hook/Components';
+import { DirectPayCardIcon } from 'react-native-tappay-hook/components';
 ```
 
 ## TapPay SDK

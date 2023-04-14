@@ -121,7 +121,8 @@
     "ios",
     "android",
     "tappay",
-    "hook"
+    "hooks",
+    "react-hooks"
   ],
   "repository": "https://github.com/archer102125220/react-native-tappay-hook",
   "author": "Parker Chan <archer102125220.2015@gmail.com> (https://github.com/archer102125220)",
@@ -162,8 +163,8 @@
     "@types/react": "17.0.21"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
+    "react": "^16.8.0 || ^17 || ^18",
+    "react-native": "^0.70.5"
   },
   "engines": {
     "node": ">= 16.0.0"

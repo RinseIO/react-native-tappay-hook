@@ -1,6 +1,6 @@
 {
   "name": "react-native-tappay-hook",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "tappay for react hook",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

@@ -124,7 +124,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       });
     } catch (error: any) {
       console.log({ ...error });
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: 'GooglePay付款已取消',
           type: 'warning'
@@ -149,7 +149,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: 'ApplePay付款已取消',
           type: 'warning'
@@ -175,7 +175,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: 'LinePay付款已取消',
           type: 'warning'
@@ -206,7 +206,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: 'SamsungPay付款已取消',
           type: 'warning'
@@ -232,7 +232,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: '街口支付付款已取消',
           type: 'warning'
@@ -258,7 +258,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: '悠遊支付付款已取消',
           type: 'warning'
@@ -284,7 +284,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: 'Pi錢包付款已取消',
           type: 'warning'
@@ -310,7 +310,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: '全盈+PAY付款已取消',
           type: 'warning'
@@ -336,7 +336,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'Canceled by User') {
+      if (error.message === 'canceled') {
         setPopUpMessage({
           label: 'Atome付款已取消',
           type: 'warning'

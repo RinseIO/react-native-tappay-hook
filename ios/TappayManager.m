@@ -846,7 +846,7 @@
   if(self.applePayJsReject != nil ) {
     self.applePayJsReject(
       @"ios error tpdApplePayDidCancelPayment",
-      @"Canceled by User",
+      @"canceled",
       nil
     );
     self.applePayJsResolve = nil;

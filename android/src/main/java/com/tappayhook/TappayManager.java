@@ -163,7 +163,7 @@ public class TappayManager {
               break;
             case Activity.RESULT_CANCELED:
               if (googlePayJsPromise != null) {
-                googlePayJsPromise.reject("android error onActivityResult", "Canceled by User");
+                googlePayJsPromise.reject("android error onActivityResult", "canceled");
                 // googlePayJsPromise = null;
               }
               break;

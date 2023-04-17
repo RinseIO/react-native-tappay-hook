@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 
 import * as hooks from '../hooks';
-import { tappayInitialization } from '../fp';
+import { tappayInit } from '../fp';
 
 jest.mock('react-native');
 
@@ -23,7 +23,7 @@ describe('hooks test(ios)', () => {
     require('react-native')._setIsExpiryDateValid(true);
     require('react-native')._setIsCCVValid(true);
     require('react-native')._setCardType('Unknown');
-    tappayInitialization(128088, 'app_key', false);
+    tappayInit(128088, 'app_key', false);
   });
 
   test('useSetDirectPayTPDCard() test', async () => {

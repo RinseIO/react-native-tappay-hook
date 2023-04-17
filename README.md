@@ -37,9 +37,9 @@ dependencies {
 ### Functional Programming(FP)
 
 ```ts 
-import { tappayInitialization } from 'react-native-tappay-hook';
+import { tappayInit } from 'react-native-tappay-hook';
 // or 
-import { tappayInitialization } from 'react-native-tappay-hook/src/fp';
+import { tappayInit } from 'react-native-tappay-hook/src/fp';
 ```
 
 ### Object-oriented programming(OOP)
@@ -68,7 +68,7 @@ import { DirectPayCardIcon } from 'react-native-tappay-hook/src/components';
 
 ## TapPay SDK
 
-### tappayInitialization
+### tappayInit
 
 ```ts
 // App.tsx
@@ -78,9 +78,9 @@ const tappayAppKey: string = 'your app key';
 const isProd: boolean = false; // Production or Sandbox
 const errorHandler: Function | null | undefined = (error) => console.log(error);
 
-import { tappayInitialization } from 'react-native-tappay-hook';
+import { tappayInit } from 'react-native-tappay-hook';
 
-const deviceId = await tappayInitialization(tappayAppId, tappayAppKey, isProd, errorHandler);
+const deviceId = await tappayInit(tappayAppId, tappayAppKey, isProd, errorHandler);
 
 // or
 

@@ -4,12 +4,12 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 import { TappayScreen } from '@containers';
 
-import { tappayInitialization } from 'react-native-tappay-hook';
+import { tappayInit } from 'react-native-tappay-hook';
 
 import PopUpMessage from '@components/PopUpMessage';
 import Loading from '@components/Loading';
 
-tappayInitialization(
+tappayInit(
   128088,
   'app_eE7hYsgDdXRhgI4LmizvETwCt49EV8WvVcKXBBSLa2I0Yhv5kS84UD057Xjx',
   false

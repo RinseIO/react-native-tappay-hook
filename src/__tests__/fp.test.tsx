@@ -23,15 +23,15 @@ describe('TappayFP test(throw)', () => {
     require('react-native')._setAtomeIsReady(false);
   });
 
-  test('tappayInitialization() test', () => {
+  test('tappayInit() test', () => {
     expect(
-      TappayFP.tappayInitialization(128088, 'app_key', false) instanceof Promise
+      TappayFP.tappayInit(128088, 'app_key', false) instanceof Promise
     ).toBe(true);
   });
 
-  test('tappayInitialization() errorHandler test', () => {
+  test('tappayInit() errorHandler test', () => {
     expect(
-      TappayFP.tappayInitialization(128088, 'app_key', false, (error: any) =>
+      TappayFP.tappayInit(128088, 'app_key', false, (error: any) =>
         console.log(error)
       ) instanceof Promise
     ).toBe(true);
@@ -64,7 +64,7 @@ describe('TappayFP test(throw)', () => {
   test('getGooglePayPrime() test not ready', async () => {
     require('react-native')._setInitInstanceSuccess(true);
     require('react-native')._setSystemOS('android');
-    await TappayFP.tappayInitialization(128088, 'app_key', false);
+    await TappayFP.tappayInit(128088, 'app_key', false);
     await expect(TappayFP.getGooglePayPrime('1')).rejects.toThrow();
   });
 
@@ -90,7 +90,7 @@ describe('TappayFP test(throw)', () => {
   test('getApplePayPrime() test not ready', async () => {
     require('react-native')._setInitInstanceSuccess(true);
     require('react-native')._setSystemOS('ios');
-    await TappayFP.tappayInitialization(128088, 'app_key', false);
+    await TappayFP.tappayInit(128088, 'app_key', false);
     await expect(TappayFP.getApplePayPrime('1')).rejects.toThrow();
   });
 
@@ -140,7 +140,7 @@ describe('TappayFP test(throw)', () => {
   test('getSamsungPayPrime() test not ready', async () => {
     require('react-native')._setInitInstanceSuccess(true);
     require('react-native')._setSystemOS('android');
-    await TappayFP.tappayInitialization(128088, 'app_key', false);
+    await TappayFP.tappayInit(128088, 'app_key', false);
     await expect(
       TappayFP.getSamsungPayPrime('1', '0', '0', '1')
     ).rejects.toThrow();

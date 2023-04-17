@@ -23,7 +23,7 @@ import {
 
 import getDeviceId from './getDeviceId';
 
-export function tappayInitialization(
+export function tappayInit(
   appId: number,
   appKey: string,
   prod: boolean,
@@ -65,4 +65,4 @@ export function tappayInitialization(
   return getInitPromise();
 }
 
-export default tappayInitialization;
+export default tappayInit;

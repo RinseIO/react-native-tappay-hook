@@ -26,16 +26,16 @@ describe('TappayFP test(android)', () => {
     require('react-native')._setCardType('Unknown');
   });
 
-  test('tappayInitialization() test', () => {
+  test('tappayInit() test', () => {
     expect(
-      TappayFP.tappayInitialization(128088, 'app_key', false) instanceof Promise
+      TappayFP.tappayInit(128088, 'app_key', false) instanceof Promise
     ).toBe(true);
   });
 
-  test('rerun tappayInitialization() test', async () => {
-    await TappayFP.tappayInitialization(128088, 'app_key', false);
+  test('rerun tappayInit() test', async () => {
+    await TappayFP.tappayInit(128088, 'app_key', false);
     expect(
-      TappayFP.tappayInitialization(128088, 'app_key', false) instanceof Promise
+      TappayFP.tappayInit(128088, 'app_key', false) instanceof Promise
     ).toBe(true);
   });
 

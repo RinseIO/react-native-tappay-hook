@@ -685,10 +685,10 @@ const result:result =  await Tappay.samsungPayInit(merchantName, merchantId, cur
 ### getSamsungPayPrime
 
 ```ts 
-const itemTotalAmount: string,
-const shippingPrice: string,
-const tax: string,
-const totalAmount: string
+const itemTotalAmount: string = '1';
+const shippingPrice: string = '0';
+const tax: string = '0';
+const totalAmount: string = '1';
 
 interface result {
   systemOS: string;

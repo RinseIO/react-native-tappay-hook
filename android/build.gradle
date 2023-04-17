@@ -67,7 +67,8 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
 
-  implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+  // https://blog.csdn.net/yuanzhihui123/article/details/123653733
+  compileOnly fileTree(dir: "libs", include: ["*.jar", "*.aar"])
   implementation 'com.google.android.gms:play-services-wallet:19.1.0'
 }
 

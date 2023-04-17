@@ -48,6 +48,14 @@ describe('oop test(throw)', () => {
     expect(Tappay.init(128088, 'app_key', false) instanceof Promise).toBe(true);
   });
 
+  test('init() errorHandler test', () => {
+    expect(
+      Tappay.init(128088, 'app_key', false, (error: any) =>
+        console.log(error)
+      ) instanceof Promise
+    ).toBe(true);
+  });
+
   test('getDeviceId() test', async () => {
     await expect(Tappay.getDeviceId()).rejects.toThrow();
   });

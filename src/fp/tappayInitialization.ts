@@ -1,11 +1,11 @@
 import { NativeModules } from 'react-native';
 
 import {
-  getAppId,
+  // getAppId,
   setAppId,
-  getAppKey,
+  // getAppKey,
   setAppKey,
-  getProd,
+  // getProd,
   setProd,
   getInitPromise,
   setInitPromise,
@@ -26,11 +26,12 @@ import getDeviceId from './getDeviceId';
 export function tappayInitialization(
   appId: number,
   appKey: string,
-  prod: boolean
+  prod: boolean,
+  errorHandler?: Function
 ) {
-  if (appId === getAppId() && appKey === getAppKey() && prod === getProd()) {
-    return getInitPromise();
-  }
+  // if (appId === getAppId() && appKey === getAppKey() && prod === getProd()) {
+  //   return getInitPromise();
+  // }
   setInitPromise(
     (async () => {
       setStatusDeviceId('');
@@ -50,8 +51,9 @@ export function tappayInitialization(
         setAtomeIsReady(false);
         return await getDeviceId();
       } catch (error: any) {
-        console.error(error);
-        console.log({ ...error });
+        if (typeof errorHandler === 'function') {
+          errorHandler(error);
+        }
         setInitPromise(null);
       }
       return '';

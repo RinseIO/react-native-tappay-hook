@@ -29,6 +29,14 @@ describe('TappayFP test(throw)', () => {
     ).toBe(true);
   });
 
+  test('tappayInitialization() errorHandler test', () => {
+    expect(
+      TappayFP.tappayInitialization(128088, 'app_key', false, (error: any) =>
+        console.log(error)
+      ) instanceof Promise
+    ).toBe(true);
+  });
+
   test('getDeviceId() test', async () => {
     await expect(TappayFP.getDeviceId()).rejects.toThrow();
   });

@@ -70,20 +70,31 @@ import { DirectPayCardIcon } from 'react-native-tappay-hook/src/components';
 
 ### tappayInitialization
 
-```ts 
-const TappayAppId: number = -1; // your app id
-const TappayAppKey: string = 'your app key';
-const IsProd: boolean = false; // Production or Sandbox
+```ts
+// App.tsx
+
+const tappayAppId: number = -1; // your app id
+const tappayAppKey: string = 'your app key';
+const isProd: boolean = false; // Production or Sandbox
+const errorHandler: Function | null | undefined = (error) => console.log(error);
 
 import { tappayInitialization } from 'react-native-tappay-hook';
 
-const deviceId = await tappayInitialization(TappayAppId, TappayAppKey, IsProd);
+const deviceId = await tappayInitialization(tappayAppId, tappayAppKey, isProd, errorHandler);
 
 // or
 
 import { Tappay } from 'react-native-tappay-hook';
 
-const deviceId:string = await Tappay.init(TappayAppId, TappayAppKey, IsProd);
+const deviceId:string = await Tappay.init(tappayAppId, tappayAppKey, isProd, errorHandler);
+
+/* ... */
+
+function App(): JSX.Element {
+
+  /* ... */
+
+};
 
 ```
 

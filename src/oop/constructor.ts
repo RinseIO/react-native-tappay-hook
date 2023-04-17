@@ -128,10 +128,15 @@ export class tappay {
     setAtomeIsReady(newAtomeIsReady);
   }
 
-  public init(appId: number, appKey: string, prod: boolean) {
-    if (appId === this.appId && appKey === this.appKey && prod === this.prod) {
-      return this.initPromise;
-    }
+  public init(
+    appId: number,
+    appKey: string,
+    prod: boolean,
+    errorHandler?: Function
+  ) {
+    // if (appId === this.appId && appKey === this.appKey && prod === this.prod) {
+    //   return this.initPromise;
+    // }
     this.initPromise = (async () => {
       this.deviceId = '';
       try {
@@ -150,8 +155,9 @@ export class tappay {
         this.atomeIsReady = false;
         return await this.getDeviceId();
       } catch (error: any) {
-        console.error(error);
-        console.log({ ...error });
+        if (typeof errorHandler === 'function') {
+          errorHandler(error);
+        }
         this.initPromise = null;
       }
     })();

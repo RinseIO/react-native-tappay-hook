@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "coverage": "jest --maxWorkers=2 --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepack": "bob build",

@@ -53,6 +53,8 @@ export function tappayInitialization(
       } catch (error: any) {
         if (typeof errorHandler === 'function') {
           errorHandler(error);
+        } else {
+          console.error(error);
         }
         setInitPromise(null);
       }

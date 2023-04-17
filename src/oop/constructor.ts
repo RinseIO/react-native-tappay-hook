@@ -157,6 +157,8 @@ export class tappay {
       } catch (error: any) {
         if (typeof errorHandler === 'function') {
           errorHandler(error);
+        } else {
+          console.error(error);
         }
         this.initPromise = null;
       }

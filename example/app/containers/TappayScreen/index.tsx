@@ -175,18 +175,11 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'canceled') {
-        setPopUpMessage({
-          label: 'LinePay付款已取消',
-          type: 'warning'
-        });
-      } else {
-        console.log({ ...error });
-        setPopUpMessage({
-          label: 'LinePay付款失敗(測試)',
-          type: 'error'
-        });
-      }
+      console.log({ ...error });
+      setPopUpMessage({
+        label: 'LinePay付款失敗(測試)',
+        type: 'error'
+      });
     }
     setLoading(false);
   }
@@ -206,18 +199,11 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'canceled') {
-        setPopUpMessage({
-          label: 'SamsungPay付款已取消',
-          type: 'warning'
-        });
-      } else {
-        console.log({ ...error });
-        setPopUpMessage({
-          label: 'SamsungPay付款失敗(測試)',
-          type: 'error'
-        });
-      }
+      console.log({ ...error });
+      setPopUpMessage({
+        label: 'SamsungPay付款失敗(測試)',
+        type: 'error'
+      });
     }
     setLoading(false);
   }
@@ -232,18 +218,11 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'canceled') {
-        setPopUpMessage({
-          label: '街口支付付款已取消',
-          type: 'warning'
-        });
-      } else {
-        console.log({ ...error });
-        setPopUpMessage({
-          label: '街口支付付款失敗(測試)',
-          type: 'error'
-        });
-      }
+      console.log({ ...error });
+      setPopUpMessage({
+        label: '街口支付付款失敗(測試)',
+        type: 'error'
+      });
     }
     setLoading(false);
   }
@@ -258,18 +237,11 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'canceled') {
-        setPopUpMessage({
-          label: '悠遊支付付款已取消',
-          type: 'warning'
-        });
-      } else {
-        console.log({ ...error });
-        setPopUpMessage({
-          label: '悠遊支付付款失敗(測試)',
-          type: 'error'
-        });
-      }
+      console.log({ ...error });
+      setPopUpMessage({
+        label: '悠遊支付付款失敗(測試)',
+        type: 'error'
+      });
     }
     setLoading(false);
   }
@@ -284,18 +256,11 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'canceled') {
-        setPopUpMessage({
-          label: 'Pi錢包付款已取消',
-          type: 'warning'
-        });
-      } else {
-        console.log({ ...error });
-        setPopUpMessage({
-          label: 'Pi錢包付款失敗(測試)',
-          type: 'error'
-        });
-      }
+      console.log({ ...error });
+      setPopUpMessage({
+        label: 'Pi錢包付款失敗(測試)',
+        type: 'error'
+      });
     }
     setLoading(false);
   }
@@ -310,18 +275,11 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'canceled') {
-        setPopUpMessage({
-          label: '全盈+PAY付款已取消',
-          type: 'warning'
-        });
-      } else {
-        console.log({ ...error });
-        setPopUpMessage({
-          label: '全盈+PAY付款失敗(測試)',
-          type: 'error'
-        });
-      }
+      console.log({ ...error });
+      setPopUpMessage({
+        label: '全盈+PAY付款失敗(測試)',
+        type: 'error'
+      });
     }
     setLoading(false);
   }
@@ -336,18 +294,11 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'success'
       });
     } catch (error: any) {
-      if (error.message === 'canceled') {
-        setPopUpMessage({
-          label: 'Atome付款已取消',
-          type: 'warning'
-        });
-      } else {
-        console.log({ ...error });
-        setPopUpMessage({
-          label: 'Atome付款失敗(測試)',
-          type: 'error'
-        });
-      }
+      console.log({ ...error });
+      setPopUpMessage({
+        label: 'Atome付款失敗(測試)',
+        type: 'error'
+      });
     }
     setLoading(false);
   }

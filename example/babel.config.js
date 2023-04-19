@@ -13,7 +13,8 @@ module.exports = {
           '@': './',
           '@components': './app/components',
           '@containers': './app/containers',
-          '@hooks': './app/hooks'
+          '@hooks': './app/hooks',
+          '@utils': './app/utils'
         },
       },
     ],

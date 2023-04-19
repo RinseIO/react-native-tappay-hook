@@ -26,6 +26,9 @@
       "@hooks/*": [
         "./example/app/hooks/*"
       ],
+      "@utils/*": [
+        "./example/app/utils/*"
+      ]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import {
+  SafeAreaView,
   ScrollView,
   View,
   TouchableOpacity,
   Text,
   TextInput,
-  SafeAreaView
+  Platform
 } from 'react-native';
-
-import styles from '@containers/TappayScreen/style';
 
 import { Tappay } from 'react-native-tappay-hook';
 
@@ -22,7 +21,9 @@ import {
   getEasyWalletPrime,
   getPiWalletPrime,
   getPlusPayPrime,
-  getAtomePrime
+  getAtomePrime,
+  easyWalletRedirectWithUrl,
+  jkoPayRedirectWithUrl
 } from 'react-native-tappay-hook/fp';
 
 import { useSetDirectPayTPDCard } from 'react-native-tappay-hook/hooks';
@@ -40,11 +41,16 @@ import {
   AtomeBtn
 } from 'react-native-tappay-hook/components';
 
+import request from '@utils/request';
+
+import styles from '@containers/TappayScreen/style';
+
 export function TappayScreen({ setPopUpMessage, setLoading }: any) {
-  const [cardNumber, setCardNumber] = useState('3549134477691421');
-  const [dueMonth, setDueMonth] = useState('07');
-  const [dueYear, setDueYear] = useState('25');
-  const [ccv, setCcv] = useState('465');
+  const [cardNumber, setCardNumber] = useState('6224314183841750');
+  const [dueMonth, setDueMonth] = useState('10');
+  const [dueYear, setDueYear] = useState('27');
+  const [ccv, setCcv] = useState('048');
+  const [directPayAmount, setDirectPayAmount] = useState('1');
   const [googlePayAmount, setGooglePayAmount] = useState('1');
   const [appleAmount, setApplePayAmount] = useState('1');
   const [linePayAmount, setLinePayAmount] = useState('1');
@@ -71,15 +77,15 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         //   'TWD'
         // );
         // await Tappay.linePayTest('linepayexample://tech.cherri');
-        // await Tappay.samsungPayTest(
-        //   'TapPay Samsung Pay Demo',
-        //   'tech.cherri.samsungpayexample',
-        //   'TWD',
-        //   'your samsung pay service id'
-        // );
+        await Tappay.samsungPayTest(
+          'TapPay Samsung Pay Demo',
+          'tech.cherri.samsungpayexample',
+          'TWD',
+          'your samsung pay service id'
+        );
         // await Tappay.jkoPayTest('jkoexample://jko.uri:8888/test');
         // await Tappay.easyWalletTest('https://google.com.tw');
-        await Tappay.piWalletTest('https://google.com.tw');
+        // await Tappay.piWalletTest('https://google.com.tw');
         // await Tappay.plusPayTest('tpdirectexamplepluspay://tech.cherri/myaccount/detail');
       } catch (error) {
         console.log(error);
@@ -98,12 +104,35 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     setLoading(true);
     try {
       const result = await getDirectPayPrime();
-      console.log(result);
+      console.log({ ...result, directPayAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay DirectPay Test',
+          amount: directPayAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: '直接付款成功(測試)',
         type: 'success'
       });
     } catch (error: any) {
+      console.log(error);
       console.log({ ...error });
       setPopUpMessage({
         label: '直接付款失敗(測試)',
@@ -117,7 +146,29 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     setLoading(true);
     try {
       const result = await getGooglePayPrime(googlePayAmount, 'TWD');
-      console.log(result);
+      console.log({ ...result, googlePayAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay GooglePay Test',
+          amount: googlePayAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: 'GooglePay付款成功(測試)',
         type: 'success'
@@ -143,7 +194,29 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     setLoading(true);
     try {
       const result = await getApplePayPrime(appleAmount);
-      console.log(result);
+      console.log({ ...result, appleAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay ApplePay Test',
+          amount: appleAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: 'ApplePay付款成功(測試)',
         type: 'success'
@@ -170,6 +243,28 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     try {
       const result = await getLinePayPrime();
       console.log({ ...result, linePayAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay LinePay Test',
+          amount: linePayAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: 'LinePay付款成功(測試)',
         type: 'success'
@@ -194,6 +289,28 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         samsungPayTotalAmount
       );
       console.log({ ...result, samsungPayItemTotalAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay SamsungPay Test',
+          amount: samsungPayItemTotalAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: 'SamsungPay付款成功(測試)',
         type: 'success'
@@ -213,6 +330,34 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     try {
       const result = await getJkoPayPrime();
       console.log({ ...result, jkoPayAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_JKOPAY',
+          details: 'TapPay JkoPay Test',
+          amount: jkoPayAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          },
+          result_url: {
+            frontend_redirect_url: `https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`,
+            backend_notify_url:
+              'https://resume-web-orpin.vercel.app/api/tappay/backend_notify'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
+      await jkoPayRedirectWithUrl(payByPrime.payment_url);
       setPopUpMessage({
         label: '街口支付付款成功(測試)',
         type: 'success'
@@ -232,6 +377,33 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     try {
       const result = await getEasyWalletPrime();
       console.log({ ...result, easyWalleAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_EASY_WALLET',
+          details: 'TapPay EasyWallet Test',
+          amount: easyWalleAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          },
+          result_url: {
+            frontend_redirect_url: `https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`,
+            backend_notify_url: 'https://resume-web-orpin.vercel.app/api/tappay/backend_notify'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
+      await easyWalletRedirectWithUrl(payByPrime.payment_url);
       setPopUpMessage({
         label: '悠遊支付付款成功(測試)',
         type: 'success'
@@ -251,6 +423,28 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     try {
       const result = await getPiWalletPrime();
       console.log({ ...result, piWalleAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay PiWallet Test',
+          amount: piWalleAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: 'Pi錢包付款成功(測試)',
         type: 'success'
@@ -270,6 +464,28 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     try {
       const result = await getPlusPayPrime();
       console.log({ ...result, plusPayAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay PlusPay Test',
+          amount: plusPayAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: '全盈+PAY付款成功(測試)',
         type: 'success'
@@ -284,11 +500,33 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     setLoading(false);
   }
 
-  async function handlerAtome() {
+  async function handlerAtomePay() {
     setLoading(true);
     try {
       const result = await getAtomePrime();
       console.log({ ...result, atomeAmount });
+      const payByPrime = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/pay_by_prime',
+        {
+          prime: result.prime,
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          details: 'TapPay AtomePay Test',
+          amount: atomeAmount,
+          cardholder: {
+            phone_number: '+886923456789',
+            name: '王小明',
+            email: 'LittleMing@Wang.com',
+            zip_code: '100',
+            address: '台北市天龍區芝麻街1號1樓',
+            national_id: 'A123456789'
+          }
+        },
+        null,
+        false
+      );
+      console.log(payByPrime);
       setPopUpMessage({
         label: 'Atome付款成功(測試)',
         type: 'success'
@@ -340,6 +578,14 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
             onChange={({ nativeEvent }) => setCcv(nativeEvent.text)}
           />
         </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>直接付款金額:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={directPayAmount}
+            onChange={({ nativeEvent }) => setDirectPayAmount(nativeEvent.text)}
+          />
+        </View>
         <TouchableOpacity
           style={
             directPayIsValid === false
@@ -369,7 +615,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <GPayBtn
-          merchantName="TEST MERCHANT NAME"
+          merchantName="TW_CTBCT"
           style={styles.PayBtnStyle}
           disabledStyle={styles.PayBtnDisabledStyle}
           onPress={handlerGooglePay}
@@ -384,8 +630,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <ApplePayBtn
-          merchantName="TEST MERCHANT NAME"
-          merchantId="TEST MERCHANT ID"
+          merchantName="TW_CTBCT"
+          merchantId="tappayTest_CTBC_Union_Pay"
           countryCode="TW"
           currencyCode="TWD"
           style={styles.PayBtnStyle}
@@ -447,7 +693,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <SPayBtn
-          merchantName="TapPay Samsung Pay Demo"
+          merchantName="TW_CTBCT"
           merchantId="tech.cherri.samsungpayexample"
           currencyCode="TWD"
           serviceId="your samsung pay service id"
@@ -465,7 +711,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <JkoPayBtn
-          jkoPayUniversalLinks="jkoexample://jko.uri:8888/test"
+          jkoPayUniversalLinks={`https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`}
           style={styles.JkoPayBtnStyle}
           disabledStyle={styles.JkoPayBtnDisabledStyle}
           onPress={handlerJkoPay}
@@ -480,7 +726,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <EasyWalletBtn
-          easyWalletUniversalLinks="https://google.com.tw"
+          easyWalletUniversalLinks={`https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`}
           style={styles.EasyWalleBtnStyle}
           disabledStyle={styles.EasyWalleBtnDisabledStyle}
           onPress={handlerEasyWallet}
@@ -540,7 +786,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           atomeUniversalLinks="https://google.com.tw"
           style={styles.AtomeBtnStyle}
           disabledStyle={styles.AtomeBtnDisabledStyle}
-          onPress={handlerAtome}
+          onPress={handlerAtomePay}
           // disabledOnPress={() =>
           //   setPopUpMessage({
           //     label: '無法使用Atome，請檢查設定',

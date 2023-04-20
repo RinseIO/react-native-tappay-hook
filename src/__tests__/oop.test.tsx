@@ -52,6 +52,7 @@ describe('TappayOOP test(throw)', () => {
     require('react-native')._setPlusPayIsReady(false);
     require('react-native')._setAtomeIsReady(false);
     require('react-native')._setLinePayError(true);
+    require('react-native')._setLinePayCancel(false);
     require('react-native')._setSamsungPayError(true);
     require('react-native')._setSamsungPayCancel(false);
     require('react-native')._setJkoPayError(true);
@@ -165,6 +166,15 @@ describe('TappayOOP test(throw)', () => {
   test('linePayRedirectWithUrl() test not ready', async () => {
     await expect(Tappay.linePayRedirectWithUrl('paymentUrl')).rejects.toThrow(
       'TappayLinePay is not ready!'
+    );
+  });
+
+  test('linePayRedirectWithUrl() test canceled', async () => {
+    setLinePlayIsReady(true);
+    require('react-native')._setLinePayCancel(true);
+    require('react-native')._setLinePayError(false);
+    await expect(Tappay.linePayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'canceled'
     );
   });
 

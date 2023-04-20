@@ -1,4 +1,4 @@
-import { Platform, NativeModules } from 'react-native';
+import { Platform, NativeModules, AppState } from 'react-native';
 
 import {
   getAppId,
@@ -31,6 +31,7 @@ import {
   setAtomeIsReady
 } from '../cacheStatus';
 
+// export class _tappay {
 export class tappay {
   public get appId() {
     return getAppId();
@@ -165,6 +166,23 @@ export class tappay {
     })();
 
     return this.initPromise;
+  }
+
+  public defaultAppActive(reject: Function, result: any) {
+    let appState = AppState.currentState;
+
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        setTimeout(() => {
+          if (result === null) {
+            reject(new Error('canceled'));
+          }
+        }, 5000);
+      }
+      appState = nextAppState;
+    });
+
+    return () => subscription.remove();
   }
 
   public async getDeviceId() {
@@ -321,14 +339,37 @@ export class tappay {
     return result;
   }
 
-  public async linePayRedirectWithUrl(paymentUrl: string) {
-    if (this.linePlayIsReady !== true) {
-      throw new Error('TappayLinePay is not ready!');
-    }
-    const result = await NativeModules.TappayHook.TappayLinePayRedirectWithUrl(
-      paymentUrl
-    );
-    return result;
+  public linePayRedirectWithUrl(
+    paymentUrl: string,
+    handleAppActive: Function = this.defaultAppActive
+  ) {
+    return new Promise((resolve, reject) => {
+      if (this.linePlayIsReady !== true) {
+        throw new Error('TappayLinePay is not ready!');
+      }
+
+      let result = null;
+      NativeModules.TappayHook.TappayLinePayRedirectWithUrl(paymentUrl)
+        .then((_result: any) => {
+          result = _result;
+          const status = _result.status;
+          if (status === 924 || status === '924') {
+            reject(new Error('canceled'));
+          }
+
+          resolve(_result);
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+        })
+        .catch((error: any) => {
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+          reject(error);
+        });
+      const unsubscribe = handleAppActive(reject, result);
+    });
   }
 
   public async samsungPayInit(
@@ -362,13 +403,23 @@ export class tappay {
     if (this.samsungPayIsReady !== true) {
       throw new Error('TappaySamsungPay is not ready!');
     }
-    const result = await NativeModules.TappayHook.TappayGetSamsungPayPrime(
-      itemTotalAmount,
-      shippingPrice,
-      tax,
-      totalAmount
-    );
-    return result;
+    try {
+      const result =
+        await NativeModules.TappayHook.TappayGetSamsungPayPrime(
+          itemTotalAmount,
+          shippingPrice,
+          tax,
+          totalAmount
+        );
+      return result;
+    } catch (error: any) {
+      const status = error.userInfo?.status;
+      if (status === 88011 || status === '88011') {
+        error.message = 'canceled';
+        throw error;
+      }
+      throw new Error(error);
+    }
   }
 
   public async isJkoPayAvailable() {
@@ -398,14 +449,32 @@ export class tappay {
     return result;
   }
 
-  public async jkoPayRedirectWithUrl(paymentUrl: string) {
-    if (this.jkoPayIsReady !== true) {
-      throw new Error('TappayJkoPay is not ready!');
-    }
-    const result = await NativeModules.TappayHook.TappayJkoPayRedirectWithUrl(
-      paymentUrl
-    );
-    return result;
+  public jkoPayRedirectWithUrl(
+    paymentUrl: string,
+    handleAppActive: Function = this.defaultAppActive
+  ) {
+    return new Promise((resolve, reject) => {
+      if (this.jkoPayIsReady !== true) {
+        throw new Error('TappayJkoPay is not ready!');
+      }
+
+      let result = null;
+      NativeModules.TappayHook.TappayJkoPayRedirectWithUrl(paymentUrl)
+        .then((_result: any) => {
+          resolve(_result);
+          result = _result;
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+        })
+        .catch((error: any) => {
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+          reject(error);
+        });
+      const unsubscribe = handleAppActive(reject, result);
+    });
   }
 
   public async jkoPayHandleUniversalLink(url: string) {
@@ -444,15 +513,32 @@ export class tappay {
     return result;
   }
 
-  public async easyWalletRedirectWithUrl(paymentUrl: string) {
-    if (this.easyWalletIsReady !== true) {
-      throw new Error('TappayEasyWallet is not ready!');
-    }
-    const result =
-      await NativeModules.TappayHook.TappayEasyWalletRedirectWithUrl(
-        paymentUrl
-      );
-    return result;
+  public easyWalletRedirectWithUrl(
+    paymentUrl: string,
+    handleAppActive: Function = this.defaultAppActive
+  ) {
+    return new Promise((resolve, reject) => {
+      if (this.easyWalletIsReady !== true) {
+        throw new Error('TappayEasyWallet is not ready!');
+      }
+
+      let result = null;
+      NativeModules.TappayHook.TappayEasyWalletRedirectWithUrl(paymentUrl)
+        .then((_result: any) => {
+          resolve(_result);
+          result = _result;
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+        })
+        .catch((error: any) => {
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+          reject(error);
+        });
+      const unsubscribe = handleAppActive(reject, result);
+    });
   }
 
   public async easyWalletHandleUniversalLink(url: string) {
@@ -491,14 +577,32 @@ export class tappay {
     return result;
   }
 
-  public async piWalletRedirectWithUrl(paymentUrl: string) {
-    if (this.piWalletIsReady !== true) {
-      throw new Error('TappayPiWallet is not ready!');
-    }
-    const result = await NativeModules.TappayHook.TappayPiWalletRedirectWithUrl(
-      paymentUrl
-    );
-    return result;
+  public piWalletRedirectWithUrl(
+    paymentUrl: string,
+    handleAppActive: Function = this.defaultAppActive
+  ) {
+    return new Promise((resolve, reject) => {
+      if (this.piWalletIsReady !== true) {
+        throw new Error('TappayPiWallet is not ready!');
+      }
+
+      let result = null;
+      NativeModules.TappayHook.TappayPiWalletRedirectWithUrl(paymentUrl)
+        .then((_result: any) => {
+          resolve(_result);
+          result = _result;
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+        })
+        .catch((error: any) => {
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+          reject(error);
+        });
+      const unsubscribe = handleAppActive(reject, result);
+    });
   }
 
   public async piWalletHandleUniversalLink(url: string) {
@@ -537,14 +641,32 @@ export class tappay {
     return result;
   }
 
-  public async plusPayRedirectWithUrl(paymentUrl: string) {
-    if (this.plusPayIsReady !== true) {
-      throw new Error('TappayPlusPay is not ready!');
-    }
-    const result = await NativeModules.TappayHook.TappayPlusPayRedirectWithUrl(
-      paymentUrl
-    );
-    return result;
+  public plusPayRedirectWithUrl(
+    paymentUrl: string,
+    handleAppActive: Function = this.defaultAppActive
+  ) {
+    return new Promise((resolve, reject) => {
+      if (this.plusPayIsReady !== true) {
+        throw new Error('TappayPlusPay is not ready!');
+      }
+
+      let result = null;
+      NativeModules.TappayHook.TappayPlusPayRedirectWithUrl(paymentUrl)
+        .then((_result: any) => {
+          resolve(_result);
+          result = _result;
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+        })
+        .catch((error: any) => {
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+          reject(error);
+        });
+      const unsubscribe = handleAppActive(reject, result);
+    });
   }
 
   public async plusPayhandleUniversalLink(url: string) {
@@ -583,14 +705,32 @@ export class tappay {
     return result;
   }
 
-  public async atomeRedirectWithUrl(paymentUrl: string) {
-    if (this.atomeIsReady !== true) {
-      throw new Error('TappayAtome is not ready!');
-    }
-    const result = await NativeModules.TappayHook.TappayAtomeRedirectWithUrl(
-      paymentUrl
-    );
-    return result;
+  public atomeRedirectWithUrl(
+    paymentUrl: string,
+    handleAppActive: Function = this.defaultAppActive
+  ) {
+    return new Promise((resolve, reject) => {
+      if (this.atomeIsReady !== true) {
+        throw new Error('TappayAtome is not ready!');
+      }
+
+      let result = null;
+      NativeModules.TappayHook.TappayAtomeRedirectWithUrl(paymentUrl)
+        .then((_result: any) => {
+          resolve(_result);
+          result = _result;
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+        })
+        .catch((error: any) => {
+          if (typeof unsubscribe === 'function') {
+            unsubscribe();
+          }
+          reject(error);
+        });
+      const unsubscribe = handleAppActive(reject, result);
+    });
   }
 
   public async atomehandleUniversalLink(url: string) {

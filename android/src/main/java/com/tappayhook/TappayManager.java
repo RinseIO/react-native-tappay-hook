@@ -170,9 +170,17 @@ public class TappayManager {
             case AutoResolveHelper.RESULT_ERROR:
               if (googlePayJsPromise != null) {
                 Status status = AutoResolveHelper.getStatusFromIntent(data);
+
+                WritableNativeMap resultData = new WritableNativeMap();
+                resultData.putString("systemOS", "android");
+                resultData.putString("tappaySDKVersion", SDKVersion);
+                resultData.putInt("status", status.getStatusCode());
+                resultData.putString("msg", status.getStatusMessage());
+
                 googlePayJsPromise.reject("android error onActivityResult ",
                     "AutoResolveHelper.RESULT_ERROR : " + status.getStatusCode() + " , message = "
-                        + status.getStatusMessage());
+                        + status.getStatusMessage(),
+                    resultData);
                 // googlePayJsPromise = null;
               }
               break;
@@ -352,9 +360,15 @@ public class TappayManager {
 
       @Override
       public void onFailure(int status, String reportMsg) {
+        WritableNativeMap resultData = new WritableNativeMap();
+        resultData.putString("systemOS", "android");
+        resultData.putString("tappaySDKVersion", SDKVersion);
+        resultData.putInt("status", status);
+        resultData.putString("msg", reportMsg);
+
         // Failure
         promise.reject("android error getDirectPayPrime onFailure",
-            reportMsg + ", Error Status:" + Integer.toString(status));
+            reportMsg + ", Error Status:" + Integer.toString(status), resultData);
       }
     };
 
@@ -497,8 +511,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           googlePayJsPromise.reject("android error revealGooglePaymentInfo onFailure",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
           // googlePayJsPromise = null;
         }
       };
@@ -548,8 +568,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error getLinePayPrime onFailure",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
         }
       };
 
@@ -597,8 +623,14 @@ public class TappayManager {
 
         @Override
         public void onParseFail(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error linePayRedirectWithUrl onParseFail",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
           reactContext.removeActivityEventListener(mTPDLinePayActivityEvent);
           mTPDLinePayActivityEvent = null;
         }
@@ -714,8 +746,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String reportMsg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", reportMsg);
+
           promise.reject("android error getSamsungPayPrime onFailure",
-              reportMsg + ", Error Status:" + Integer.toString(status));
+              reportMsg + ", Error Status:" + Integer.toString(status), resultData);
         }
       };
 
@@ -771,8 +809,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error getJkoPayPrime onFailure",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
         }
       };
 
@@ -820,8 +864,14 @@ public class TappayManager {
 
         @Override
         public void onParseFail(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error jkoPayRedirectWithUrl onParseFail",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
           reactContext.removeActivityEventListener(mTPDJkoPayActivityEvent);
           mTPDJkoPayActivityEvent = null;
         }
@@ -880,8 +930,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error getEasyWalletPrime onFailure",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
         }
       };
 
@@ -929,8 +985,15 @@ public class TappayManager {
 
         @Override
         public void onParseFail(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error easyWalletRedirectWithUrl onParseFail",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
+
           reactContext.removeActivityEventListener(mTPDEasyWalletActivityEvent);
           mTPDEasyWalletActivityEvent = null;
         }
@@ -989,8 +1052,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error getPiWalletPrime onFailure",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
         }
       };
 
@@ -1038,8 +1107,14 @@ public class TappayManager {
 
         @Override
         public void onParseFail(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error piWalletRedirectWithUrl onParseFail",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
           reactContext.removeActivityEventListener(mTPDPiWalletActivityEvent);
           mTPDPiWalletActivityEvent = null;
         }
@@ -1098,8 +1173,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error getPlusPayPrime onFailure",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
         }
       };
 
@@ -1147,8 +1228,14 @@ public class TappayManager {
 
         @Override
         public void onParseFail(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error plusPayRedirectWithUrl onParseFail",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
           reactContext.removeActivityEventListener(mTPDPlusPayActivityEvent);
           mTPDPlusPayActivityEvent = null;
         }
@@ -1207,8 +1294,14 @@ public class TappayManager {
 
         @Override
         public void onFailure(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error getAtomePrime onFailure",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
         }
       };
 
@@ -1256,8 +1349,14 @@ public class TappayManager {
 
         @Override
         public void onParseFail(int status, String msg) {
+          WritableNativeMap resultData = new WritableNativeMap();
+          resultData.putString("systemOS", "android");
+          resultData.putString("tappaySDKVersion", SDKVersion);
+          resultData.putInt("status", status);
+          resultData.putString("msg", msg);
+
           promise.reject("android error atomeRedirectWithUrl onParseFail",
-              msg + ", Error Status:" + Integer.toString(status));
+              msg + ", Error Status:" + Integer.toString(status), resultData);
           reactContext.removeActivityEventListener(mTPDAtomeActivityEvent);
           mTPDAtomeActivityEvent = null;
         }

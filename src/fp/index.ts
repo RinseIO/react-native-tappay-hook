@@ -1,4 +1,5 @@
 export * from './tappayInit';
+export * from './defaultAppActive';
 export * from './getDeviceId';
 export * from './setDirectPayTPDCard';
 export * from './getDirectPayPrime';

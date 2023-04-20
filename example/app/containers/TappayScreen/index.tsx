@@ -44,6 +44,7 @@ import {
 import request from '@utils/request';
 
 import styles from '@containers/TappayScreen/style';
+import { Linking } from 'react-native';
 
 export function TappayScreen({ setPopUpMessage, setLoading }: any) {
   const [cardNumber, setCardNumber] = useState('6224314183841750');
@@ -64,6 +65,10 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
   const [piWalleAmount, setPiWalleAmount] = useState('1');
   const [plusPayAmount, setPlusPayAmount] = useState('1');
   const [atomeAmount, setAtomeAmount] = useState('1');
+
+  const [openLinkTest, setOpenLinkTest] = useState(
+    'bbn_yahoo_bid://com.bbn_yahoo_bid'
+  );
 
   useEffect(() => {
     (async () => {
@@ -317,10 +322,18 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       });
     } catch (error: any) {
       console.log({ ...error });
-      setPopUpMessage({
-        label: 'SamsungPay付款失敗(測試)',
-        type: 'error'
-      });
+      if (error.message === 'canceled') {
+        setPopUpMessage({
+          label: 'SamsungPay付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log(error);
+        setPopUpMessage({
+          label: 'SamsungPay付款失敗(測試)',
+          type: 'error'
+        });
+      }
     }
     setLoading(false);
   }
@@ -396,7 +409,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           },
           result_url: {
             frontend_redirect_url: `https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`,
-            backend_notify_url: 'https://resume-web-orpin.vercel.app/api/tappay/backend_notify'
+            backend_notify_url:
+              'https://resume-web-orpin.vercel.app/api/tappay/backend_notify'
           }
         },
         null,
@@ -648,7 +662,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <LinePayBtn
-          linePayCallbackUri="linepayexample://tech.cherri"
+          linePayCallbackUri="react_native_tappay_hook://com.react_native_tappay_hook"
           style={styles.LinePayBtnStyle}
           disabledStyle={styles.LinePayBtnDisabledStyle}
           onPress={handlerLinePay}
@@ -711,6 +725,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <JkoPayBtn
+          // jkoPayUniversalLinks="jkoexample://jko.uri:8888/test"
           jkoPayUniversalLinks={`https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`}
           style={styles.JkoPayBtnStyle}
           disabledStyle={styles.JkoPayBtnDisabledStyle}
@@ -726,6 +741,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <EasyWalletBtn
+          // easyWalletUniversalLinks="https://google.com.tw"
           easyWalletUniversalLinks={`https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`}
           style={styles.EasyWalleBtnStyle}
           disabledStyle={styles.EasyWalleBtnDisabledStyle}
@@ -741,7 +757,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <PiWalletBtn
-          piWalletUniversalLinks="https://google.com.tw"
+          // piWalletUniversalLinks="https://google.com.tw"
+          piWalletUniversalLinks={`https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`}
           style={styles.PiWalleBtnStyle}
           disabledStyle={styles.PiWalleBtnDisabledStyle}
           onPress={handlerPiWallet}
@@ -762,7 +779,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <PlusPayBtn
-          plusPayUniversalLinks="tpdirectexamplepluspay://tech.cherri/myaccount/detail"
+          // plusPayUniversalLinks="tpdirectexamplepluspay://tech.cherri/myaccount/detail"
+          plusPayUniversalLinks={`https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`}
           style={styles.PlusPayBtnStyle}
           disabledStyle={styles.PlusPayBtnDisabledStyle}
           onPress={handlerPlusPay}
@@ -783,7 +801,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           />
         </View>
         <AtomeBtn
-          atomeUniversalLinks="https://google.com.tw"
+          // atomeUniversalLinks="https://google.com.tw"
+          atomeUniversalLinks={`https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`}
           style={styles.AtomeBtnStyle}
           disabledStyle={styles.AtomeBtnDisabledStyle}
           onPress={handlerAtomePay}
@@ -794,6 +813,21 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           //   })
           // }
         />
+
+        <View style={styles.row}>
+          <Text style={styles.label}>測試開啟App網址:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={openLinkTest}
+            onChange={({ nativeEvent }) => setOpenLinkTest(nativeEvent.text)}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => Linking.openURL(openLinkTest)}
+        >
+          <Text style={styles.buttonFontStyle}>測試開啟App</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

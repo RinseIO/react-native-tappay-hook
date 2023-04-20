@@ -1,6 +1,19 @@
 import * as TappayFP from '../fp';
 
-import { setInitPromise, setAppId, setAppKey } from '../cacheStatus';
+import {
+  setInitPromise,
+  setAppId,
+  setAppKey,
+  setGooglePlayIsReady,
+  setApplePlayIsReady,
+  setLinePlayIsReady,
+  setSamsungPayIsReady,
+  setJkoPayIsReady,
+  setEasyWalletIsReady,
+  setPiWalletIsReady,
+  setPlusPayIsReady,
+  setAtomeIsReady
+} from '../cacheStatus';
 
 jest.mock('react-native');
 
@@ -21,6 +34,25 @@ describe('TappayFP test(throw)', () => {
     require('react-native')._setPiWalletIsReady(false);
     require('react-native')._setPlusPayIsReady(false);
     require('react-native')._setAtomeIsReady(false);
+    require('react-native')._setLinePayError(true);
+    require('react-native')._setLinePayCancel(false);
+    require('react-native')._setSamsungPayError(true);
+    require('react-native')._setSamsungPayCancel(false);
+    require('react-native')._setJkoPayError(true);
+    require('react-native')._setEasyWalletError(true);
+    require('react-native')._setPiWalletError(true);
+    require('react-native')._setPlusPayError(true);
+    require('react-native')._setAtomePayError(true);
+
+    setGooglePlayIsReady(false);
+    setApplePlayIsReady(false);
+    setLinePlayIsReady(false);
+    setSamsungPayIsReady(false);
+    setJkoPayIsReady(false);
+    setEasyWalletIsReady(false);
+    setPiWalletIsReady(false);
+    setPlusPayIsReady(false);
+    setAtomeIsReady(false);
   });
 
   test('tappayInit() test', () => {
@@ -31,9 +63,7 @@ describe('TappayFP test(throw)', () => {
 
   test('tappayInit() errorHandler test', () => {
     expect(
-      TappayFP.tappayInit(128088, 'app_key', false, (error: any) =>
-        console.log(error)
-      ) instanceof Promise
+      TappayFP.tappayInit(128088, 'app_key', false, () => {}) instanceof Promise
     ).toBe(true);
   });
 
@@ -113,9 +143,28 @@ describe('TappayFP test(throw)', () => {
   });
 
   test('linePayRedirectWithUrl() test', async () => {
+    setLinePlayIsReady(true);
+    await expect(TappayFP.linePayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'mockError'
+    );
     await expect(
-      TappayFP.linePayRedirectWithUrl('paymentUrl')
-    ).rejects.toThrow();
+      TappayFP.linePayRedirectWithUrl('paymentUrl', () => {})
+    ).rejects.toThrow('mockError');
+  });
+
+  test('linePayRedirectWithUrl() test not ready', async () => {
+    await expect(TappayFP.linePayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'TappayLinePay is not ready!'
+    );
+  });
+
+  test('linePayRedirectWithUrl() test canceled', async () => {
+    setLinePlayIsReady(true);
+    require('react-native')._setLinePayCancel(true);
+    require('react-native')._setLinePayError(false);
+    await expect(TappayFP.linePayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'canceled'
+    );
   });
 
   test('samsungPayInit() test', async () => {
@@ -132,18 +181,27 @@ describe('TappayFP test(throw)', () => {
 
   test('getSamsungPayPrime() test', async () => {
     require('react-native')._setSystemOS('android');
+    setSamsungPayIsReady(true);
     await expect(
       TappayFP.getSamsungPayPrime('1', '0', '0', '1')
-    ).rejects.toThrow();
+    ).rejects.toThrow('mockError');
   });
 
   test('getSamsungPayPrime() test not ready', async () => {
-    require('react-native')._setInitInstanceSuccess(true);
     require('react-native')._setSystemOS('android');
-    await TappayFP.tappayInit(128088, 'app_key', false);
     await expect(
       TappayFP.getSamsungPayPrime('1', '0', '0', '1')
-    ).rejects.toThrow();
+    ).rejects.toThrow('TappaySamsungPay is not ready!');
+  });
+
+  test('getSamsungPayPrime() test canceled', async () => {
+    require('react-native')._setSystemOS('android');
+    setSamsungPayIsReady(true);
+    require('react-native')._setSamsungPayCancel(true);
+    require('react-native')._setSamsungPayError(false);
+    await expect(
+      TappayFP.getSamsungPayPrime('1', '0', '0', '1')
+    ).rejects.toThrow('canceled');
   });
 
   test('isJkoPayAvailable() test', async () => {
@@ -161,9 +219,19 @@ describe('TappayFP test(throw)', () => {
   });
 
   test('jkoPayRedirectWithUrl() test', async () => {
+    setJkoPayIsReady(true);
+    await expect(TappayFP.jkoPayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'mockError'
+    );
     await expect(
-      TappayFP.jkoPayRedirectWithUrl('paymentUrl')
-    ).rejects.toThrow();
+      TappayFP.jkoPayRedirectWithUrl('paymentUrl', () => {})
+    ).rejects.toThrow('mockError');
+  });
+
+  test('jkoPayRedirectWithUrl() test not ready', async () => {
+    await expect(TappayFP.jkoPayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'TappayJkoPay is not ready!'
+    );
   });
 
   test('jkoPayHandleUniversalLink() test', async () => {
@@ -181,13 +249,26 @@ describe('TappayFP test(throw)', () => {
   });
 
   test('getEasyWalletPrime() test', async () => {
-    await expect(TappayFP.getEasyWalletPrime()).rejects.toThrow();
+    await expect(TappayFP.getEasyWalletPrime()).rejects.toThrow(
+      'TappayEasyWallet is not ready!'
+    );
   });
 
   test('easyWalletRedirectWithUrl() test', async () => {
+    setEasyWalletIsReady(true);
+    require('react-native')._setEasyWalletError(true);
     await expect(
       TappayFP.easyWalletRedirectWithUrl('paymentUrl')
-    ).rejects.toThrow();
+    ).rejects.toThrow('mockError');
+    await expect(
+      TappayFP.easyWalletRedirectWithUrl('paymentUrl', () => {})
+    ).rejects.toThrow('mockError');
+  });
+
+  test('easyWalletRedirectWithUrl() test not ready', async () => {
+    await expect(
+      TappayFP.easyWalletRedirectWithUrl('paymentUrl')
+    ).rejects.toThrow('TappayEasyWallet is not ready!');
   });
 
   test('easyWalletHandleUniversalLink() test', async () => {
@@ -211,9 +292,19 @@ describe('TappayFP test(throw)', () => {
   });
 
   test('piWalletRedirectWithUrl() test', async () => {
+    setPiWalletIsReady(true);
     await expect(
       TappayFP.piWalletRedirectWithUrl('paymentUrl')
-    ).rejects.toThrow();
+    ).rejects.toThrow('mockError');
+    await expect(
+      TappayFP.piWalletRedirectWithUrl('paymentUrl', () => {})
+    ).rejects.toThrow('mockError');
+  });
+
+  test('piWalletRedirectWithUrl() test not ready', async () => {
+    await expect(
+      TappayFP.piWalletRedirectWithUrl('paymentUrl')
+    ).rejects.toThrow('TappayPiWallet is not ready!');
   });
 
   test('piWalletHandleUniversalLink() test', async () => {
@@ -237,9 +328,19 @@ describe('TappayFP test(throw)', () => {
   });
 
   test('plusPayRedirectWithUrl() test', async () => {
+    setPlusPayIsReady(true);
+    await expect(TappayFP.plusPayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'mockError'
+    );
     await expect(
-      TappayFP.plusPayRedirectWithUrl('paymentUrl')
-    ).rejects.toThrow();
+      TappayFP.plusPayRedirectWithUrl('paymentUrl', () => {})
+    ).rejects.toThrow('mockError');
+  });
+
+  test('plusPayRedirectWithUrl() test not ready', async () => {
+    await expect(TappayFP.plusPayRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'TappayPlusPay is not ready!'
+    );
   });
 
   test('plusPayhandleUniversalLink() test', async () => {
@@ -255,11 +356,25 @@ describe('TappayFP test(throw)', () => {
   });
 
   test('getAtomePrime() test', async () => {
-    await expect(TappayFP.getAtomePrime()).rejects.toThrow();
+    await expect(TappayFP.getAtomePrime()).rejects.toThrow(
+      'TappayAtome is not ready!'
+    );
   });
 
   test('atomeRedirectWithUrl() test', async () => {
-    await expect(TappayFP.atomeRedirectWithUrl('paymentUrl')).rejects.toThrow();
+    setAtomeIsReady(true);
+    await expect(TappayFP.atomeRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'mockError'
+    );
+    await expect(
+      TappayFP.atomeRedirectWithUrl('paymentUrl', () => {})
+    ).rejects.toThrow('mockError');
+  });
+
+  test('atomeRedirectWithUrl() test not ready', async () => {
+    await expect(TappayFP.atomeRedirectWithUrl('paymentUrl')).rejects.toThrow(
+      'TappayAtome is not ready!'
+    );
   });
 
   test('atomehandleUniversalLink() test', async () => {

@@ -1,11 +1,23 @@
 const ReactNative: any = jest.createMockFromModule('react-native');
 
+const LOG = false;
+
 let initInstanceSuccess: boolean = true;
 let isCardNumberValid: boolean = false;
 let isExpiryDateValid: boolean = false;
 let isCCVValid: boolean = false;
 let cardType: string = 'Unknown';
-let systemOS: string = 'android';
+let systemOS: string = 'ios';
+
+let linePayError: boolean = false;
+let linePayCancel: boolean = false;
+let samsungPayError: boolean = false;
+let samsungPayCanceled: boolean = false;
+let jkoPayError: boolean = false;
+let easyWalletError: boolean = false;
+let piWalletError: boolean = false;
+let plusPayError: boolean = false;
+let atomePayError: boolean = false;
 
 let googlePlayIsReady: boolean = false;
 let applePlayIsReady: boolean = false;
@@ -23,34 +35,39 @@ let piWalletHandleUniversalLink: boolean = false;
 let plusPayHandleUniversalLink: boolean = false;
 let atomeHandleUniversalLink: boolean = false;
 
-ReactNative._reset = function () {
-  initInstanceSuccess = true;
-  isCardNumberValid = false;
-  isExpiryDateValid = false;
-  isCCVValid = false;
-  cardType = 'Unknown';
-  systemOS = 'android';
-
-  googlePlayIsReady = false;
-  applePlayIsReady = false;
-  linePlayIsReady = false;
-  samsungPayIsReady = false;
-  jkoPayIsReady = false;
-  easyWalletIsReady = false;
-  piWalletIsReady = false;
-  plusPayIsReady = false;
-  atomeIsReady = false;
-
-  linePayHandleURL = false;
-  jkoPayHandleUniversalLink = false;
-  easyWalletHandleUniversalLink = false;
-  plusPayHandleUniversalLink = false;
-  piWalletHandleUniversalLink = false;
-};
 ReactNative._setSystemOS = function (_systemOS: string) {
   systemOS = _systemOS;
   ReactNative.Platform.OS = _systemOS;
 };
+
+ReactNative._setLinePayError = function (_linePayError: boolean) {
+  linePayError = _linePayError;
+};
+ReactNative._setLinePayCancel = function (_linePayCancel: boolean) {
+  linePayCancel = _linePayCancel;
+};
+ReactNative._setSamsungPayError = function (_samsungPayError: boolean) {
+  samsungPayError = _samsungPayError;
+};
+ReactNative._setSamsungPayCancel = function (_samsungPayCanceled: boolean) {
+  samsungPayCanceled = _samsungPayCanceled;
+};
+ReactNative._setJkoPayError = function (_jkoPayError: boolean) {
+  jkoPayError = _jkoPayError;
+};
+ReactNative._setEasyWalletError = function (_easyWalletError: boolean) {
+  easyWalletError = _easyWalletError;
+};
+ReactNative._setPiWalletError = function (_piWalletError: boolean) {
+  piWalletError = _piWalletError;
+};
+ReactNative._setPlusPayError = function (_plusPayError: boolean) {
+  plusPayError = _plusPayError;
+};
+ReactNative._setAtomePayError = function (_atomePayError: boolean) {
+  atomePayError = _atomePayError;
+};
+
 ReactNative._setLinePayHandleURL = function (_linePayHandleURL: boolean) {
   linePayHandleURL = _linePayHandleURL;
 };
@@ -125,12 +142,14 @@ ReactNative._setAtomeIsReady = function (newAtomeIsReady: boolean) {
 ReactNative.NativeModules = {
   TappayHook: {
     async TappayInitInstance(appId: number, appKey: string, prod: boolean) {
-      console.log('TappayInitInstance', {
-        appId,
-        appKey,
-        prod,
-        initInstanceSuccess
-      });
+      if (LOG) {
+        console.log('TappayInitInstance', {
+          appId,
+          appKey,
+          prod,
+          initInstanceSuccess
+        });
+      }
       if (initInstanceSuccess === false) {
         throw new Error('jest error');
       }
@@ -149,7 +168,9 @@ ReactNative.NativeModules = {
       dueYear: string,
       CCV: string
     ) {
-      console.log('TappaySetTPDCard', { cardNumber, dueMonth, dueYear, CCV });
+      if (LOG) {
+        console.log('TappaySetTPDCard', { cardNumber, dueMonth, dueYear, CCV });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -164,7 +185,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayGetDirectPayPrime(geoLocation: string) {
-      console.log('TappayGetDirectPayPrime', { geoLocation });
+      if (LOG) {
+        console.log('TappayGetDirectPayPrime', { geoLocation });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -188,7 +211,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayGooglePayInit(merchantName: string) {
-      console.log('TappayGooglePayInit', { merchantName });
+      if (LOG) {
+        console.log('TappayGooglePayInit', { merchantName });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -197,7 +222,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayGetGooglePayPrime(totalPrice: string, currencyCode: string) {
-      console.log('TappayGetGooglePayPrime', { totalPrice, currencyCode });
+      if (LOG) {
+        console.log('TappayGetGooglePayPrime', { totalPrice, currencyCode });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -233,12 +260,14 @@ ReactNative.NativeModules = {
       countryCode: string,
       currencyCode: string
     ) {
-      console.log('TappayAapplePayInit', {
-        merchantName,
-        merchantId,
-        countryCode,
-        currencyCode
-      });
+      if (LOG) {
+        console.log('TappayAapplePayInit', {
+          merchantName,
+          merchantId,
+          countryCode,
+          currencyCode
+        });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -246,7 +275,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayGetApplePayPrime(amount: string) {
-      console.log('TappayGetApplePayPrime', { amount });
+      if (LOG) {
+        console.log('TappayGetApplePayPrime', { amount });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -259,7 +290,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayLinePayHandleURL(openUri: string) {
-      console.log('TappayLinePayHandleURL', { openUri });
+      if (LOG) {
+        console.log('TappayLinePayHandleURL', { openUri });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -275,7 +308,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayLinePayInit(linePayCallbackUri: string) {
-      console.log('TappayLinePayInit', { linePayCallbackUri });
+      if (LOG) {
+        console.log('TappayLinePayInit', { linePayCallbackUri });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -291,12 +326,17 @@ ReactNative.NativeModules = {
       };
     },
     async TappayLinePayRedirectWithUrl(paymentUrl: string) {
-      console.log('TappayLinePayRedirectWithUrl', { paymentUrl });
+      if (LOG) {
+        console.log('TappayLinePayRedirectWithUrl', { paymentUrl });
+      }
+      if (linePayError) {
+        throw new Error('mockError');
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
         paymentUrl,
-        status: 'mockStatus',
+        status: linePayCancel === true ? 924 : 'mockStatus',
         nrecTradeId: 'mockNrecTradeId',
         nbankTransactionId: 'mockNbankTransactionId',
         norderNumber: 'mockNorderNumber'
@@ -308,12 +348,14 @@ ReactNative.NativeModules = {
       currencyCode: string,
       serviceId: string
     ) {
-      console.log('TappaySamsungPayInit', {
-        merchantName,
-        merchantId,
-        currencyCode,
-        serviceId
-      });
+      if (LOG) {
+        console.log('TappaySamsungPayInit', {
+          merchantName,
+          merchantId,
+          currencyCode,
+          serviceId
+        });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -326,12 +368,22 @@ ReactNative.NativeModules = {
       tax: string,
       totalAmount: string
     ) {
-      console.log('TappayGetSamsungPayPrime', {
-        itemTotalAmount,
-        shippingPrice,
-        tax,
-        totalAmount
-      });
+      if (LOG) {
+        console.log('TappayGetSamsungPayPrime', {
+          itemTotalAmount,
+          shippingPrice,
+          tax,
+          totalAmount
+        });
+      }
+      if (samsungPayError === true) {
+        throw new Error('mockError');
+      }
+      if (samsungPayCanceled === true) {
+        const error: any = new Error('canceled');
+        error.userInfo = { status: 88011 };
+        throw error;
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -376,7 +428,12 @@ ReactNative.NativeModules = {
       };
     },
     async TappayJkoPayRedirectWithUrl(paymentUrl: string) {
-      console.log('TappayJkoPayRedirectWithUrl', { paymentUrl });
+      if (LOG) {
+        console.log('TappayJkoPayRedirectWithUrl', { paymentUrl });
+      }
+      if (jkoPayError === true) {
+        throw new Error('mockError');
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -388,7 +445,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayJkoPayHandleUniversalLink(url: string) {
-      console.log('TappayJkoPayHandleUniversalLink', { url });
+      if (LOG) {
+        console.log('TappayJkoPayHandleUniversalLink', { url });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -404,7 +463,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayEasyWalletInit(easyWalletUniversalLinks: string) {
-      console.log('TappayEasyWalletInit', { easyWalletUniversalLinks });
+      if (LOG) {
+        console.log('TappayEasyWalletInit', { easyWalletUniversalLinks });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -420,7 +481,12 @@ ReactNative.NativeModules = {
       };
     },
     async TappayEasyWalletRedirectWithUrl(paymentUrl: string) {
-      console.log('TappayEasyWalletRedirectWithUrl', { paymentUrl });
+      if (LOG) {
+        console.log('TappayEasyWalletRedirectWithUrl', { paymentUrl });
+      }
+      if (easyWalletError === true) {
+        throw new Error('mockError');
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -432,7 +498,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayEasyWalletHandleUniversalLink(url: string) {
-      console.log('TappayEasyWalletHandleUniversalLink', { url });
+      if (LOG) {
+        console.log('TappayEasyWalletHandleUniversalLink', { url });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -448,7 +516,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayPiWalletInit(piWalletUniversalLinks: string) {
-      console.log('TappayPiWalletInit', { piWalletUniversalLinks });
+      if (LOG) {
+        console.log('TappayPiWalletInit', { piWalletUniversalLinks });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -464,7 +534,12 @@ ReactNative.NativeModules = {
       };
     },
     async TappayPiWalletRedirectWithUrl(paymentUrl: string) {
-      console.log('TappayPiWalletRedirectWithUrl', { paymentUrl });
+      if (LOG) {
+        console.log('TappayPiWalletRedirectWithUrl', { paymentUrl });
+      }
+      if (piWalletError === true) {
+        throw new Error('mockError');
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -476,7 +551,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayPiWalletHandleUniversalLink(url: string) {
-      console.log('TappayPiWalletHandleUniversalLink', { url });
+      if (LOG) {
+        console.log('TappayPiWalletHandleUniversalLink', { url });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -492,7 +569,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayPlusPayInit(plusPayUniversalLinks: string) {
-      console.log('TappayPlusPayInit', { plusPayUniversalLinks });
+      if (LOG) {
+        console.log('TappayPlusPayInit', { plusPayUniversalLinks });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -508,7 +587,12 @@ ReactNative.NativeModules = {
       };
     },
     async TappayPlusPayRedirectWithUrl(paymentUrl: string) {
-      console.log('TappayPlusPayRedirectWithUrl', { paymentUrl });
+      if (LOG) {
+        console.log('TappayPlusPayRedirectWithUrl', { paymentUrl });
+      }
+      if (plusPayError) {
+        throw new Error('mockError');
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -520,7 +604,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayPlusPayHandleUniversalLink(url: string) {
-      console.log('TappayPlusPayHandleUniversalLink', { url });
+      if (LOG) {
+        console.log('TappayPlusPayHandleUniversalLink', { url });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -536,7 +622,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayAtomeInit(atomeUniversalLinks: string) {
-      console.log('TappayAtomeInit', { atomeUniversalLinks });
+      if (LOG) {
+        console.log('TappayAtomeInit', { atomeUniversalLinks });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -552,7 +640,12 @@ ReactNative.NativeModules = {
       };
     },
     async TappayAtomeRedirectWithUrl(paymentUrl: string) {
-      console.log('TappayAtomeRedirectWithUrl', { paymentUrl });
+      if (LOG) {
+        console.log('TappayAtomeRedirectWithUrl', { paymentUrl });
+      }
+      if (atomePayError === true) {
+        throw new Error('mockError');
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -564,7 +657,9 @@ ReactNative.NativeModules = {
       };
     },
     async TappayAtomeHandleUniversalLink(url: string) {
-      console.log('TappayAtomeHandleUniversalLink', { url });
+      if (LOG) {
+        console.log('TappayAtomeHandleUniversalLink', { url });
+      }
       return {
         systemOS,
         tappaySDKVersion: 'mock',
@@ -579,4 +674,15 @@ ReactNative.Platform = {
   OS: systemOS
 };
 
+ReactNative.AppState = {
+  currentState: 'background',
+  addEventListener: (_: any, onChange: Function) => {
+    ReactNative._AppStateChange = onChange;
+    return { remove: () => onChange };
+  }
+};
+ReactNative._AppStateChange = () => {};
+
 module.exports = ReactNative;
+
+export default ReactNative;

@@ -26,6 +26,35 @@ describe('TappayFP test(ios)', () => {
     require('react-native')._setCardType('Unknown');
   });
 
+  test('defaultAppActive() test', () => {
+    let result: any = null;
+    const setResult = (_result: any) => (result = _result);
+    const subscription: any = TappayFP.defaultAppActive(setResult, null);
+    const _AppStateChange: any = subscription();
+    _AppStateChange();
+    expect(result).toBeNull();
+  });
+
+  test('defaultAppActive() AppStateChange test', () => {
+    jest.useFakeTimers();
+
+    let result: any = null;
+    const setResult = (_result: any) => (result = _result);
+    const subscription: any = TappayFP.defaultAppActive(setResult, null);
+    const _AppStateChange: any = subscription();
+    _AppStateChange('active');
+
+    jest.runAllTimers();
+
+    expect(result).toBeInstanceOf(Error);
+
+    const _subscription: any = TappayFP.defaultAppActive(setResult, 'mock');
+    const __AppStateChange: any = _subscription();
+    __AppStateChange('active');
+
+    jest.runAllTimers();
+  });
+
   test('tappayInit() test', () => {
     expect(
       TappayFP.tappayInit(128088, 'app_key', false) instanceof Promise
@@ -181,6 +210,17 @@ describe('TappayFP test(ios)', () => {
       nbankTransactionId: 'mockNbankTransactionId',
       norderNumber: 'mockNorderNumber'
     });
+    expect(
+      await TappayFP.linePayRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl',
+      status: 'mockStatus',
+      nrecTradeId: 'mockNrecTradeId',
+      nbankTransactionId: 'mockNbankTransactionId',
+      norderNumber: 'mockNorderNumber'
+    });
   });
 
   test('samsungPayInit() test', async () => {
@@ -237,6 +277,13 @@ describe('TappayFP test(ios)', () => {
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'
     });
+    expect(
+      await TappayFP.jkoPayRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
   });
 
   test('jkoPayHandleUniversalLink() test', async () => {
@@ -278,6 +325,17 @@ describe('TappayFP test(ios)', () => {
   test('easyWalletRedirectWithUrl() test', async () => {
     expect(
       await TappayFP.easyWalletRedirectWithUrl('paymentUrl')
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl',
+      status: 'mockStatus',
+      nrecTradeId: 'mockNrecTradeId',
+      nbankTransactionId: 'mockNbankTransactionId',
+      norderNumber: 'mockNorderNumber'
+    });
+    expect(
+      await TappayFP.easyWalletRedirectWithUrl('paymentUrl', () => {})
     ).toMatchObject({
       systemOS,
       tappaySDKVersion: 'mock',
@@ -329,6 +387,13 @@ describe('TappayFP test(ios)', () => {
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'
     });
+    expect(
+      await TappayFP.piWalletRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
   });
 
   test('piWalletHandleUniversalLink() test', async () => {
@@ -375,6 +440,13 @@ describe('TappayFP test(ios)', () => {
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'
     });
+    expect(
+      await TappayFP.plusPayRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
   });
 
   test('plusPayhandleUniversalLink() test', async () => {
@@ -412,6 +484,13 @@ describe('TappayFP test(ios)', () => {
 
   test('atomeRedirectWithUrl() test', async () => {
     expect(await TappayFP.atomeRedirectWithUrl('paymentUrl')).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
+    expect(
+      await TappayFP.atomeRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
       systemOS,
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'

@@ -4,7 +4,7 @@ import { setAppId, setAppKey, getProd, setProd } from '../cacheStatus';
 
 jest.mock('react-native');
 
-describe('oop test(android)', () => {
+describe('TappayOOP test(android)', () => {
   const systemOS = 'android';
   beforeEach(() => {
     require('react-native')._setSystemOS(systemOS);
@@ -24,6 +24,35 @@ describe('oop test(android)', () => {
     require('react-native')._setIsExpiryDateValid(true);
     require('react-native')._setIsCCVValid(true);
     require('react-native')._setCardType('Unknown');
+  });
+
+  test('defaultAppActive() test', () => {
+    let result = null;
+    const setResult = (_result: any) => (result = _result);
+    const subscription: any = Tappay.defaultAppActive(setResult, null);
+    const _AppStateChange: any = subscription();
+    _AppStateChange();
+    expect(result).toBeNull();
+  });
+
+  test('defaultAppActive() AppStateChange test', () => {
+    jest.useFakeTimers();
+
+    let result: any = null;
+    const setResult = (_result: any) => (result = _result);
+    const subscription: any = Tappay.defaultAppActive(setResult, null);
+    const _AppStateChange: any = subscription();
+    _AppStateChange('active');
+
+    jest.runAllTimers();
+
+    expect(result).toBeInstanceOf(Error);
+
+    const _subscription: any = Tappay.defaultAppActive(setResult, 'mock');
+    const __AppStateChange: any = _subscription();
+    __AppStateChange('active');
+
+    jest.runAllTimers();
   });
 
   test('init() test', () => {
@@ -189,6 +218,17 @@ describe('oop test(android)', () => {
       nbankTransactionId: 'mockNbankTransactionId',
       norderNumber: 'mockNorderNumber'
     });
+    expect(
+      await Tappay.linePayRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl',
+      status: 'mockStatus',
+      nrecTradeId: 'mockNrecTradeId',
+      nbankTransactionId: 'mockNbankTransactionId',
+      norderNumber: 'mockNorderNumber'
+    });
   });
 
   test('samsungPayInit() test', async () => {
@@ -262,6 +302,13 @@ describe('oop test(android)', () => {
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'
     });
+    expect(
+      await Tappay.jkoPayRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
   });
 
   test('jkoPayHandleUniversalLink() test', async () => {
@@ -300,6 +347,17 @@ describe('oop test(android)', () => {
 
   test('easyWalletRedirectWithUrl() test', async () => {
     expect(await Tappay.easyWalletRedirectWithUrl('paymentUrl')).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl',
+      status: 'mockStatus',
+      nrecTradeId: 'mockNrecTradeId',
+      nbankTransactionId: 'mockNbankTransactionId',
+      norderNumber: 'mockNorderNumber'
+    });
+    expect(
+      await Tappay.easyWalletRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
       systemOS,
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl',
@@ -350,6 +408,13 @@ describe('oop test(android)', () => {
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'
     });
+    expect(
+      await Tappay.piWalletRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
   });
 
   test('piWalletHandleUniversalLink() test', async () => {
@@ -396,6 +461,13 @@ describe('oop test(android)', () => {
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'
     });
+    expect(
+      await Tappay.plusPayRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
   });
 
   test('plusPayhandleUniversalLink() test', async () => {
@@ -433,6 +505,13 @@ describe('oop test(android)', () => {
 
   test('atomeRedirectWithUrl() test', async () => {
     expect(await Tappay.atomeRedirectWithUrl('paymentUrl')).toMatchObject({
+      systemOS,
+      tappaySDKVersion: 'mock',
+      paymentUrl: 'paymentUrl'
+    });
+    expect(
+      await Tappay.atomeRedirectWithUrl('paymentUrl', () => {})
+    ).toMatchObject({
       systemOS,
       tappaySDKVersion: 'mock',
       paymentUrl: 'paymentUrl'

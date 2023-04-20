@@ -43,12 +43,17 @@ const cacheCfg: any = new LRUCache({
   max: 100
 });
 
-const defaultAdapter: any = ax.defaults.adapter;
-ax.defaults.adapter = cacheAdapterEnhancer(defaultAdapter, {
-  enabledByDefault: false,
-  cacheFlag: 'useCache',
-  defaultCache: cacheCfg
-});
+ax.defaults.adapter = cacheAdapterEnhancer(
+  {
+    enabledByDefault: false,
+    cacheFlag: 'useCache',
+    defaultCache: cacheCfg
+  },
+  function defaultAdapter(config: any) {
+    delete config.adapter;
+    return axios(config);
+  }
+);
 
 /**
  * 將axios從新封裝

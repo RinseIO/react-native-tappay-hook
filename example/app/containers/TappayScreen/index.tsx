@@ -329,7 +329,9 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       );
       console.log(redirectWithUrl);
       console.log(redirectWithUrl.rec_trade_id);
-      setLinePayRecTradeId(redirectWithUrl.rec_trade_id);
+      setLinePayRecTradeId(
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id || ''
+      );
       setPopUpMessage({
         label: 'LinePay付款成功(測試)',
         type: 'success'
@@ -445,7 +447,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       console.log(redirectWithUrl);
       console.log(redirectWithUrl.rec_trade_id);
       setJkoPayRecTradeId(
-        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id || ''
       );
       setPopUpMessage({
         label: '街口支付付款成功(測試)',
@@ -500,7 +502,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       console.log(redirectWithUrl);
       console.log(redirectWithUrl.rec_trade_id);
       setEasyWalleRecTradeId(
-        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id || ''
       );
       setPopUpMessage({
         label: '悠遊支付付款成功(測試)',
@@ -550,7 +552,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       console.log(redirectWithUrl);
       console.log(redirectWithUrl.rec_trade_id);
       setPiWalleRecTradeId(
-        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id || ''
       );
       setPopUpMessage({
         label: 'Pi錢包付款成功(測試)',
@@ -600,7 +602,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       console.log(redirectWithUrl);
       console.log(redirectWithUrl.rec_trade_id);
       setPlusPayRecTradeId(
-        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id || ''
       );
       setPopUpMessage({
         label: '全盈+PAY付款成功(測試)',
@@ -650,7 +652,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       console.log(redirectWithUrl);
       console.log(redirectWithUrl.rec_trade_id);
       setAtomePayRecTradeId(
-        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id || ''
       );
 
       setPopUpMessage({

@@ -360,7 +360,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           prime: result.prime,
           partner_key:
             'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
-          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          merchant_id: 'tappayTest_LINEPAY',
           details: 'TapPay SamsungPay Test',
           amount: samsungPayItemTotalAmount,
           cardholder: {
@@ -370,6 +370,12 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
             zip_code: '100',
             address: '台北市天龍區芝麻街1號1樓',
             national_id: 'A123456789'
+          },
+          result_url: {
+            frontend_redirect_url: `https://resume-web-orpin.vercel.app/api/open-app-test/${Platform.OS}`,
+            // frontend_redirect_url: 'react_native_tappay_hook://com.react_native_tappay_hook',
+            backend_notify_url:
+              '`https://resume-web-orpin.vercel.app/api/tappay/backend_notif'
           }
         },
         null,

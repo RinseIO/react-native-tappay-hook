@@ -43,6 +43,9 @@ export const row: StyleProp<ViewStyle> = {
   flexDirection: 'row',
   alignItems: 'center'
 };
+export const lastRow: StyleProp<ViewStyle> = {
+  marginBottom: 30
+};
 export const label: StyleProp<TextStyle> = {
   flex: 1
 };
@@ -139,6 +142,7 @@ export const styles = StyleSheet.create({
   root,
   context,
   row,
+  lastRow,
   label,
   inputBox,
   buttonStyle,

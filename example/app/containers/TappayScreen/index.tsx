@@ -22,8 +22,12 @@ import {
   getPiWalletPrime,
   getPlusPayPrime,
   getAtomePrime,
+  linePayRedirectWithUrl,
+  jkoPayRedirectWithUrl,
   easyWalletRedirectWithUrl,
-  jkoPayRedirectWithUrl
+  piWalletRedirectWithUrl,
+  plusPayRedirectWithUrl,
+  atomeRedirectWithUrl
 } from 'react-native-tappay-hook/fp';
 
 import { useSetDirectPayTPDCard } from 'react-native-tappay-hook/hooks';
@@ -52,19 +56,29 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
   const [dueYear, setDueYear] = useState('27');
   const [ccv, setCcv] = useState('048');
   const [directPayAmount, setDirectPayAmount] = useState('1');
+  const [directPayRecTradeId, setDirectPayRecTradeId] = useState('');
   const [googlePayAmount, setGooglePayAmount] = useState('1');
+  const [googlePayRecTradeId, setGooglePayRecTradeId] = useState('');
   const [appleAmount, setApplePayAmount] = useState('1');
+  const [applePayRecTradeId, setApplePayRecTradeId] = useState('');
   const [linePayAmount, setLinePayAmount] = useState('1');
+  const [linePayRecTradeId, setLinePayRecTradeId] = useState('');
   const [samsungPayItemTotalAmount, setSamsungPayItemTotalAmount] =
     useState('1');
   const [samsungPayShippingPrice, setSamsungPayShippingPrice] = useState('0');
   const [samsungPayTax, setSamsungPayTax] = useState('0');
   const [samsungPayTotalAmount, setSamsungPayTotalAmount] = useState('1');
+  const [samsungPayRecTradeId, setSamsungPayRecTradeId] = useState('');
   const [jkoPayAmount, setJkoPayAmount] = useState('1');
+  const [jkoPayRecTradeId, setJkoPayRecTradeId] = useState('');
   const [easyWalleAmount, setEasyWalleAmount] = useState('1');
+  const [easyWalleRecTradeId, setEasyWalleRecTradeId] = useState('');
   const [piWalleAmount, setPiWalleAmount] = useState('1');
+  const [piWalleRecTradeId, setPiWalleRecTradeId] = useState('');
   const [plusPayAmount, setPlusPayAmount] = useState('1');
+  const [plusPayRecTradeId, setPlusPayRecTradeId] = useState('');
   const [atomeAmount, setAtomeAmount] = useState('1');
+  const [atomePayRecTradeId, setAtomePayRecTradeId] = useState('');
 
   const [openLinkTest, setOpenLinkTest] = useState(
     'bbn_yahoo_bid://com.bbn_yahoo_bid'
@@ -105,6 +119,39 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
     ccv
   );
 
+  async function handlerRefund(
+    recTradeId: string,
+    payment: string,
+    callback: Function
+  ) {
+    setLoading(true);
+    try {
+      const refund = await request.post(
+        'https://resume-web-orpin.vercel.app/api/tappay/refund',
+        {
+          partner_key:
+            'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
+          rec_trade_id: recTradeId
+        },
+        null,
+        false
+      );
+      console.log({ refund });
+      setPopUpMessage({
+        label: payment + '付款退款成功(測試)',
+        type: 'success'
+      });
+    } catch (error: any) {
+      console.log({ ...error });
+      setPopUpMessage({
+        label: payment + '付款退款失敗',
+        type: 'error'
+      });
+    }
+    callback('');
+    setLoading(false);
+  }
+
   async function handlerDirectPay() {
     setLoading(true);
     try {
@@ -132,6 +179,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      setDirectPayRecTradeId(payByPrime.rec_trade_id);
       setPopUpMessage({
         label: '直接付款成功(測試)',
         type: 'success'
@@ -174,6 +223,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      setGooglePayRecTradeId(payByPrime.rec_trade_id);
       setPopUpMessage({
         label: 'GooglePay付款成功(測試)',
         type: 'success'
@@ -222,6 +273,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      setApplePayRecTradeId(payByPrime.rec_trade_id);
       setPopUpMessage({
         label: 'ApplePay付款成功(測試)',
         type: 'success'
@@ -270,6 +323,13 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      const redirectWithUrl: any = await linePayRedirectWithUrl(
+        payByPrime.payment_url
+      );
+      console.log(redirectWithUrl);
+      console.log(redirectWithUrl.rec_trade_id);
+      setLinePayRecTradeId(redirectWithUrl.rec_trade_id);
       setPopUpMessage({
         label: 'LinePay付款成功(測試)',
         type: 'success'
@@ -316,6 +376,8 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      setSamsungPayRecTradeId(payByPrime.rec_trade_id);
       setPopUpMessage({
         label: 'SamsungPay付款成功(測試)',
         type: 'success'
@@ -370,7 +432,15 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
-      await jkoPayRedirectWithUrl(payByPrime.payment_url);
+      console.log(payByPrime.rec_trade_id);
+      const redirectWithUrl: any = await jkoPayRedirectWithUrl(
+        payByPrime.payment_url
+      );
+      console.log(redirectWithUrl);
+      console.log(redirectWithUrl.rec_trade_id);
+      setJkoPayRecTradeId(
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+      );
       setPopUpMessage({
         label: '街口支付付款成功(測試)',
         type: 'success'
@@ -417,7 +487,15 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
-      await easyWalletRedirectWithUrl(payByPrime.payment_url);
+      console.log(payByPrime.rec_trade_id);
+      const redirectWithUrl: any = await easyWalletRedirectWithUrl(
+        payByPrime.payment_url
+      );
+      console.log(redirectWithUrl);
+      console.log(redirectWithUrl.rec_trade_id);
+      setEasyWalleRecTradeId(
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+      );
       setPopUpMessage({
         label: '悠遊支付付款成功(測試)',
         type: 'success'
@@ -459,6 +537,15 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      const redirectWithUrl: any = await piWalletRedirectWithUrl(
+        payByPrime.payment_url
+      );
+      console.log(redirectWithUrl);
+      console.log(redirectWithUrl.rec_trade_id);
+      setPiWalleRecTradeId(
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+      );
       setPopUpMessage({
         label: 'Pi錢包付款成功(測試)',
         type: 'success'
@@ -500,6 +587,15 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      const redirectWithUrl: any = await plusPayRedirectWithUrl(
+        payByPrime.payment_url
+      );
+      console.log(redirectWithUrl);
+      console.log(redirectWithUrl.rec_trade_id);
+      setPlusPayRecTradeId(
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+      );
       setPopUpMessage({
         label: '全盈+PAY付款成功(測試)',
         type: 'success'
@@ -541,6 +637,16 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         false
       );
       console.log(payByPrime);
+      console.log(payByPrime.rec_trade_id);
+      const redirectWithUrl: any = await atomeRedirectWithUrl(
+        payByPrime.payment_url
+      );
+      console.log(redirectWithUrl);
+      console.log(redirectWithUrl.rec_trade_id);
+      setAtomePayRecTradeId(
+        redirectWithUrl.rec_trade_id || payByPrime.rec_trade_id
+      );
+
       setPopUpMessage({
         label: 'Atome付款成功(測試)',
         type: 'success'
@@ -619,6 +725,41 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
             直接付款測試
           </Text>
         </TouchableOpacity>
+        <View style={styles.row}>
+          <Text style={styles.label}>直接付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={directPayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            directPayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={directPayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(
+              directPayRecTradeId,
+              '直接付款',
+              setDirectPayRecTradeId
+            )
+          }
+        >
+          <Text
+            style={
+              directPayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            直接付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>Google Pay付款金額:</Text>
@@ -634,6 +775,41 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           disabledStyle={styles.PayBtnDisabledStyle}
           onPress={handlerGooglePay}
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>Google Pay付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={googlePayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            googlePayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={googlePayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(
+              googlePayRecTradeId,
+              'GooglePay',
+              setGooglePayRecTradeId
+            )
+          }
+        >
+          <Text
+            style={
+              googlePayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            Google Pay付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>Apple Pay付款金額:</Text>
@@ -652,6 +828,37 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           disabledStyle={styles.PayBtnDisabledStyle}
           onPress={handlerApplePay}
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>Apple Pay付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={applePayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            applePayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={applePayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(applePayRecTradeId, 'ApplePay', setApplePayRecTradeId)
+          }
+        >
+          <Text
+            style={
+              applePayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            Apple Pay付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>Line Pay付款金額:</Text>
@@ -667,6 +874,37 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           disabledStyle={styles.LinePayBtnDisabledStyle}
           onPress={handlerLinePay}
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>Line Pay付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={linePayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            linePayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={linePayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(linePayRecTradeId, 'LinePay', setLinePayRecTradeId)
+          }
+        >
+          <Text
+            style={
+              linePayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            Line Pay付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>Samsung Pay付款品項總金額:</Text>
@@ -715,6 +953,41 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           disabledStyle={styles.SPayBtnDisabledStyle}
           onPress={handlerSamsungPay}
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>Samsung Pay付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={samsungPayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            samsungPayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={samsungPayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(
+              samsungPayRecTradeId,
+              'SamsungPay',
+              setSamsungPayRecTradeId
+            )
+          }
+        >
+          <Text
+            style={
+              samsungPayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            Samsung Pay付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>街口支付付款金額:</Text>
@@ -731,6 +1004,37 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           disabledStyle={styles.JkoPayBtnDisabledStyle}
           onPress={handlerJkoPay}
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>街口支付付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={jkoPayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            jkoPayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={jkoPayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(jkoPayRecTradeId, '街口支付', setJkoPayRecTradeId)
+          }
+        >
+          <Text
+            style={
+              jkoPayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            街口支付付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>悠遊支付付款金額:</Text>
@@ -747,6 +1051,41 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           disabledStyle={styles.EasyWalleBtnDisabledStyle}
           onPress={handlerEasyWallet}
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>悠遊支付付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={easyWalleRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            easyWalleRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={easyWalleRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(
+              easyWalleRecTradeId,
+              '悠遊支付',
+              setEasyWalleRecTradeId
+            )
+          }
+        >
+          <Text
+            style={
+              easyWalleRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            悠遊支付付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>Pi錢包付款金額:</Text>
@@ -769,6 +1108,37 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
             })
           }
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>Pi錢包付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={piWalleRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            piWalleRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={piWalleRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(piWalleRecTradeId, 'Pi錢包', setPiWalleRecTradeId)
+          }
+        >
+          <Text
+            style={
+              piWalleRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            Pi錢包付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>全盈+PAY付款金額:</Text>
@@ -791,6 +1161,37 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           //   })
           // }
         />
+        <View style={styles.row}>
+          <Text style={styles.label}>全盈+PAY付款交易完成金鑰:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={plusPayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            plusPayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={plusPayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(plusPayRecTradeId, '全盈+PAY', setPlusPayRecTradeId)
+          }
+        >
+          <Text
+            style={
+              plusPayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            全盈+PAY付款退款測試
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.row}>
           <Text style={styles.label}>Atome 付款金額:</Text>
@@ -813,20 +1214,51 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           //   })
           // }
         />
-
         <View style={styles.row}>
-          <Text style={styles.label}>測試開啟App網址:</Text>
+          <Text style={styles.label}>Atome付款交易完成金鑰:</Text>
           <TextInput
             style={styles.inputBox}
-            value={openLinkTest}
-            onChange={({ nativeEvent }) => setOpenLinkTest(nativeEvent.text)}
+            value={atomePayRecTradeId}
+            editable={false}
+            selectTextOnFocus={false}
           />
         </View>
         <TouchableOpacity
-          style={styles.buttonStyle}
-          onPress={() => Linking.openURL(openLinkTest)}
+          style={[
+            atomePayRecTradeId === ''
+              ? styles.buttonDisabledStyle
+              : styles.buttonStyle,
+            styles.lastRow
+          ]}
+          disabled={atomePayRecTradeId === ''}
+          onPress={() =>
+            handlerRefund(atomePayRecTradeId, 'Atome', setAtomePayRecTradeId)
+          }
         >
-          <Text style={styles.buttonFontStyle}>測試開啟App</Text>
+          <Text
+            style={
+              atomePayRecTradeId === ''
+                ? styles.buttonDisabledFontStyle
+                : styles.buttonFontStyle
+            }
+          >
+            Atome付款退款測試
+          </Text>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>測試開啟App網址:</Text>
+            <TextInput
+              style={styles.inputBox}
+              value={openLinkTest}
+              onChange={({ nativeEvent }) => setOpenLinkTest(nativeEvent.text)}
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.buttonStyle}
+            onPress={() => Linking.openURL(openLinkTest)}
+          >
+            <Text style={styles.buttonFontStyle}>測試開啟App</Text>
+          </TouchableOpacity>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

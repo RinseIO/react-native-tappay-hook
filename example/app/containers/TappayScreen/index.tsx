@@ -141,6 +141,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         label: payment + '付款退款成功(測試)',
         type: 'success'
       });
+      callback('');
     } catch (error: any) {
       console.log({ ...error });
       setPopUpMessage({
@@ -148,7 +149,6 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
         type: 'error'
       });
     }
-    callback('');
     setLoading(false);
   }
 

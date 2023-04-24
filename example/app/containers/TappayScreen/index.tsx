@@ -1276,21 +1276,21 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           >
             Atome付款退款測試
           </Text>
+        </TouchableOpacity>
 
-          <View style={styles.row}>
-            <Text style={styles.label}>測試開啟App網址:</Text>
-            <TextInput
-              style={styles.inputBox}
-              value={openLinkTest}
-              onChange={({ nativeEvent }) => setOpenLinkTest(nativeEvent.text)}
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            onPress={() => Linking.openURL(openLinkTest)}
-          >
-            <Text style={styles.buttonFontStyle}>測試開啟App</Text>
-          </TouchableOpacity>
+        <View style={styles.row}>
+          <Text style={styles.label}>測試開啟App網址:</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={openLinkTest}
+            onChange={({ nativeEvent }) => setOpenLinkTest(nativeEvent.text)}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => Linking.openURL(openLinkTest)}
+        >
+          <Text style={styles.buttonFontStyle}>測試開啟App</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

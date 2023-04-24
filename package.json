@@ -36,7 +36,7 @@
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
-    "postinstall": "unzip -o ios/TPDirect.xcframework.zip -d ios"
+    "postinstall": "node unzipTPDirect.js"
   },
   "keywords": [
     "react-native",
@@ -79,7 +79,8 @@
     "react-native": "0.71.6",
     "react-native-builder-bob": "^0.20.0",
     "release-it": "^15.0.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "unzipper": "^0.10.11"
   },
   "resolutions": {
     "@types/react": "17.0.21"

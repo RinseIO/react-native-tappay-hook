@@ -5,7 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "iPhone14": "react-native run-ios --simulator=\"iPhone 14 Pro\"",
+    "Iphone14": "react-native run-ios --simulator=\"iPhone 14 Pro\"",
     "start": "react-native start",
     "pods": "pod-install --quiet"
   },

@@ -338,10 +338,18 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       });
     } catch (error: any) {
       console.log({ ...error });
-      setPopUpMessage({
-        label: 'LinePay付款失敗(測試)',
-        type: 'error'
-      });
+      if (error.message === 'canceled') {
+        setPopUpMessage({
+          label: 'LinePay付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log(error);
+        setPopUpMessage({
+          label: 'LinePay付款失敗(測試)',
+          type: 'error'
+        });
+      }
     }
     setLoading(false);
   }
@@ -455,10 +463,18 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       });
     } catch (error: any) {
       console.log({ ...error });
-      setPopUpMessage({
-        label: '街口支付付款失敗(測試)',
-        type: 'error'
-      });
+      if (error.message === 'canceled') {
+        setPopUpMessage({
+          label: '街口支付付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log(error);
+        setPopUpMessage({
+          label: '街口支付付款失敗(測試)',
+          type: 'error'
+        });
+      }
     }
     setLoading(false);
   }
@@ -510,10 +526,18 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
       });
     } catch (error: any) {
       console.log({ ...error });
-      setPopUpMessage({
-        label: '悠遊支付付款失敗(測試)',
-        type: 'error'
-      });
+      if (error.message === 'canceled') {
+        setPopUpMessage({
+          label: '悠遊支付付款已取消',
+          type: 'warning'
+        });
+      } else {
+        console.log(error);
+        setPopUpMessage({
+          label: '悠遊支付付款失敗(測試)',
+          type: 'error'
+        });
+      }
     }
     setLoading(false);
   }
@@ -529,7 +553,7 @@ export function TappayScreen({ setPopUpMessage, setLoading }: any) {
           prime: result.prime,
           partner_key:
             'partner_NCfF30iGuLP4G74nyycZNWykVpt7fqKVDG7qfPdBGbxJUwDKQeDFoH3o',
-          merchant_id: 'tappayTest_CTBC_Union_Pay',
+          merchant_id: 'tappayTest_PI_WALLET_AUTO_CAP',
           details: 'TapPay PiWallet Test',
           amount: piWalleAmount,
           cardholder: {

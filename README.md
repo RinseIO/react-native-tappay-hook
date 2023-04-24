@@ -590,7 +590,9 @@ const result:result =  await Tappay.getLinePayPrime();
 ### linePayRedirectWithUrl
 
 ```ts 
+import { defaultAppActive } from 'react-native-tappay-hook';
 const paymentUrl: string = 'url';
+const handleAppActive: Function | undefined | null = defaultAppActive;
 
 interface result {
   systemOS: string;
@@ -605,13 +607,13 @@ interface result {
 
 import { linePayRedirectWithUrl } from 'react-native-tappay-hook';
 
-const result:result = await linePayRedirectWithUrl(paymentUrl);
+const result:result = await linePayRedirectWithUrl(paymentUrl, handleAppActive);
 
 // or
 
 import { Tappay } from 'react-native-tappay-hook';
 
-const result:result =  await Tappay.linePayRedirectWithUrl(paymentUrl);
+const result:result =  await Tappay.linePayRedirectWithUrl(paymentUrl, handleAppActive);
 
 ```
 
@@ -861,7 +863,10 @@ const result:result =  await Tappay.getJkoPayPrime();
 ### jkoPayRedirectWithUrl
 
 ```ts 
+import { defaultAppActive } from 'react-native-tappay-hook';
 const paymentUrl: string = 'url';
+const handleAppActive: Function | undefined | null = defaultAppActive;
+
 
 interface result {
   systemOS: string;
@@ -875,13 +880,13 @@ interface result {
 
 import { jkoPayRedirectWithUrl } from 'react-native-tappay-hook';
 
-const result:result = await jkoPayRedirectWithUrl(paymentUrl);
+const result:result = await jkoPayRedirectWithUrl(paymentUrl, defaultAppActive);
 
 // or
 
 import { Tappay } from 'react-native-tappay-hook';
 
-const result:result =  await Tappay.jkoPayRedirectWithUrl(paymentUrl);
+const result:result =  await Tappay.jkoPayRedirectWithUrl(paymentUrl, defaultAppActive);
 
 ```
 
@@ -1029,7 +1034,9 @@ const result:result =  await Tappay.getEasyWalletPrime();
 ### easyWalletRedirectWithUrl
 
 ```ts 
+import { defaultAppActive } from 'react-native-tappay-hook';
 const paymentUrl: string = 'url';
+const handleAppActive: Function | undefined | null = defaultAppActive;
 
 interface result {
   systemOS: string;
@@ -1043,13 +1050,13 @@ interface result {
 
 import { easyWalletRedirectWithUrl } from 'react-native-tappay-hook';
 
-const result:result = await easyWalletRedirectWithUrl(paymentUrl);
+const result:result = await easyWalletRedirectWithUrl(paymentUrl, defaultAppActive);
 
 // or
 
 import { Tappay } from 'react-native-tappay-hook';
 
-const result:result =  await Tappay.easyWalletRedirectWithUrl(paymentUrl);
+const result:result =  await Tappay.easyWalletRedirectWithUrl(paymentUrl, defaultAppActive);
 
 ```
 
@@ -1192,7 +1199,9 @@ const result:result =  await Tappay.getPiWalletPrime();
 ### piWalletRedirectWithUrl
 
 ```ts 
-const paymentUrl:string = 'url';
+import { defaultAppActive } from 'react-native-tappay-hook';
+const paymentUrl: string = 'url';
+const handleAppActive: Function | undefined | null = defaultAppActive;
 
 interface result {
   systemOS: string;
@@ -1202,13 +1211,13 @@ interface result {
 
 import { piWalletRedirectWithUrl } from 'react-native-tappay-hook';
 
-const result:result = await piWalletRedirectWithUrl(paymentUrl);
+const result:result = await piWalletRedirectWithUrl(paymentUrl, defaultAppActive);
 
 // or
 
 import { Tappay } from 'react-native-tappay-hook';
 
-const result:result =  await Tappay.piWalletRedirectWithUrl(paymentUrl);
+const result:result =  await Tappay.piWalletRedirectWithUrl(paymentUrl, defaultAppActive);
 ```
 
 ### piWalletHandleUniversalLink
@@ -1354,7 +1363,9 @@ const result:result =  await Tappay.getPlusPayPrime();
 ### plusPayRedirectWithUrl
 
 ```ts 
-const paymentUrl:string = 'url';
+import { defaultAppActive } from 'react-native-tappay-hook';
+const paymentUrl: string = 'url';
+const handleAppActive: Function | undefined | null = defaultAppActive;
 
 interface result {
   systemOS: string;
@@ -1364,13 +1375,13 @@ interface result {
 
 import { plusPayRedirectWithUrl } from 'react-native-tappay-hook';
 
-const result:result = await plusPayRedirectWithUrl(paymentUrl);
+const result:result = await plusPayRedirectWithUrl(paymentUrl, defaultAppActive);
 
 // or
 
 import { Tappay } from 'react-native-tappay-hook';
 
-const result:result =  await Tappay.plusPayRedirectWithUrl(paymentUrl);
+const result:result =  await Tappay.plusPayRedirectWithUrl(paymentUrl, defaultAppActive);
 ```
 
 ### plusPayhandleUniversalLink
@@ -1515,7 +1526,9 @@ const result:result =  await Tappay.getAtomePrime();
 ### atomeRedirectWithUrl
 
 ```ts 
-const paymentUrl:string = 'url';
+import { defaultAppActive } from 'react-native-tappay-hook';
+const paymentUrl: string = 'url';
+const handleAppActive: Function | undefined | null = defaultAppActive;
 
 interface result {
   systemOS: string;
@@ -1529,13 +1542,13 @@ interface result {
 
 import { atomeRedirectWithUrl } from 'react-native-tappay-hook';
 
-const result:result = await atomeRedirectWithUrl(paymentUrl);
+const result:result = await atomeRedirectWithUrl(paymentUrl, defaultAppActive);
 
 // or
 
 import { Tappay } from 'react-native-tappay-hook';
 
-const result:result =  await Tappay.atomeRedirectWithUrl(paymentUrl);
+const result:result =  await Tappay.atomeRedirectWithUrl(paymentUrl, defaultAppActive);
 
 ```
 

@@ -37,7 +37,7 @@
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
-    "postinstall": "node unzipTPDirect.js"
+    "postinstall": "node"
   },
   "keywords": [
     "react-native",

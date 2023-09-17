@@ -161,14 +161,14 @@
 - (void)getApplePayPrime:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
     self.tpdCart = [TPDCart new];
-    self.tpdCart.isAmountPending = YES;
-    self.tpdCart.isShowTotalAmount = NO;
+    self.tpdCart.isAmountPending = NO;
+    self.tpdCart.isShowTotalAmount = YES;
 
-    TPDPaymentItem *final = [TPDPaymentItem paymentItemWithItemName:@"final" withAmount:[NSDecimalNumber decimalNumberWithString:amount]];
+    TPDPaymentItem *final = [TPDPaymentItem paymentItemWithItemName:@"租車費用" withAmount:[NSDecimalNumber decimalNumberWithString:amount]];
     [self.tpdCart addPaymentItem:final];
 
-    TPDPaymentItem * pending = [TPDPaymentItem pendingPaymentItemWithItemName:@"pending"];
-    [self.tpdCart addPaymentItem:pending];
+    //TPDPaymentItem * pending = [TPDPaymentItem pendingPaymentItemWithItemName:@"pending"];
+    //[self.tpdCart addPaymentItem:pending];
 
     self.applePayJsResolve = resolve;
     self.applePayJsReject = reject;

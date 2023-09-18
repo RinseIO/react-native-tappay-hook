@@ -159,7 +159,7 @@
 }
 
 - (void)getApplePayPrime:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-  //@try {
+  @try {
     self.tpdCart = [TPDCart new];
     self.tpdCart.isAmountPending = NO;
     self.tpdCart.isShowTotalAmount = YES;
@@ -184,10 +184,10 @@
 
     [self.tpdApplePay startPayment];
 
-  //}
-  //@catch (NSException *exception) {
-  //  reject(@"ios error getApplePayPrime", exception.description, nil);
-  //}
+  }
+  @catch (NSException *exception) {
+    reject(@"ios error getApplePayPrime", exception.description, nil);
+  }
 }
 
 //When exception happened receive notification.

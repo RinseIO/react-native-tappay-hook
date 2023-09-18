@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "12.4" }
-  s.source       = { :git => "https://github.com/archer102125220/react-native-tappay-hook.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/RinseIO/react-native-tappay-hook.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm}"
   s.public_header_files = "ios/*.h"

@@ -144,7 +144,7 @@
     _TPDApplePayDelegate.SDKVersion = self.SDKVersion;
     _TPDApplePayDelegate.tpdConsumer = self.tpdConsumer;
 
-    TPDApplePay *tpdApplePay = [TPDApplePay setupWthMerchant:self.tpdMerchant withConsumer:self.tpdConsumer withCart:[TPDCart new] withDelegate:_TPDApplePayDelegate];
+    //TPDApplePay *tpdApplePay = [TPDApplePay setupWthMerchant:self.tpdMerchant withConsumer:self.tpdConsumer withCart:[TPDCart new] withDelegate:_TPDApplePayDelegate];
     // TPDApplePay *tpdApplePay = [TPDApplePay setupWthMerchant:self.tpdMerchant withConsumer:self.tpdConsumer withCart:nil withDelegate:_TPDApplePayDelegate];
 
     resolve(@{
@@ -159,7 +159,7 @@
 }
 
 - (void)getApplePayPrime:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-  @try {
+  //@try {
     self.tpdCart = [TPDCart new];
     self.tpdCart.isAmountPending = NO;
     self.tpdCart.isShowTotalAmount = YES;
@@ -167,8 +167,8 @@
     TPDPaymentItem *final = [TPDPaymentItem paymentItemWithItemName:@"租車費用" withAmount:[NSDecimalNumber decimalNumberWithString:amount]];
     [self.tpdCart addPaymentItem:final];
 
-    //TPDPaymentItem * pending = [TPDPaymentItem pendingPaymentItemWithItemName:@"pending"];
-    //[self.tpdCart addPaymentItem:pending];
+    /* TPDPaymentItem * pending = [TPDPaymentItem pendingPaymentItemWithItemName:@"pending"]; */
+    /* [self.tpdCart addPaymentItem:pending]; */
 
     self.applePayJsResolve = resolve;
     self.applePayJsReject = reject;
@@ -184,10 +184,10 @@
 
     [self.tpdApplePay startPayment];
 
-  }
-  @catch (NSException *exception) {
-    reject(@"ios error getApplePayPrime", exception.description, nil);
-  }
+  //}
+  //@catch (NSException *exception) {
+  //  reject(@"ios error getApplePayPrime", exception.description, nil);
+  //}
 }
 
 //When exception happened receive notification.

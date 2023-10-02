@@ -161,7 +161,7 @@
 - (void)getApplePayPrime:(NSString *)amount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   @try {
     self.tpdCart = [TPDCart new];
-    self.tpdCart.isAmountPending = NO;
+    self.tpdCart.isAmountPending = YES;
     self.tpdCart.isShowTotalAmount = YES;
 
     TPDPaymentItem *final = [TPDPaymentItem paymentItemWithItemName:@"租車費用" withAmount:[NSDecimalNumber decimalNumberWithString:amount]];

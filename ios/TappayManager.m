@@ -827,6 +827,7 @@
     NSLog(@"=====================================================");
     NSLog(@"Apple Pay Did Failure ==> Message : %@, ErrorCode : %ld", result.message, (long)result.status);
     NSLog(@"===================================================== \n\n");
+	/*
   if(self.applePayJsReject != nil ) {
     self.applePayJsReject(
       @"ios error Apple Pay Did Failure",
@@ -836,6 +837,7 @@
     self.applePayJsResolve = nil;
     self.applePayJsReject = nil;
   }
+  */
 }
 
 - (void)tpdApplePayDidCancelPayment:(TPDApplePay *)applePay {
@@ -938,7 +940,7 @@
         @"prime": prime,
         @"expiryMillis": [NSString stringWithFormat: @"%ld", expiryMillis],
         @"merchantReferenceInfo": merchantReferenceInfo,
-        @"cart": applePay.cart,
+        //@"cart": applePay.cart,
         @"consumer": applePay.consumer,
         @"paymentMethod": self.tpdConsumer.paymentMethod
       });

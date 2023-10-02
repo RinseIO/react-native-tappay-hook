@@ -1,7 +1,7 @@
 {
   "name": "react-native-tappay-hook",
   "version": "0.2.2",
-  "description": "tappay for react hook updated by Rinse",
+  "description": "tappay for react hook updated by Rinse dummy update",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",

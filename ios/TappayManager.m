@@ -933,6 +933,8 @@
     BOOL paymentReault = YES;
     [applePay showPaymentResult:paymentReault];
 
+	usleep(2000000);
+
     if(self.applePayJsResolve !=nil ) {
       self.applePayJsResolve(@{
         @"systemOS": @"ios",

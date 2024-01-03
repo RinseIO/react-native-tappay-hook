@@ -15,15 +15,14 @@
   // }
   self.APP_ID = APP_ID;
   self.APP_KEY = APP_KEY;
-  self.prod = &prod;
+  self.prod = prod;
   self.SDKVersion = [TPDSetup version];
 
-  #if prod
+  if (prod) {
     [TPDSetup setWithAppId:APP_ID withAppKey:APP_KEY withServerType:TPDServer_Production];
-  #else
+  } else {
     [TPDSetup setWithAppId:[APP_ID intValue] withAppKey:APP_KEY withServerType:TPDServer_SandBox];
-  #endif
-
+  }
 }
 
 - (id)TPDCard:(NSString *)cardNumber dueMonth:(NSString *)dueMonth dueYear:(NSString *)dueYear CCV:(NSString *)CCV {

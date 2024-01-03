@@ -19,7 +19,7 @@
   self.SDKVersion = [TPDSetup version];
 
   if (prod) {
-    [TPDSetup setWithAppId:APP_ID withAppKey:APP_KEY withServerType:TPDServer_Production];
+    [TPDSetup setWithAppId:[APP_ID intValue] withAppKey:APP_KEY withServerType:TPDServer_Production];
   } else {
     [TPDSetup setWithAppId:[APP_ID intValue] withAppKey:APP_KEY withServerType:TPDServer_SandBox];
   }

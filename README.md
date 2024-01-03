@@ -1,6 +1,6 @@
 # react-native-tappay-hook
 #
-# 
+# dummy
 
 tappay for react hook
 
